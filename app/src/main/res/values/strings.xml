@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SmartStay</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">홈</string>
+    <string name="title_favorites">찜</string>
+    <string name="title_profiles">내 정보</string>
 </resources>
