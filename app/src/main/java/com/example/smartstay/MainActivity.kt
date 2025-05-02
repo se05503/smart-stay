@@ -1,11 +1,11 @@
 package com.example.smartstay
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartstay.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,7 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val bottomNavigationView: BottomNavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_main)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+        val navController = navHostFragment.navController
 
         // 해당 코드는 나중에 액션바 커스텀 하고나서 사용할 때 쓰기
 //        val appBarConfiguration = AppBarConfiguration(
