@@ -15,14 +15,22 @@
         android:theme="@style/Theme.SmartStay"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".TestResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EntryActivity"
             android:exported="true"
-            android:label="@string/title_activity_main">
+            android:theme="@style/Theme.SmartStay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main" />
     </application>
 
 </manifest>

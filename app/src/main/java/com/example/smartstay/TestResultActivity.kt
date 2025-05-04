@@ -17,7 +17,11 @@ class TestResultActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val recommendStay = intent.getStringExtra("recommend_stay")
-        findViewById<TextView>(R.id.tv_recommend_stays).text = recommendStay
+        val recommendStay = intent.getParcelableArrayListExtra<StayItem>("stays") ?: return
+        val text = ""
+        for(stay in recommendStay) {
+            text.plus(stay.name)
+        }
+        findViewById<TextView>(R.id.tv_recommend_stays).text = text
     }
 }
