@@ -9,3 +9,8 @@ data class StayItem(
     val price: Int,
     val type: String
 ): Parcelable
+
+data class QuestionItem(
+    val pageText: String,
+    val progress: Int
+)
