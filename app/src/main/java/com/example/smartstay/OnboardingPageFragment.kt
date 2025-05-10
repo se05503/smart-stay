@@ -1,12 +1,15 @@
 package com.example.smartstay
 
 import android.os.Bundle
+import android.transition.Slide
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.android.material.slider.Slider
 
 class OnboardingPageFragment: Fragment() {
 
@@ -33,6 +36,59 @@ class OnboardingPageFragment: Fragment() {
         view.findViewById<TextView>(R.id.textView).text = text
         view.findViewById<ProgressBar>(R.id.determinateBar).setProgress(progress, true)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 나이
+        val sliderAge = view.findViewById<Slider>(R.id.slider_age)
+        sliderAge.setLabelFormatter { value ->
+            "${value.toInt()}살"
+        }
+        sliderAge.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                Toast.makeText(requireContext(), "value:${slider.value.toInt()}살", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+        // 가족 인원수
+        val sliderFamilyCount = view.findViewById<Slider>(R.id.slider_family_count)
+        sliderFamilyCount.setLabelFormatter { value ->
+            "${value.toInt()}명"
+        }
+        sliderFamilyCount.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                Toast.makeText(requireContext(), "value:${slider.value.toInt()}명", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+        // 1인당 평균 월수익
+        val sliderIncome = view.findViewById<Slider>(R.id.slider_income)
+        sliderIncome.setLabelFormatter { value ->
+            if(value.toInt()==1000) "${value.toInt()}만원~"
+            else "${value.toInt()}만원"
+        }
+        sliderIncome.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                Toast.makeText(requireContext(), "value:${slider.value.toInt()}만원", Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
 

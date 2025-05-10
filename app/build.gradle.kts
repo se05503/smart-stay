@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
+    implementation("com.google.android.material:material: 1.12.0")
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     testImplementation(libs.junit)
