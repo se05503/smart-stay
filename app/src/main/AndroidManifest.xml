@@ -6,6 +6,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".SmartStayApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -34,6 +35,17 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main">
+        </activity>
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="oauth"
+                    android:scheme="kakaofe73280b622e53de8942ca28b79b4781" />
+            </intent-filter>
         </activity>
     </application>
 

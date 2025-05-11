@@ -53,6 +53,7 @@ dependencies {
     implementation("com.google.android.material:material: 1.12.0")
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+    implementation("com.kakao.sdk:v2-user:2.21.2") // 카카오 로그인 API 모듈
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
