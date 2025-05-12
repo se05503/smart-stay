@@ -1,17 +1,21 @@
 package com.example.smartstay
 
+import android.content.Context
 import android.os.Bundle
-import android.transition.Slide
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.google.android.material.slider.Slider
 
 class OnboardingPageFragment: Fragment() {
+
+    private var callback: OnboardingPageCallback? = null
 
     companion object {
         fun newInstance(item: QuestionItem): OnboardingPageFragment {
@@ -25,6 +29,11 @@ class OnboardingPageFragment: Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callback = parentFragment as? OnboardingPageCallback
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,13 +42,18 @@ class OnboardingPageFragment: Fragment() {
         val view = inflater.inflate(R.layout.fragment_onboarding_page, container, false)
         val text = arguments?.getString("text")
         val progress = arguments?.getInt("progress") ?: -1
-        view.findViewById<TextView>(R.id.textView).text = text
-        view.findViewById<ProgressBar>(R.id.determinateBar).setProgress(progress, true)
+        view.findViewById<TextView>(R.id.tv_question).text = text
+        view.findViewById<ProgressBar>(R.id.progressBar).setProgress(progress, true)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<AppCompatButton>(R.id.btn_next_page).setOnClickListener {
+            Log.d("ttest",""+callback)
+            callback?.onNextPage()
+        }
 
         // 나이
         val sliderAge = view.findViewById<Slider>(R.id.slider_age)
@@ -91,5 +105,8 @@ class OnboardingPageFragment: Fragment() {
         })
     }
 
-
+    override fun onDetach() {
+        super.onDetach()
+        callback = null
+    }
 }
