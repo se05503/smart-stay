@@ -29,72 +29,16 @@
         app:layout_constraintTop_toBottomOf="@+id/progressBar"
         android:layout_marginTop="28dp"
         android:textAlignment="center"
-        tools:text=""/>
+        tools:text="성별이 어떻게 되세요?"/>
 
-    <com.google.android.material.slider.Slider
-        android:id="@+id/slider_age"
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/slider"
+        layout="@layout/layout_initial_setting_slider"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_question"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:valueFrom="1"
-        android:valueTo="100"
-        android:contentDescription="user age"
-        app:labelBehavior="visible"
-        style="@style/Widget.App.Slider"/>
-    <LinearLayout
-        android:id="@+id/ll_age_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/slider_age"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1살"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="100살"/>
-    </LinearLayout>
-
-    <com.google.android.material.slider.Slider
-        android:id="@+id/slider_family_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/ll_age_description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:valueFrom="3"
-        android:valueTo="10"
-        android:stepSize="1"
-        android:contentDescription="family count"
-        app:labelBehavior="visible"
-        app:trackColorActive="#FF4457"
-        app:trackColorInactive="#F6F7F9"
-        app:thumbColor="#FFDADD"/>
-
-    <com.google.android.material.slider.Slider
-        android:id="@+id/slider_income"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/slider_family_count"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:valueFrom="0"
-        android:valueTo="1000"
-        android:contentDescription="1인당 평균 월수익"
-        app:labelBehavior="visible"
-        app:trackColorActive="#FF4457"
-        app:trackColorInactive="#F6F7F9"
-        app:thumbColor="#FFDADD"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_next_page"
