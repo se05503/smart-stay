@@ -3,16 +3,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/iv_kakao_login"
+    <TextView
+        android:id="@+id/tv_authentication_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/kakao_login_large_wide"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="60dp"
+        android:text="SmartStay"
+        android:textSize="48sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_authentication_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="신개념 숙소 추천 앱, SmartStay\n챗봇 대화 형식으로\n맞춤형 숙소를 간편하게 찾아보세요!"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/tv_authentication_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_authentication_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_authentication_title" />
+
+    <ImageView
+        android:id="@+id/iv_login_kakao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/kakao_login_large_wide"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_authentication_description"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login_naver"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:backgroundTint="#03C75A"
+        android:background="@drawable/shape_button_round"
+        android:drawableStart="@drawable/ic_naver_login"
+        android:paddingStart="8dp"
+        android:text="네이버 로그인"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/iv_login_kakao"
+        app:layout_constraintStart_toStartOf="@+id/iv_login_kakao"
+        app:layout_constraintTop_toBottomOf="@id/iv_login_kakao"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login_google"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/white"
+        android:background="@drawable/shape_button_round"
+        android:text="구글 로그인"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:drawableStart="@drawable/ic_login_google"
+        android:paddingStart="12dp"
+        app:layout_constraintStart_toStartOf="@id/btn_login_naver"
+        app:layout_constraintEnd_toEndOf="@id/btn_login_naver"
+        app:layout_constraintTop_toBottomOf="@id/btn_login_naver"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일 로그인  |  신규 회원 가입"
+        app:layout_constraintTop_toBottomOf="@id/btn_login_google"
+        app:layout_constraintStart_toStartOf="@id/btn_login_google"
+        app:layout_constraintEnd_toEndOf="@id/btn_login_google"
+        android:layout_marginTop="16dp"
+        android:textStyle="bold"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
