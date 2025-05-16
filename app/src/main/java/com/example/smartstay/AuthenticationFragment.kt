@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.smartstay.databinding.FragmentAuthenticationBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -18,7 +19,7 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAuthenticationBinding.bind(view)
-        binding.ivKakaoLogin.setOnClickListener {
+        binding.ivLoginKakao.setOnClickListener {
             val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
                 if (error != null) {
                     Log.e("error", "카카오계정으로 로그인 실패", error)
@@ -28,23 +29,21 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                 }
             }
 
-            // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
                 UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
                     if (error != null) {
                         Log.e("error", "카카오톡으로 로그인 실패", error)
 
-                        // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                        // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
                         }
 
-                        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                         UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = callback)
                     } else if (token != null) {
                         Log.i("error", "카카오톡으로 로그인 성공 ${token.accessToken}")
                         Toast.makeText(requireContext(), "${token.accessToken}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "로그인에 성공했습니다!", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
                     }
                 }
             } else {

@@ -5,13 +5,26 @@
     android:id="@+id/navigation_entry"
     app:startDestination="@id/navigation_authentication">
     <fragment
-        android:id="@+id/onBoardingFragment"
+        android:id="@+id/navigation_onboarding"
         android:name="com.example.smartstay.OnboardingFragment"
         android:label="OnBoardingFragment"
         tools:layout="@layout/fragment_onboarding"/>
     <fragment
         android:id="@+id/navigation_authentication"
         android:name="com.example.smartstay.AuthenticationFragment"
-        android:label="authentication"
-        tools:layout="@layout/fragment_authentication"/>
+        android:label="AuthenticationFragment"
+        tools:layout="@layout/fragment_authentication">
+        <action
+            android:id="@+id/action_navigation_authentication_to_navigation_initial_setting_start"
+            app:destination="@id/navigation_initial_setting_start" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_initial_setting_start"
+        android:name="com.example.smartstay.InitialSettingStartFragment"
+        android:label="InitialSettingStartFragment"
+        tools:layout="@layout/fragment_initial_setting_start">
+        <action
+            android:id="@+id/action_navigation_initial_setting_start_to_navigation_onboarding"
+            app:destination="@id/navigation_onboarding" />
+    </fragment>
 </navigation>
