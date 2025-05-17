@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.smartstay.databinding.FragmentOnboardingBinding
 
 class OnboardingFragment: Fragment(R.layout.fragment_onboarding), OnboardingPageCallback {
@@ -22,6 +23,11 @@ class OnboardingFragment: Fragment(R.layout.fragment_onboarding), OnboardingPage
 
     override fun onNextPage() = with(binding) {
         val nextItem  = viewpager2.currentItem + 1
-        if(nextItem < viewpager2.adapter!!.itemCount) viewpager2.currentItem = nextItem
+        Log.d("ttest","current: ${viewpager2.currentItem}, total: ${viewpager2.adapter?.itemCount}")
+        if(nextItem < viewpager2.adapter!!.itemCount) {
+            viewpager2.currentItem = nextItem
+        } else {
+            findNavController().navigate(R.id.action_navigation_onboarding_to_navigation_initial_setting_end)
+        }
     }
 }

@@ -8,7 +8,11 @@
         android:id="@+id/navigation_onboarding"
         android:name="com.example.smartstay.OnboardingFragment"
         android:label="OnBoardingFragment"
-        tools:layout="@layout/fragment_onboarding"/>
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/action_navigation_onboarding_to_navigation_initial_setting_end"
+            app:destination="@id/navigation_initial_setting_end" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_authentication"
         android:name="com.example.smartstay.AuthenticationFragment"
@@ -27,4 +31,10 @@
             android:id="@+id/action_navigation_initial_setting_start_to_navigation_onboarding"
             app:destination="@id/navigation_onboarding" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_initial_setting_end"
+        android:name="com.example.smartstay.InitialSettingEndFragment"
+        android:label="InitialSettingEndFragment"
+        tools:layout="@layout/fragment_initial_setting_end"/>
+
 </navigation>
