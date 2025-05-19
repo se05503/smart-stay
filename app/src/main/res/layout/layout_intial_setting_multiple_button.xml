@@ -18,10 +18,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tv_multiple_option_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="1" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -37,10 +38,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tv_multiple_option_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="2" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -56,10 +58,11 @@
         app:layout_constraintTop_toTopOf="@id/cv_question_two">
 
         <TextView
+            android:id="@+id/tv_multiple_option_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="3" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -77,10 +80,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_one">
 
         <TextView
+            android:id="@+id/tv_multiple_option_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="4" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -97,10 +101,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_two">
 
         <TextView
+            android:id="@+id/tv_multiple_option_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="5" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -117,10 +122,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_three">
 
         <TextView
+            android:id="@+id/tv_multiple_option_6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="6" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -138,10 +144,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_four">
 
         <TextView
+            android:id="@+id/tv_multiple_option_7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="7" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -158,11 +165,13 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_five">
 
         <TextView
+            android:id="@+id/tv_multiple_option_8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
-            tools:text="8" />
+            android:textSize="14sp"
+            tools:text="8"
+            android:textAlignment="center"/>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -178,10 +187,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_six">
 
         <TextView
+            android:id="@+id/tv_multiple_option_9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="9" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -199,10 +209,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_seven">
 
         <TextView
+            android:id="@+id/tv_multiple_option_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="10" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -219,10 +230,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_eight">
 
         <TextView
+            android:id="@+id/tv_multiple_option_11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="11" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -239,11 +251,13 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_nine">
 
         <TextView
+            android:id="@+id/tv_multiple_option_12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
-            tools:text="12" />
+            android:textSize="14sp"
+            tools:text="12"
+            android:textAlignment="center"/>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -260,10 +274,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_ten">
 
         <TextView
+            android:id="@+id/tv_multiple_option_13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="13" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -280,10 +295,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_eleven">
 
         <TextView
+            android:id="@+id/tv_multiple_option_14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="14" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -300,10 +316,11 @@
         app:layout_constraintTop_toBottomOf="@id/cv_question_twelve">
 
         <TextView
+            android:id="@+id/tv_multiple_option_15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="30sp"
+            android:textSize="14sp"
             tools:text="15" />
     </com.google.android.material.card.MaterialCardView>
 

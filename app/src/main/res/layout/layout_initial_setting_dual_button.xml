@@ -15,6 +15,7 @@
         app:cardElevation="0dp"
         android:backgroundTint="@color/white">
         <TextView
+            android:id="@+id/tv_dual_option_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -30,6 +31,7 @@
         android:backgroundTint="@color/white"
         android:layout_marginTop="16dp">
     <TextView
+        android:id="@+id/tv_dual_option_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

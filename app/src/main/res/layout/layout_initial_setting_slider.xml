@@ -12,8 +12,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:valueFrom="1"
-        android:valueTo="100"
         android:contentDescription="slider"
         app:labelBehavior="visible"
         style="@style/Widget.App.Slider"/>
