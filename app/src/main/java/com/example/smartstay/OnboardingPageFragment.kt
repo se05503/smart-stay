@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
@@ -59,6 +58,7 @@ class OnboardingPageFragment : Fragment() {
                 // 이중 선택지
                 viewStub.layoutResource = R.layout.layout_initial_setting_dual_button
                 val inflatedView = viewStub.inflate()
+
                 when(progress) {
                     1 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "여자"
@@ -69,15 +69,19 @@ class OnboardingPageFragment : Fragment() {
                     4 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "기혼"
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_2).text = "미혼"
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener { it.isSelected = !it.isSelected }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener { it.isSelected = !it.isSelected }
                     }
                     5 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "있음"
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_2).text = "없음"
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener { it.isSelected = !it.isSelected }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener { it.isSelected = !it.isSelected }
                     }
                 }
             }
             3 -> {
-                // 다중 선택지
+                // 다중 선택지 - view
                 viewStub.layoutResource = R.layout.layout_intial_setting_multiple_button
                 val inflatedView = viewStub.inflate()
                 inflatedView.findViewById<TextView>(R.id.tv_multiple_option_1).text = "경영/관리직"
@@ -94,7 +98,26 @@ class OnboardingPageFragment : Fragment() {
                 inflatedView.findViewById<TextView>(R.id.tv_multiple_option_12).text = "재수/\n입시/\n유학준비"
                 inflatedView.findViewById<TextView>(R.id.tv_multiple_option_13).text = "무직"
                 inflatedView.findViewById<TextView>(R.id.tv_multiple_option_14).text = "기타"
-                inflatedView.findViewById<MaterialCardView>(R.id.cv_question_fifteen).visibility = View.INVISIBLE
+                inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_15).visibility = View.INVISIBLE
+
+                // 다중 선택지 - event
+                inflatedView.apply {
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_1).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_2).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_3).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_4).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_5).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_6).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_7).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_8).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_9).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_10).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_11).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_12).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_13).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_14).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_15).setOnClickListener { it.isSelected = !it.isSelected }
+                }
             }
             2, 6, 7 -> {
                 // 슬라이더

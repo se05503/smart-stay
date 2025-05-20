@@ -6,13 +6,15 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_one"
+        android:id="@+id/cv_multiple_option_1"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_two"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_2"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,14 +29,16 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_two"
+        android:id="@+id/cv_multiple_option_2"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_three"
-        app:layout_constraintStart_toEndOf="@id/cv_question_one"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_3"
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_1"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -47,15 +51,17 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_three"
+        android:id="@+id/cv_multiple_option_3"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cv_question_two"
-        app:layout_constraintTop_toTopOf="@id/cv_question_two">
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_2"
+        app:layout_constraintTop_toTopOf="@id/cv_multiple_option_2">
 
         <TextView
             android:id="@+id/tv_multiple_option_3"
@@ -67,17 +73,19 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_four"
+        android:id="@+id/cv_multiple_option_4"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_five"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_one">
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_1">
 
         <TextView
             android:id="@+id/tv_multiple_option_4"
@@ -89,16 +97,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_five"
+        android:id="@+id/cv_multiple_option_5"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_six"
-        app:layout_constraintStart_toEndOf="@id/cv_question_four"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_two">
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_6"
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_4"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_2">
 
         <TextView
             android:id="@+id/tv_multiple_option_5"
@@ -110,16 +120,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_six"
+        android:id="@+id/cv_multiple_option_6"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cv_question_five"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_three">
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_5"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_3">
 
         <TextView
             android:id="@+id/tv_multiple_option_6"
@@ -131,17 +143,19 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_seven"
+        android:id="@+id/cv_multiple_option_7"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_eight"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_8"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_four">
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_4">
 
         <TextView
             android:id="@+id/tv_multiple_option_7"
@@ -153,16 +167,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_eight"
+        android:id="@+id/cv_multiple_option_8"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_nine"
-        app:layout_constraintStart_toEndOf="@id/cv_question_seven"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_five">
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_9"
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_7"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_5">
 
         <TextView
             android:id="@+id/tv_multiple_option_8"
@@ -175,16 +191,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_nine"
+        android:id="@+id/cv_multiple_option_9"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cv_question_eight"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_six">
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_8"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_6">
 
         <TextView
             android:id="@+id/tv_multiple_option_9"
@@ -196,17 +214,19 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_ten"
+        android:id="@+id/cv_multiple_option_10"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_eleven"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_11"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_seven">
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_7">
 
         <TextView
             android:id="@+id/tv_multiple_option_10"
@@ -218,16 +238,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_eleven"
+        android:id="@+id/cv_multiple_option_11"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_twelve"
-        app:layout_constraintStart_toEndOf="@id/cv_question_ten"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_eight">
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_12"
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_10"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_8">
 
         <TextView
             android:id="@+id/tv_multiple_option_11"
@@ -239,16 +261,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_twelve"
+        android:id="@+id/cv_multiple_option_12"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cv_question_eleven"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_nine">
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_11"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_9">
 
         <TextView
             android:id="@+id/tv_multiple_option_12"
@@ -261,17 +285,19 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_thirteen"
+        android:id="@+id/cv_multiple_option_13"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_fourteen"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_14"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_ten">
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_10">
 
         <TextView
             android:id="@+id/tv_multiple_option_13"
@@ -283,16 +309,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_fourteen"
+        android:id="@+id/cv_multiple_option_14"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@id/cv_question_fifteen"
-        app:layout_constraintStart_toEndOf="@id/cv_question_thirteen"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_eleven">
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toStartOf="@id/cv_multiple_option_15"
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_13"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_11">
 
         <TextView
             android:id="@+id/tv_multiple_option_14"
@@ -304,16 +332,18 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_question_fifteen"
+        android:id="@+id/cv_multiple_option_15"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:backgroundTint="@color/white"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cv_question_fourteen"
-        app:layout_constraintTop_toBottomOf="@id/cv_question_twelve">
+        app:layout_constraintStart_toEndOf="@id/cv_multiple_option_14"
+        app:layout_constraintTop_toBottomOf="@id/cv_multiple_option_12">
 
         <TextView
             android:id="@+id/tv_multiple_option_15"
