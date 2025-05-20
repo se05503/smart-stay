@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.slider.Slider
@@ -18,6 +19,7 @@ class OnboardingPageFragment : Fragment() {
 
     private var callback: OnboardingPageCallback? = null
     private var progress: Int = 0
+    private val viewModel: InitialSettingViewModel by activityViewModels()
 
     companion object {
         fun newInstance(item: QuestionItem): OnboardingPageFragment {
@@ -63,20 +65,38 @@ class OnboardingPageFragment : Fragment() {
                     1 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "여자"
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_2).text = "남자"
-                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener { it.isSelected = !it.isSelected }
-                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener { it.isSelected = !it.isSelected }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener {
+                            it.isSelected = !it.isSelected
+                            if(it.isSelected == true) viewModel.userInitialInfoList.add("F")
+                        }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener {
+                            it.isSelected = !it.isSelected
+                            if(it.isSelected == true) viewModel.userInitialInfoList.add("M")
+                        }
                     }
                     4 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "기혼"
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_2).text = "미혼"
-                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener { it.isSelected = !it.isSelected }
-                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener { it.isSelected = !it.isSelected }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener {
+                            it.isSelected = !it.isSelected
+                            if(it.isSelected == true) viewModel.userInitialInfoList.add("Y")
+                        }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener {
+                            it.isSelected = !it.isSelected
+                            if(it.isSelected == true) viewModel.userInitialInfoList.add("N")
+                        }
                     }
                     5 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "있음"
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_2).text = "없음"
-                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener { it.isSelected = !it.isSelected }
-                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener { it.isSelected = !it.isSelected }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener {
+                            it.isSelected = !it.isSelected
+                            if(it.isSelected == true) viewModel.userInitialInfoList.add("Y")
+                        }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener {
+                            it.isSelected = !it.isSelected
+                            if(it.isSelected == true) viewModel.userInitialInfoList.add("N")
+                        }
                     }
                 }
             }
@@ -102,21 +122,65 @@ class OnboardingPageFragment : Fragment() {
 
                 // 다중 선택지 - event
                 inflatedView.apply {
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_1).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_2).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_3).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_4).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_5).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_6).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_7).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_8).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_9).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_10).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_11).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_12).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_13).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_14).setOnClickListener { it.isSelected = !it.isSelected }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_15).setOnClickListener { it.isSelected = !it.isSelected }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_1).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("경영/관리직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_2).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("기능/숙련공")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_3).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("기술직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_4).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("사무직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_5).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("일반 작업직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_6).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("자영업")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_7).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("전문직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_8).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("판매/서비스직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_9).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("자유직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_10).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("전업주부")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_11).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("대학(원)생")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_12).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("재수/입시/유학 준비")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_13).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("무직")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_14).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                        if(it.isSelected == true) viewModel.userInitialInfoList.add("기타")
+                    }
+                    findViewById<MaterialCardView>(R.id.cv_multiple_option_15).setOnClickListener {
+                        it.isSelected = !it.isSelected
+                    }
                 }
             }
             2, 6, 7 -> {
@@ -140,6 +204,7 @@ class OnboardingPageFragment : Fragment() {
 
                             override fun onStopTrackingTouch(slider: Slider) {
                                 Toast.makeText(requireContext(), "value:${slider.value.toInt()}살", Toast.LENGTH_SHORT).show()
+                                viewModel.userInitialInfoList.add("${slider.value.toInt()}")
                             }
 
                         })
@@ -162,6 +227,7 @@ class OnboardingPageFragment : Fragment() {
 
                             override fun onStopTrackingTouch(slider: Slider) {
                                 Toast.makeText(requireContext(), "value:${slider.value.toInt()}명", Toast.LENGTH_SHORT).show()
+                                viewModel.userInitialInfoList.add("${slider.value.toInt()}")
                             }
 
                         })
@@ -185,6 +251,7 @@ class OnboardingPageFragment : Fragment() {
 
                             override fun onStopTrackingTouch(slider: Slider) {
                                 Toast.makeText(requireContext(), "value:${slider.value.toInt()}만원", Toast.LENGTH_SHORT).show()
+                                viewModel.userInitialInfoList.add("${slider.value.toInt()}")
                             }
 
                         })
