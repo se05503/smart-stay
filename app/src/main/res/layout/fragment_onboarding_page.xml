@@ -7,13 +7,16 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:progress="7"
         android:max="8"
+        android:layout_marginTop="12dp"
+        app:indicatorColor="#1C49FF"
+        app:trackColor="#BDBDBD"
+        app:trackThickness="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,20 +34,22 @@
         android:textAlignment="center"
         tools:text="성별이 어떻게 되세요?"/>
 
-    <include
-        android:id="@+id/slider"
-        layout="@layout/layout_initial_setting_slider"
-        android:layout_width="wrap_content"
+    <ViewStub
+        android:id="@+id/view_stub"
+        android:layout="@layout/layout_intial_setting_multiple_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toBottomOf="@id/tv_question"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/tv_question"
+        app:layout_constraintEnd_toEndOf="@id/tv_question"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_next_page"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="#1C49FF"
+        android:backgroundTint="@color/btn_color"
+        android:background="@drawable/shape_button_round"
         android:text="계속하기"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"

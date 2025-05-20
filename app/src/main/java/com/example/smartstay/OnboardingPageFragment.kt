@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.slider.Slider
 
 class OnboardingPageFragment : Fragment() {
@@ -45,7 +46,7 @@ class OnboardingPageFragment : Fragment() {
         val text = arguments?.getString("text")
         progress = arguments?.getInt("progress") ?: -1
         view.findViewById<TextView>(R.id.tv_question).text = text
-        view.findViewById<ProgressBar>(R.id.progressBar).setProgress(progress, true)
+        view.findViewById<LinearProgressIndicator>(R.id.progressBar).setProgress(progress, true)
         return view
     }
 
