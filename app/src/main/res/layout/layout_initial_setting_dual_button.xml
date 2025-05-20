@@ -8,11 +8,14 @@
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_option_1"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:contentPaddingLeft="16dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp"
         android:backgroundTint="@color/white">
         <TextView
             android:id="@+id/tv_dual_option_1"
@@ -23,13 +26,16 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_option_2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:contentPaddingLeft="16dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
         android:backgroundTint="@color/white"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        app:strokeColor="@color/selector_stroke"
+        app:strokeWidth="2dp">
     <TextView
         android:id="@+id/tv_dual_option_2"
         android:layout_width="wrap_content"

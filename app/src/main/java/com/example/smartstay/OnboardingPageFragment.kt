@@ -63,6 +63,8 @@ class OnboardingPageFragment : Fragment() {
                     1 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "여자"
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_2).text = "남자"
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_1).setOnClickListener { it.isSelected = !it.isSelected }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_option_2).setOnClickListener { it.isSelected = !it.isSelected }
                     }
                     4 -> {
                         inflatedView.findViewById<TextView>(R.id.tv_dual_option_1).text = "기혼"
