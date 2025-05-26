@@ -54,7 +54,7 @@ class ChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            chatItemList.add(ChatItem(nickname = "유저", message = myText))
+            chatItemList.add(ChatItem(profile = R.drawable.ic_user, nickname = "유저", message = myText))
             chatAdapter.submitList(chatItemList.toList())
 
             communicateWithServer(myText)
@@ -76,7 +76,7 @@ class ChatActivity : AppCompatActivity() {
 
             val chatbotText = chatMessages.random()
 
-            chatItemList.add(ChatItem(nickname = "챗봇", message = chatbotText))
+            chatItemList.add(ChatItem(profile = R.drawable.ic_chatbot, nickname = "챗봇", message = chatbotText))
             chatAdapter.submitList(chatItemList.toList())
         }
     }

@@ -1,38 +1,50 @@
 package com.example.smartstay
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.smartstay.databinding.ItemChatBinding
+import com.example.smartstay.databinding.ItemChatBotBinding
+import com.example.smartstay.databinding.ItemChatUserBinding
 
-class ChatAdapter: ListAdapter<ChatItem, ChatAdapter.ViewHolder>(differ) {
-    inner class ViewHolder(private val binding: ItemChatBinding): RecyclerView.ViewHolder(binding.root) {
+class ChatAdapter: ListAdapter<ChatItem, RecyclerView.ViewHolder>(differ) {
+
+    inner class UserViewHolder(private val binding: ItemChatUserBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatItem) {
             binding.tvMessage.text = item.message
             binding.tvNickname.text = item.nickname
-            if(item.nickname == "유저") {
-                binding.tvMessage.gravity = Gravity.END
-                binding.tvNickname.gravity = Gravity.END
-            } else if(item.nickname == "챗봇") {
-                binding.tvMessage.gravity = Gravity.START
-                binding.tvNickname.gravity = Gravity.START
-            }
+            binding.ivProfile.setImageResource(item.profile)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            ItemChatBinding.inflate(
-                LayoutInflater.from(parent.context),parent,false
-            )
-        )
+    inner class ChatBotViewHolder(private val binding: ItemChatBotBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: ChatItem) {
+            binding.tvMessage.text = item.message
+            binding.tvNickname.text = item.nickname
+            binding.ivProfile.setImageResource(item.profile)
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(currentList[position])
+    override fun getItemViewType(position: Int): Int {
+        return if(currentList[position].nickname=="챗봇") VIEW_TYPE_CHATBOT else VIEW_TYPE_USER
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if(viewType == VIEW_TYPE_CHATBOT) {
+            val binding = ItemChatBotBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ChatBotViewHolder(binding)
+        } else {
+            val binding = ItemChatUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            UserViewHolder(binding)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder) {
+            is ChatBotViewHolder -> holder.bind(currentList[position])
+            is UserViewHolder -> holder.bind(currentList[position])
+        }
     }
 
     companion object {
@@ -52,5 +64,8 @@ class ChatAdapter: ListAdapter<ChatItem, ChatAdapter.ViewHolder>(differ) {
             }
 
         }
+
+        private const val VIEW_TYPE_CHATBOT = 0
+        private const val VIEW_TYPE_USER = 1
     }
 }
