@@ -11,15 +11,13 @@ import com.example.smartstay.databinding.ItemChatBinding
 class ChatAdapter: ListAdapter<ChatItem, ChatAdapter.ViewHolder>(differ) {
     inner class ViewHolder(private val binding: ItemChatBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatItem) {
+            binding.tvMessage.text = item.message
+            binding.tvNickname.text = item.nickname
             if(item.nickname == "유저") {
-                binding.tvContent.text = item.message
-                binding.tvNickname.text = item.nickname
-                binding.tvContent.gravity = Gravity.END
+                binding.tvMessage.gravity = Gravity.END
                 binding.tvNickname.gravity = Gravity.END
             } else if(item.nickname == "챗봇") {
-                binding.tvContent.text = item.message
-                binding.tvNickname.text = item.nickname
-                binding.tvContent.gravity = Gravity.START
+                binding.tvMessage.gravity = Gravity.START
                 binding.tvNickname.gravity = Gravity.START
             }
         }
