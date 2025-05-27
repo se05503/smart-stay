@@ -1,0 +1,18 @@
+{
+  "type": 0,
+  "message": "원하시는 정보가 있으실까요?",
+  "accommodationInfo": null
+},
+
+{
+  "type": 1,
+  "message": "원하시는 숙소를 추천해보았습니다! 어떠실까요?",
+  "accommodationInfo": {
+    "name": string, // 숙박업명
+    "image": Int, // 숙소 이미지
+    "pricePerNight": Int, // 숙박업평균가격
+    "address": string // 숙박업도로명주소
+    "x": float, // 위도
+    "y": float // 경도
+  }
+}
