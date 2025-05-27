@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.ActivityChatBinding
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -25,6 +26,7 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBinding
     private lateinit var chatAdapter: ChatAdapter
+    private lateinit var linearLayoutManager: LinearLayoutManager
     private val chatItemList = mutableListOf<ChatItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +40,18 @@ class ChatActivity : AppCompatActivity() {
             insets
         }
 
+        linearLayoutManager = LinearLayoutManager(applicationContext)
+
         chatAdapter = ChatAdapter()
+        chatAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                linearLayoutManager.smoothScrollToPosition(binding.recyclerviewChat, null, chatAdapter.itemCount-1)
+            }
+        })
 
         binding.recyclerviewChat.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = linearLayoutManager
             adapter = chatAdapter
         }
 
