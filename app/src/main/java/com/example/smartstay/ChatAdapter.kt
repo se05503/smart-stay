@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.ItemChatBotBinding
 import com.example.smartstay.databinding.ItemChatUserBinding
 
-class ChatAdapter: ListAdapter<ChatItem, RecyclerView.ViewHolder>(differ) {
+class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
 
     inner class UserViewHolder(private val binding: ItemChatUserBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: ChatItem) {
+        fun bind(item: ChatModel.UserMessage) {
             binding.tvMessage.text = item.message
             binding.tvNickname.text = item.nickname
             binding.ivProfile.setImageResource(item.profile)
@@ -19,15 +19,17 @@ class ChatAdapter: ListAdapter<ChatItem, RecyclerView.ViewHolder>(differ) {
     }
 
     inner class ChatBotViewHolder(private val binding: ItemChatBotBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: ChatItem) {
+        fun bind(item: ChatModel.ChatBotMessage) {
             binding.tvMessage.text = item.message
-            binding.tvNickname.text = item.nickname
-            binding.ivProfile.setImageResource(item.profile)
+            // TODO: 숙소 추천 view 띄우기
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(currentList[position].nickname=="챗봇") VIEW_TYPE_CHATBOT else VIEW_TYPE_USER
+        return when(getItem(position)) {
+            is ChatModel.ChatBotMessage -> VIEW_TYPE_CHATBOT
+            is ChatModel.UserMessage -> VIEW_TYPE_USER
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -42,23 +44,23 @@ class ChatAdapter: ListAdapter<ChatItem, RecyclerView.ViewHolder>(differ) {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder) {
-            is ChatBotViewHolder -> holder.bind(currentList[position])
-            is UserViewHolder -> holder.bind(currentList[position])
+            is ChatBotViewHolder -> holder.bind(getItem(position) as ChatModel.ChatBotMessage)
+            is UserViewHolder -> holder.bind(getItem(position) as ChatModel.UserMessage)
         }
     }
 
     companion object {
-        val differ = object: DiffUtil.ItemCallback<ChatItem>() {
+        val differ = object: DiffUtil.ItemCallback<ChatModel>() {
             override fun areItemsTheSame(
-                oldItem: ChatItem,
-                newItem: ChatItem
+                oldItem: ChatModel,
+                newItem: ChatModel
             ): Boolean {
                 return oldItem === newItem
             }
 
             override fun areContentsTheSame(
-                oldItem: ChatItem,
-                newItem: ChatItem
+                oldItem: ChatModel,
+                newItem: ChatModel
             ): Boolean {
                 return oldItem == newItem
             }
