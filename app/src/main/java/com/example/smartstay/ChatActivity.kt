@@ -27,7 +27,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private val chatItemList = mutableListOf<ChatItem>()
+    private lateinit var chatBotMessage: ChatModel.ChatBotMessage
+    private val chatItemList = mutableListOf<ChatModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,10 +65,10 @@ class ChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            chatItemList.add(ChatItem(profile = R.drawable.ic_user, nickname = "유저", message = myText))
+            chatItemList.add(ChatModel.UserMessage(profile = R.drawable.ic_user, nickname = "유저", message = myText))
             chatAdapter.submitList(chatItemList.toList())
 
-            communicateWithServer(myText)
+//            communicateWithServer(myText)
 
             // 키보드 내리고 입력창 초기화
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -84,59 +85,79 @@ class ChatActivity : AppCompatActivity() {
                 "앱 사용 중 궁금한 점이 있으신가요?"
             )
 
-            val chatbotText = chatMessages.random()
+            val chatbotRandomMessage = chatMessages.random()
 
-            chatItemList.add(ChatItem(profile = R.drawable.ic_chatbot, nickname = "챗봇", message = chatbotText))
+            val lastUserMessage = chatItemList.last()
+
+            if((lastUserMessage as ChatModel.UserMessage).message.contains("추천")) {
+                chatBotMessage = ChatModel.ChatBotMessage(
+                    type = 1,
+                    message = "숙소를 추천해드렸어요! 아래 숙소는 어떠세요?",
+                    accommodationInfo = AccommodationInfo(
+                        name = "라비드아틀란 호텔",
+                        pricePerNight = 58000,
+                        address = "해운대해수욕장 도보 13분"
+                    )
+                )
+            } else {
+                chatBotMessage = ChatModel.ChatBotMessage(
+                    type = 0,
+                    message = chatbotRandomMessage,
+                    accommodationInfo = null
+                )
+            }
+
+            chatItemList.add(chatBotMessage)
             chatAdapter.submitList(chatItemList.toList())
         }
     }
 
-    private fun communicateWithServer(myText: String) {
-        val jsonObject = JSONObject().apply {
-            put("user_id", "12345678")
-            put("message", myText)
-        }
-
-        //            val requestBody = jsonObject.toString().toRequestBody("application/json".toMediaType()) 원래 형식
-        val requestBody = jsonObject.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
-
-        //            val okHttpClient = OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply { level = // 원래 형식
-        //                HttpLoggingInterceptor.Level.BODY }).build()
-        val okHttpClient = OkHttpClient()
-        val request = Request.Builder().url("https://ab96-128-134-83-141.ngrok-free.app/receive").post(requestBody).build()
-
-        okHttpClient.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                if (response.isSuccessful) {
-                    val chatBotMessage = response.body!!.string()
-                    Log.e("ChatActivity", chatBotMessage)
-                    chatItemList.add(ChatItem(nickname = "챗봇", message = chatBotMessage))
-                    chatAdapter.submitList(chatItemList.toList())
-                }
-            }
-
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                e.stackTraceToString()
-            }
-        })
-
-        //            RetrofitInstance.networkService.postChat(object: Callback<ChatRequest> {
-        //                override fun onResponse(
-        //                    call: Call<ChatRequest?>,
-        //                    response: Response<ChatRequest?>
-        //                ) {
-        //                    if(response.isSuccessful) {
-        //
-        //                    }
-        //                }
-        //
-        //                override fun onFailure(
-        //                    call: Call<ChatRequest?>,
-        //                    t: Throwable
-        //                ) {
-        //                    TODO("Not yet implemented")
-        //                }
-        //
-        //            })
-    }
+//    private fun communicateWithServer(myText: String) {
+//        val jsonObject = JSONObject().apply {
+//            put("user_id", "12345678")
+//            put("message", myText)
+//        }
+//
+//        //            val requestBody = jsonObject.toString().toRequestBody("application/json".toMediaType()) 원래 형식
+//        val requestBody = jsonObject.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+//
+//        //            val okHttpClient = OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply { level = // 원래 형식
+//        //                HttpLoggingInterceptor.Level.BODY }).build()
+//        val okHttpClient = OkHttpClient()
+//        val request = Request.Builder().url("https://ab96-128-134-83-141.ngrok-free.app/receive").post(requestBody).build()
+//
+//        okHttpClient.newCall(request).enqueue(object : okhttp3.Callback {
+//            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+//                if (response.isSuccessful) {
+//                    val chatBotMessage = response.body!!.string()
+//                    Log.e("ChatActivity", chatBotMessage)
+//                    chatItemList.add(ChatItem(nickname = "챗봇", message = chatBotMessage))
+//                    chatAdapter.submitList(chatItemList.toList())
+//                }
+//            }
+//
+//            override fun onFailure(call: okhttp3.Call, e: IOException) {
+//                e.stackTraceToString()
+//            }
+//        })
+//
+//        //            RetrofitInstance.networkService.postChat(object: Callback<ChatRequest> {
+//        //                override fun onResponse(
+//        //                    call: Call<ChatRequest?>,
+//        //                    response: Response<ChatRequest?>
+//        //                ) {
+//        //                    if(response.isSuccessful) {
+//        //
+//        //                    }
+//        //                }
+//        //
+//        //                override fun onFailure(
+//        //                    call: Call<ChatRequest?>,
+//        //                    t: Throwable
+//        //                ) {
+//        //                    TODO("Not yet implemented")
+//        //                }
+//        //
+//        //            })
+//    }
 }

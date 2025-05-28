@@ -43,7 +43,7 @@ class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
             binding.ivStayImage.setImageResource(randomImages.random())
             binding.tvStayName.text = item.accommodationInfo?.name
             binding.tvStayAddress.text = item.accommodationInfo?.address
-            binding.tvStayPrice.text = item.accommodationInfo?.pricePerNight.toString()
+            binding.tvStayPrice.text = "${item.accommodationInfo?.pricePerNight.toString()}원 / 박"
 //            binding.recyclerviewChatStayRecommendations.adapter = ChatRecommendationAdapter()
         }
     }
