@@ -41,6 +41,20 @@ class ChatActivity : AppCompatActivity() {
             insets
         }
 
+        // 대화 시작 전 문구 부분적으로 bold 로 만들기
+        val fullText = "사용자님에게 적합한 숙소를 \n추천해드릴게요! 대화를 시작해보세요."
+        val boldText = "적합한 숙소를 \n추천"
+        val spannable = SpannableString(fullText)
+        val startIndex = fullText.indexOf(boldText)
+        val endIndex = startIndex + boldText.length
+        spannable.setSpan(
+            StyleSpan(Typeface.BOLD),
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.tvInduceChat.text = spannable
+
         linearLayoutManager = LinearLayoutManager(applicationContext)
 
         chatAdapter = ChatAdapter()
@@ -65,6 +79,7 @@ class ChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            binding.tvInduceChat.isVisible = false
             chatItemList.add(ChatModel.UserMessage(profile = R.drawable.ic_user, nickname = "유저", message = myText))
             chatAdapter.submitList(chatItemList.toList())
 
