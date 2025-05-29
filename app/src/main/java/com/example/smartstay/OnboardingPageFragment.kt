@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.smartstay.databinding.FragmentOnboardingPageBinding
@@ -119,82 +118,73 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                 // 다중 선택지 - view
                 viewStub.layoutResource = R.layout.layout_initial_setting_multiple_button
                 val inflatedView = viewStub.inflate()
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_1).text = "경영/관리직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_2).text = "기능/숙련공"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_3).text = "기술직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_4).text = "사무직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_5).text = "일반 작업직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_6).text = "자영업"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_7).text = "전문직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_8).text = "판매/\n서비스직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_9).text = "자유직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_10).text = "전업주부"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_11).text = "대학(원)생"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_12).text = "재수/\n입시/\n유학준비"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_13).text = "무직"
-                inflatedView.findViewById<TextView>(R.id.tv_multiple_option_14).text = "기타"
-                inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_15).visibility = View.INVISIBLE
+                val jobTextIds = listOf(
+                    R.id.tv_multiple_option_1,
+                    R.id.tv_multiple_option_2,
+                    R.id.tv_multiple_option_3,
+                    R.id.tv_multiple_option_4,
+                    R.id.tv_multiple_option_5,
+                    R.id.tv_multiple_option_6,
+                    R.id.tv_multiple_option_7,
+                    R.id.tv_multiple_option_8,
+                    R.id.tv_multiple_option_9,
+                    R.id.tv_multiple_option_10,
+                    R.id.tv_multiple_option_11,
+                    R.id.tv_multiple_option_12,
+                    R.id.tv_multiple_option_13,
+                    R.id.tv_multiple_option_14
+                )
+                val jobCardIds = listOf(
+                    R.id.cv_multiple_option_1,
+                    R.id.cv_multiple_option_2,
+                    R.id.cv_multiple_option_3,
+                    R.id.cv_multiple_option_4,
+                    R.id.cv_multiple_option_5,
+                    R.id.cv_multiple_option_6,
+                    R.id.cv_multiple_option_7,
+                    R.id.cv_multiple_option_8,
+                    R.id.cv_multiple_option_9,
+                    R.id.cv_multiple_option_10,
+                    R.id.cv_multiple_option_11,
+                    R.id.cv_multiple_option_12,
+                    R.id.cv_multiple_option_13,
+                    R.id.cv_multiple_option_14,
+                )
+                val jobNames = listOf(
+                    R.string.job_manager,
+                    R.string.job_skilled_worker,
+                    R.string.job_technician,
+                    R.string.job_office_worker,
+                    R.string.job_general_worker,
+                    R.string.job_self_employed,
+                    R.string.job_professional,
+                    R.string.job_sales_service,
+                    R.string.job_freelancer,
+                    R.string.job_housewife,
+                    R.string.job_student,
+                    R.string.job_exam_prep,
+                    R.string.job_unemployed,
+                    R.string.job_etc
+                )
+                var selectedCard: MaterialCardView? = null
+
+                jobTextIds.zip(jobNames).forEach { (jobId, jobName) ->
+                    inflatedView.findViewById<TextView>(jobId).text = getString(jobName)
+                }
+                inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_15).visibility = View.INVISIBLE // chain 때문에 놔둠
 
                 // 다중 선택지 - event
                 inflatedView.apply {
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_1).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("경영/관리직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_2).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("기능/숙련공")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_3).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("기술직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_4).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("사무직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_5).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("일반 작업직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_6).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("자영업")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_7).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("전문직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_8).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("판매/서비스직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_9).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("자유직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_10).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("전업주부")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_11).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("대학(원)생")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_12).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("재수/입시/유학 준비")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_13).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("무직")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_14).setOnClickListener {
-                        it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("기타")
-                    }
-                    findViewById<MaterialCardView>(R.id.cv_multiple_option_15).setOnClickListener {
-                        it.isSelected = !it.isSelected
+                    jobCardIds.zip(jobNames).forEach { (jobCardId, jobName) ->
+                        val card = findViewById<MaterialCardView>(jobCardId)
+                        card.setOnClickListener {
+                            if(!card.isSelected) {
+                                selectedCard?.isSelected = false // 기존 카드 선택 해제
+                                card.isSelected = true
+                                selectedCard = card
+                                viewModel.userInitialInfoMap["job"] = getString(jobName)
+                            }
+                        }
                     }
                 }
             }
@@ -256,7 +246,7 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
                                 override fun onStartTrackingTouch(slider: Slider) = Unit
                                 override fun onStopTrackingTouch(slider: Slider) {
-                                    viewModel.userInitialInfoMap["income_per_person"] = slider.value.toInt()
+                                    viewModel.userInitialInfoMap["income_per_person"] = slider.value
                                 }
                             })
                         }
