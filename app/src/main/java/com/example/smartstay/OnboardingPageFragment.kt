@@ -64,8 +64,7 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             if(!cvOption1.isSelected) {
                                 cvOption1.isSelected = true
                                 cvOption2.isSelected = false
-                                viewModel.userInitialInfoList.add(Constants.GENDER_FEMALE)
-                                viewModel.userInitialInfoList.remove(Constants.GENDER_MALE)
+                                viewModel.userInitialInfoMap["gender"] = Constants.GENDER_FEMALE
                             }
                         }
 
@@ -73,8 +72,7 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             if(!cvOption2.isSelected) {
                                 cvOption2.isSelected = true
                                 cvOption1.isSelected = false
-                                viewModel.userInitialInfoList.add(Constants.GENDER_MALE)
-                                viewModel.userInitialInfoList.remove(Constants.GENDER_FEMALE)
+                                viewModel.userInitialInfoMap["gender"] = Constants.GENDER_MALE
                             }
                         }
                     }
@@ -86,16 +84,14 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             if(!cvOption1.isSelected) {
                                 cvOption1.isSelected = true
                                 cvOption2.isSelected = false
-                                viewModel.userInitialInfoList.add(Constants.ANSWER_YES)
-                                viewModel.userInitialInfoList.remove(Constants.ANSWER_NO)
+                                viewModel.userInitialInfoMap["marriage_status"] = Constants.MARRIAGE_MARRIED
                             }
                         }
                         cvOption2.setOnClickListener {
                             if(!cvOption2.isSelected) {
                                 cvOption2.isSelected = true
                                 cvOption1.isSelected = false
-                                viewModel.userInitialInfoList.add(Constants.ANSWER_NO)
-                                viewModel.userInitialInfoList.remove(Constants.ANSWER_YES)
+                                viewModel.userInitialInfoMap["marriage_status"] = Constants.MARRIAGE_SINGLE
                             }
                         }
                     }
@@ -106,16 +102,14 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             if(!cvOption1.isSelected) {
                                 cvOption1.isSelected = true
                                 cvOption2.isSelected = false
-                                viewModel.userInitialInfoList.add(Constants.ANSWER_YES)
-                                viewModel.userInitialInfoList.remove(Constants.ANSWER_NO)
+                                viewModel.userInitialInfoMap["children_status"] = Constants.HAS_CHILDREN
                             }
                         }
                         cvOption2.setOnClickListener {
                             if(!cvOption2.isSelected) {
                                 cvOption2.isSelected = true
                                 cvOption1.isSelected = false
-                                viewModel.userInitialInfoList.add(Constants.ANSWER_NO)
-                                viewModel.userInitialInfoList.remove(Constants.ANSWER_YES)
+                                viewModel.userInitialInfoMap["children_status"] = Constants.NO_CHILDREN
                             }
                         }
                     }
@@ -145,59 +139,59 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                 inflatedView.apply {
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_1).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("경영/관리직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("경영/관리직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_2).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("기능/숙련공")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("기능/숙련공")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_3).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("기술직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("기술직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_4).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("사무직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("사무직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_5).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("일반 작업직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("일반 작업직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_6).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("자영업")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("자영업")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_7).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("전문직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("전문직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_8).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("판매/서비스직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("판매/서비스직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_9).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("자유직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("자유직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_10).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("전업주부")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("전업주부")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_11).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("대학(원)생")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("대학(원)생")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_12).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("재수/입시/유학 준비")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("재수/입시/유학 준비")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_13).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("무직")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("무직")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_14).setOnClickListener {
                         it.isSelected = !it.isSelected
-                        if(it.isSelected == true) viewModel.userInitialInfoList.add("기타")
+                        if(it.isSelected == true) viewModel.userInitialInfoMap.add("기타")
                     }
                     findViewById<MaterialCardView>(R.id.cv_multiple_option_15).setOnClickListener {
                         it.isSelected = !it.isSelected
@@ -208,76 +202,66 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                 // 슬라이더
                 viewStub.layoutResource = R.layout.layout_initial_setting_slider
                 val inflatedView = viewStub.inflate()
+                val slider = inflatedView.findViewById<Slider>(R.id.slider)
+                val startValue = inflatedView.findViewById<TextView>(R.id.tv_value_start)
+                val endValue = inflatedView.findViewById<TextView>(R.id.tv_value_end)
                 when(progress) {
                     2 -> {
                         // 나이
-                        val sliderAge = inflatedView.findViewById<Slider>(R.id.slider)
-                        sliderAge.valueFrom = 1.0f
-                        sliderAge.valueTo = 100.0f
-                        sliderAge.value = 1.0f
-                        sliderAge.setLabelFormatter { value ->
-                            "${value.toInt()}살"
+                        slider.apply {
+                            valueFrom = 1.0f
+                            valueTo = 100.0f
+                            value = 1.0f
+                            setLabelFormatter { value -> "${value.toInt()}살" }
+                            addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+                                override fun onStartTrackingTouch(slider: Slider) = Unit
+                                override fun onStopTrackingTouch(slider: Slider) {
+                                    viewModel.userInitialInfoMap["age"] = slider.value.toInt()
+                                }
+                            })
                         }
-                        sliderAge.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
-                            override fun onStartTrackingTouch(slider: Slider) {
-
-                            }
-
-                            override fun onStopTrackingTouch(slider: Slider) {
-                                Toast.makeText(requireContext(), "value:${slider.value.toInt()}살", Toast.LENGTH_SHORT).show()
-                                viewModel.userInitialInfoList.add("${slider.value.toInt()}")
-                            }
-
-                        })
-                        inflatedView.findViewById<TextView>(R.id.tv_value_start).text = "1살"
-                        inflatedView.findViewById<TextView>(R.id.tv_value_end).text = "100살"
+                        startValue.text = "1살"
+                        endValue.text = "100살"
                     }
                     6 -> {
                         // 가족 인원수
-                        val sliderFamilyCount = view.findViewById<Slider>(R.id.slider)
-                        sliderFamilyCount.valueFrom = 3.0f
-                        sliderFamilyCount.valueTo = 10.0f
-                        sliderFamilyCount.value = 3.0f
-                        sliderFamilyCount.setLabelFormatter { value ->
-                            "${value.toInt()}명"
+                        slider.apply {
+                            valueFrom = 3.0f
+                            valueTo = 10.0f
+                            value = 3.0f
+                            setLabelFormatter { value ->
+                                "${value.toInt()}명"
+                            }
+                            addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+                                override fun onStartTrackingTouch(slider: Slider) = Unit
+                                override fun onStopTrackingTouch(slider: Slider) {
+                                    viewModel.userInitialInfoMap["family_count"] = slider.value.toInt()
+                                }
+
+                            })
                         }
-                        sliderFamilyCount.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
-                            override fun onStartTrackingTouch(slider: Slider) {
-
-                            }
-
-                            override fun onStopTrackingTouch(slider: Slider) {
-                                Toast.makeText(requireContext(), "value:${slider.value.toInt()}명", Toast.LENGTH_SHORT).show()
-                                viewModel.userInitialInfoList.add("${slider.value.toInt()}")
-                            }
-
-                        })
-                        inflatedView.findViewById<TextView>(R.id.tv_value_start).text = "3명"
-                        inflatedView.findViewById<TextView>(R.id.tv_value_end).text = "10명"
+                        startValue.text = "3명"
+                        endValue.text = "10명"
                     }
                     7 -> {
                         // 1인당 평균 월수익
-                        val sliderIncome = view.findViewById<Slider>(R.id.slider)
-                        sliderIncome.valueFrom = 0.0f
-                        sliderIncome.valueTo = 1000.0f
-                        sliderIncome.value = 0.0f
-                        sliderIncome.setLabelFormatter { value ->
-                            if(value.toInt()==1000) "${value.toInt()}만원~"
-                            else "${value.toInt()}만원"
+                        slider.apply {
+                            valueFrom = 0.0f
+                            valueTo = 1000.0f
+                            value = 0.0f
+                            setLabelFormatter { value ->
+                                if(value.toInt()==1000) "${value.toInt()}만원~"
+                                else "${value.toInt()}만원"
+                            }
+                            addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+                                override fun onStartTrackingTouch(slider: Slider) = Unit
+                                override fun onStopTrackingTouch(slider: Slider) {
+                                    viewModel.userInitialInfoMap["income_per_person"] = slider.value.toInt()
+                                }
+                            })
                         }
-                        sliderIncome.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
-                            override fun onStartTrackingTouch(slider: Slider) {
-
-                            }
-
-                            override fun onStopTrackingTouch(slider: Slider) {
-                                Toast.makeText(requireContext(), "value:${slider.value.toInt()}만원", Toast.LENGTH_SHORT).show()
-                                viewModel.userInitialInfoList.add("${slider.value.toInt()}")
-                            }
-
-                        })
-                        inflatedView.findViewById<TextView>(R.id.tv_value_start).text = "0만원"
-                        inflatedView.findViewById<TextView>(R.id.tv_value_end).text = "1,000만원~"
+                        startValue.text = "0만원"
+                        endValue.text = "1,000만원~"
                     }
                 }
             }
