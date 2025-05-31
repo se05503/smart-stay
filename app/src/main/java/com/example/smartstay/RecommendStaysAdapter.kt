@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.ItemRecommendStayBinding
+import com.naver.maps.geometry.LatLng
 
-class RecommendStaysAdapter: RecyclerView.Adapter<RecommendStaysAdapter.ViewHolder>() {
+class RecommendStaysAdapter(private val onClick: (LatLng) -> Unit): RecyclerView.Adapter<RecommendStaysAdapter.ViewHolder>() {
 
     private var recommendStayList = emptyList<AccommodationInfo>()
 
@@ -15,6 +16,9 @@ class RecommendStaysAdapter: RecyclerView.Adapter<RecommendStaysAdapter.ViewHold
             binding.tvStayName.text = item.name
             binding.tvStayAddress.text = item.address
             binding.tvStayPrice.text = "${item.pricePerNight}원 / 박"
+            binding.root.setOnClickListener {
+                onClick(LatLng(item.latitude.toDouble(), item.longitude.toDouble())) // LatLng(위도, 경도) = LatLng(latitude, longitude)
+            }
         }
     }
 

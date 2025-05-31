@@ -6,16 +6,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartstay.databinding.ActivityNaverMapBinding
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
-import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.naver.maps.map.CameraAnimation
 
 class NaverMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -122,7 +121,13 @@ class NaverMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-        recommendStaysAdapter = RecommendStaysAdapter()
+        recommendStaysAdapter = RecommendStaysAdapter(onClick = { latlng ->
+            if(isMapInit) {
+                val cameraUpdate = CameraUpdate.scrollTo(latlng).animate(CameraAnimation.Easing)
+                naverMap.moveCamera(cameraUpdate)
+            }
+        })
+
         recommendStaysAdapter.setData(dummyData)
         binding.bottomSheetLayout.recyclerviewStayList.apply {
             layoutManager = LinearLayoutManager(this@NaverMapActivity)
@@ -170,37 +175,14 @@ class NaverMapActivity : AppCompatActivity(), OnMapReadyCallback {
         // NaverMap 객체가 준비되면 호출됨
         this.naverMap = naverMap
         isMapInit = true
-
-        // LatLng(위도, 경도) = LatLng(latitude, longitude)
-
-        val positions = listOf(
-            LatLng(37.5665, 126.9780), // 시청
-            LatLng(37.5658, 126.9830), // 명동
-            LatLng(37.5700, 126.9769), // 경복궁
-            LatLng(37.5611, 126.9827), // 을지로
-            LatLng(37.5642, 126.9758)  // 서울역
-        )
-
-        val names = listOf(
-            "시청 프리미엄 호텔",
-            "명동 비즈니스 호텔",
-            "경복궁 스테이",
-            "을지로 게스트하우스",
-            "서울역 럭셔리 숙소"
-        )
-
-        for(i in positions.indices) {
-            val marker = Marker().apply {
-                position = positions[i]
-                captionText = names[i]
+        // 마커 표시
+        val markers = dummyData.map {
+            Marker(LatLng(it.latitude.toDouble(), it.longitude.toDouble())).apply {
+                captionText = it.name
                 map = naverMap
-                val cameraUpdate = CameraUpdate.scrollTo(position).animate(CameraAnimation.Easing)
-                naverMap.moveCamera(cameraUpdate)
             }
         }
-
-
+        val cameraUpdate = CameraUpdate.scrollTo(markers.first().position).animate(CameraAnimation.Easing)
+        naverMap.moveCamera(cameraUpdate)
     }
-
-
 }
