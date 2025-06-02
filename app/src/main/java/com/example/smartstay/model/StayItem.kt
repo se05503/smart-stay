@@ -1,4 +1,4 @@
-package com.example.smartstay
+package com.example.smartstay.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -11,6 +11,6 @@ data class StayItem(
 ): Parcelable
 
 data class QuestionItem(
-    val pageText: String,
+    val questionTitle: String,
     val progress: Int
 )

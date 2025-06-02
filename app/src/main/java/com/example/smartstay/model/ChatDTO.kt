@@ -1,4 +1,4 @@
-package com.example.smartstay
+package com.example.smartstay.model
 
 sealed class ChatModel {
     data class UserMessage(
@@ -16,9 +16,9 @@ sealed class ChatModel {
 
 data class AccommodationInfo(
     val name: String,
-    val image: Int,
+    val image: Int = 0,
     val pricePerNight: Int,
     val address: String,
-    val latitude: Float, // 위도 (y)
-    val longitude: Float // 경도 (x)
+    val latitude: Float = 0f, // 위도 (y)
+    val longitude: Float = 0f // 경도 (x)
 )
