@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smartstay.databinding.ItemChatBotRecommendationBinding
 import com.example.smartstay.databinding.ItemChatBotTextBinding
 import com.example.smartstay.databinding.ItemChatUserBinding
+import com.example.smartstay.model.ChatModel
 
 class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
 
@@ -15,7 +17,7 @@ class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
         fun bind(item: ChatModel.UserMessage) {
             binding.tvMessage.text = item.message
             binding.tvNickname.text = item.nickname
-            binding.ivProfile.setImageResource(item.profile)
+            Glide.with(binding.ivProfile).load(item.profile).into(binding.ivProfile)
         }
     }
 

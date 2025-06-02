@@ -22,6 +22,11 @@ class InitialSettingEndFragment: Fragment(R.layout.fragment_initial_setting_end)
         binding.tvTestResult.text = userInfo
         binding.btnInitialSettingEnd.setOnClickListener {
             startActivity(Intent(requireContext(), ChatActivity::class.java))
+                        val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                            putExtra("user_nickname", viewModel.userInfo.nickname)
+                            putExtra("user_image", viewModel.userInfo.imageUrl)
+                        }
+                        startActivity(intent)
         }
     }
 

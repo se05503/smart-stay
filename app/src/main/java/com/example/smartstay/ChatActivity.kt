@@ -1,6 +1,10 @@
 package com.example.smartstay
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -8,18 +12,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.ActivityChatBinding
+import com.example.smartstay.model.AccommodationInfo
+import com.example.smartstay.model.ChatModel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.IOException
 
 class ChatActivity : AppCompatActivity() {
@@ -41,6 +44,9 @@ class ChatActivity : AppCompatActivity() {
             insets
         }
 
+        val userNickname = intent.getStringExtra("user_nickname")
+        val userImage = intent.getStringExtra("user_image")
+
         // 대화 시작 전 문구 부분적으로 bold 로 만들기
         val fullText = "사용자님에게 적합한 숙소를 \n추천해드릴게요! 대화를 시작해보세요."
         val boldText = "적합한 숙소를 \n추천"
@@ -53,6 +59,7 @@ class ChatActivity : AppCompatActivity() {
             endIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
+
         binding.tvInduceChat.text = spannable
 
         linearLayoutManager = LinearLayoutManager(applicationContext)
@@ -61,7 +68,7 @@ class ChatActivity : AppCompatActivity() {
         chatAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                linearLayoutManager.smoothScrollToPosition(binding.recyclerviewChat, null, chatAdapter.itemCount-1)
+                linearLayoutManager.smoothScrollToPosition(binding.recyclerviewChat, null, chatAdapter.itemCount-1) // 아이템이 들어올 때마다 가장 마지막 위치로 이동하기
             }
         })
 
@@ -80,7 +87,7 @@ class ChatActivity : AppCompatActivity() {
             }
 
             binding.tvInduceChat.isVisible = false
-            chatItemList.add(ChatModel.UserMessage(profile = R.drawable.ic_user, nickname = "유저", message = myText))
+            chatItemList.add(ChatModel.UserMessage(profile = userImage, nickname = userNickname, message = myText))
             chatAdapter.submitList(chatItemList.toList())
 
 //            communicateWithServer(myText)
