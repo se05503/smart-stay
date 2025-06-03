@@ -104,15 +104,37 @@
         app:layout_constraintTop_toTopOf="@id/cv_detail_rating"
         app:layout_constraintBottom_toBottomOf="@id/cv_detail_rating"/>
 
-    <LinearLayout
+    <View
+        android:id="@+id/view_first"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        app:layout_constraintTop_toBottomOf="@id/cv_detail_rating"
+        android:layout_height="12dp"
+        android:background="#F6F6F6"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="#90EAEAEA"
-        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/cv_detail_rating"
+        app:layout_constraintBottom_toTopOf="@id/tv_detail_price_title"/>
+
+    <TextView
+        android:id="@+id/tv_detail_price_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="숙소 가격"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/view_first"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_detail_stay_price"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_detail_price_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
         android:orientation="horizontal">
         <ImageView
             android:layout_width="24dp"
@@ -150,6 +172,228 @@
             android:textStyle="bold"
             android:layout_marginStart="4dp"/>
     </LinearLayout>
+
+    <View
+        android:id="@+id/view_second"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#F6F6F6"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_detail_stay_price"
+        app:layout_constraintBottom_toTopOf="@id/tv_detail_amenity_title"/>
+
+    <TextView
+        android:id="@+id/tv_detail_amenity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="편의시설/서비스"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/view_second"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_pet"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_pet"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_detail_amenity_title"
+        app:layout_constraintStart_toStartOf="@id/tv_detail_amenity_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="반려동물"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_pet"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_pet"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_pet"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_bar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_bar"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_pet"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_pet"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="바"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_bar"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_bar"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_bar"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_fitness"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_fitness"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_bar"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_bar"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="피트니스"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_fitness"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_fitness"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_fitness"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_spa"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_spa"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_fitness"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_fitness"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="스파"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_spa"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_spa"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_spa"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_reception_hall"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_reception"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_spa"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_spa"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="연회장"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_reception_hall"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_reception_hall"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_reception_hall"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_ocean_view"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_ocean_view"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_reception_hall"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_reception_hall"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오션뷰"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_ocean_view"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_ocean_view"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_ocean_view"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_restaurant"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_restaurant"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="152dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_detail_amenity_title"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="레스토랑"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_restaurant"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_restaurant"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_restaurant"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_cafe"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_cafe"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_restaurant"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_restaurant"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="카페"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_cafe"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_cafe"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_cafe"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_swimming_pool"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/ic_pool"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_cafe"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_cafe" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수영장"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_swimming_pool"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_swimming_pool"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_swimming_pool"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_sauna"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/ic_sauna"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_swimming_pool"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_swimming_pool" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사우나"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_sauna"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_sauna"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_sauna"/>
+
+    <ImageView
+        android:id="@+id/iv_amenity_business"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/ic_business"
+        app:layout_constraintStart_toStartOf="@id/iv_amenity_sauna"
+        app:layout_constraintTop_toBottomOf="@id/iv_amenity_sauna" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="비즈니스 센터"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/iv_amenity_business"
+        app:layout_constraintTop_toTopOf="@id/iv_amenity_business"
+        app:layout_constraintBottom_toBottomOf="@id/iv_amenity_business"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
