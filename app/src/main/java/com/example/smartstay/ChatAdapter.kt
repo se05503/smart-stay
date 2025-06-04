@@ -1,6 +1,7 @@
 package com.example.smartstay
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -34,6 +35,12 @@ class ChatAdapter(
         fun bind(item: ChatModel.ChatBotMessage) {
             binding.tvMessage.text = item.message
             binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList(), context)
+            binding.btnNaverMap.setOnClickListener {
+                // 네이버 지도 이동
+                val intent = Intent(context, NaverMapActivity::class.java)
+                intent.putExtra("accommodation_list", ArrayList(item.accommodationInfo))
+                context.startActivity(intent)
+            }
         }
     }
 

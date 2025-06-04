@@ -5,7 +5,7 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="100dp"
     app:behavior_fitToContents="false"
-    app:behavior_expandedOffset="100dp"
+    app:behavior_expandedOffset="200dp"
     android:background="@drawable/bg_bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
