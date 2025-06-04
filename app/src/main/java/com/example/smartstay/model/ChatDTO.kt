@@ -10,7 +10,7 @@ sealed class ChatModel {
     data class ChatBotMessage(
         val type: Int,
         val message: String,
-        val accommodationInfo: AccommodationInfo? = null
+        val accommodationInfo: List<AccommodationInfo>? = null
     ): ChatModel()
 }
 

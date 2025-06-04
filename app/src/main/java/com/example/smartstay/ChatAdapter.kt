@@ -30,23 +30,7 @@ class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
     inner class ChatBotRecommendViewHolder(private val binding: ItemChatBotRecommendationBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatModel.ChatBotMessage) {
             binding.tvMessage.text = item.message
-            val randomImages = listOf(
-                R.drawable.img_stay_1,
-                R.drawable.img_stay_2,
-                R.drawable.img_stay_3,
-                R.drawable.img_stay_4,
-                R.drawable.img_stay_5,
-                R.drawable.img_stay_6,
-                R.drawable.img_stay_7,
-                R.drawable.img_stay_8,
-                R.drawable.img_stay_9,
-                R.drawable.img_stay_10
-            )
-            binding.ivStayImage.setImageResource(randomImages.random())
-            binding.tvStayName.text = item.accommodationInfo?.name
-            binding.tvStayAddress.text = item.accommodationInfo?.address
-            binding.tvStayPrice.text = "${item.accommodationInfo?.pricePerNight.toString()}원 / 박"
-//            binding.recyclerviewChatStayRecommendations.adapter = ChatRecommendationAdapter()
+            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList())
         }
     }
 
