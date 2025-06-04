@@ -1,17 +1,21 @@
 package com.example.smartstay
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.LayoutSimpleRecommendStayBinding
 import com.example.smartstay.model.AccommodationInfo
 
-class ChatRecommendStayAdapter(private val recommendItems: List<AccommodationInfo>): RecyclerView.Adapter<ChatRecommendStayAdapter.ViewHolder>() {
+class ChatRecommendStayAdapter(private val recommendItems: List<AccommodationInfo>, private val context: Context): RecyclerView.Adapter<ChatRecommendStayAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: LayoutSimpleRecommendStayBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AccommodationInfo) {
             binding.root.setOnClickListener {
-                // 상세 페이지로 이동하기
+                val intent = Intent(context, StayDetailActivity::class.java)
+                intent.putExtra("accommodationInfo", item)
+                context.startActivity(intent)
             }
             binding.ivStayImage.setImageResource(item.image)
             binding.tvStayName.text = item.name

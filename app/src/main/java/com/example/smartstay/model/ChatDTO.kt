@@ -1,5 +1,7 @@
 package com.example.smartstay.model
 
+import java.io.Serializable
+
 sealed class ChatModel {
     data class UserMessage(
         val profile: String?,
@@ -37,4 +39,4 @@ data class AccommodationInfo(
     val isReceptionCenterExist: String, // 연회장
     val isBusinessCenterExist: String, // 비즈니스
     val isOceanViewExist: String // 오션뷰
-)
+): Serializable

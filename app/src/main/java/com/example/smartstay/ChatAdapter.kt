@@ -1,5 +1,6 @@
 package com.example.smartstay
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +12,9 @@ import com.example.smartstay.databinding.ItemChatBotTextBinding
 import com.example.smartstay.databinding.ItemChatUserBinding
 import com.example.smartstay.model.ChatModel
 
-class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
+class ChatAdapter(
+    private val context: Context
+): ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
 
     inner class UserViewHolder(private val binding: ItemChatUserBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatModel.UserMessage) {
@@ -30,7 +33,7 @@ class ChatAdapter: ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
     inner class ChatBotRecommendViewHolder(private val binding: ItemChatBotRecommendationBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChatModel.ChatBotMessage) {
             binding.tvMessage.text = item.message
-            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList())
+            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList(), context)
         }
     }
 
