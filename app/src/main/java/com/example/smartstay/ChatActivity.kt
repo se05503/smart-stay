@@ -48,18 +48,26 @@ class ChatActivity : AppCompatActivity() {
         val userImage = intent.getStringExtra("user_image")
 
         // 대화 시작 전 문구 부분적으로 bold 로 만들기
-        val fullText = "사용자님에게 적합한 숙소를 \n추천해드릴게요! 대화를 시작해보세요."
-        val boldText = "적합한 숙소를 \n추천"
+        val fullText = "사용자님에게 적합한 숙소를 \n추천해드릴게요! \n원하시는 장소나 분위기를 \n말씀해주세요."
+        val boldTextFirst = "적합한 숙소를 \n추천"
+        val boldTextSecond = "원하시는 장소나 분위기"
         val spannable = SpannableString(fullText)
-        val startIndex = fullText.indexOf(boldText)
-        val endIndex = startIndex + boldText.length
+        val startIndexFirst = fullText.indexOf(boldTextFirst)
+        val endIndexFirst = startIndexFirst + boldTextFirst.length
+        val startIndexSecond = fullText.indexOf(boldTextSecond)
+        val endIndexSecond = startIndexSecond + boldTextSecond.length
         spannable.setSpan(
             StyleSpan(Typeface.BOLD),
-            startIndex,
-            endIndex,
+            startIndexFirst,
+            endIndexFirst,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-
+        spannable.setSpan(
+            StyleSpan(Typeface.BOLD),
+            startIndexSecond,
+            endIndexSecond,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         binding.tvInduceChat.text = spannable
 
         linearLayoutManager = LinearLayoutManager(applicationContext)
