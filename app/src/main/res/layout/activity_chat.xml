@@ -12,63 +12,112 @@
         android:id="@+id/recyclerview_chat"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/ll_chat"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ll_chat"
-        tools:listitem="@layout/item_chat_bot_text"/>
+        tools:listitem="@layout/item_chat_bot_text" />
 
     <TextView
         android:id="@+id/tv_induce_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="대화를 시작해보세요!"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ll_chat"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ll_chat"/>
+        tools:text="대화를 시작해보세요!" />
 
     <LinearLayout
         android:id="@+id/ll_chat"
         android:layout_width="0dp"
-        android:layout_height="140dp"
-        android:background="@drawable/bg_chat"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerview_chat">
-        <EditText
-            android:id="@+id/et_message"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="대화를 시작해보세요."
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColorHint="#6B6B6B"
-            android:padding="20dp"
-            android:gravity="top"
-            android:inputType="text"
-            android:backgroundTint="@android:color/transparent"/>
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            app:strokeColor="#1668E3"
+            app:strokeWidth="2dp">
+
+            <EditText
+                android:id="@+id/et_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="채팅을 입력해주세요."
+                android:textColorHint="#6B6B6B"
+                android:inputType="text"
+                android:padding="12dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="12dp"
+            android:layout_marginStart="8dp"
             app:strokeColor="#EAEAEA"
             app:strokeWidth="2dp"
             app:cardBackgroundColor="@color/white"
             app:contentPadding="8dp">
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_send"/>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
+
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/ll_chat"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="140dp"-->
+    <!--        android:background="@drawable/bg_chat"-->
+    <!--        android:orientation="vertical"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/recyclerview_chat">-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/et_message"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:hint="대화를 시작해보세요."-->
+    <!--            android:textSize="15sp"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:textColorHint="#6B6B6B"-->
+    <!--            android:padding="20dp"-->
+    <!--            android:gravity="top"-->
+    <!--            android:inputType="text"-->
+    <!--            android:backgroundTint="@android:color/transparent"/>-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:id="@+id/cv_send"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:layout_margin="12dp"-->
+<!--                app:strokeColor="#EAEAEA"-->
+<!--                app:strokeWidth="2dp"-->
+<!--                app:cardBackgroundColor="@color/white"-->
+<!--                app:contentPadding="8dp">-->
+<!--                <ImageView-->
+<!--                    android:layout_width="16dp"-->
+<!--                    android:layout_height="16dp"-->
+<!--                    android:src="@drawable/ic_send"/>-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
+    <!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
