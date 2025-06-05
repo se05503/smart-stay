@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.LayoutSimpleRecommendStayBinding
 import com.example.smartstay.model.AccommodationInfo
+import java.text.DecimalFormat
 
 class ChatRecommendStayAdapter(private val recommendItems: List<AccommodationInfo>, private val context: Context): RecyclerView.Adapter<ChatRecommendStayAdapter.ViewHolder>() {
 
@@ -20,7 +21,8 @@ class ChatRecommendStayAdapter(private val recommendItems: List<AccommodationInf
             binding.ivStayImage.setImageResource(item.image)
             binding.tvStayName.text = item.name
             binding.tvStayAddress.text = item.address
-            binding.tvPriceMinimum.text = "${item.minimumPrice}원~"
+            val formatter = DecimalFormat("#,###")
+            binding.tvPriceMinimum.text = "${formatter.format(item.minimumPrice)}원~"
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.smartstay.databinding.ActivityStayDetailBinding
 import com.example.smartstay.model.AccommodationInfo
+import java.text.DecimalFormat
 
 class StayDetailActivity : AppCompatActivity() {
 
@@ -23,6 +24,7 @@ class StayDetailActivity : AppCompatActivity() {
             insets
         }
         val accommodationInfo = intent.getSerializableExtra("accommodationInfo") as AccommodationInfo
+        val formatter = DecimalFormat("#,###")
         binding.apply {
             ivDetailBack.setOnClickListener { finish() }
             ivDetailStayImage.setImageResource(accommodationInfo.image)
@@ -31,9 +33,9 @@ class StayDetailActivity : AppCompatActivity() {
             tvDetailStayLocation.text = accommodationInfo.address
             tvDetailRatingFinal.text = "${accommodationInfo.finalRating}.0"
             tvDetailRatingStar.text = accommodationInfo.starRating
-            tvPriceAverage.text = "${accommodationInfo.averagePrice}원"
-            tvPriceMinimum.text = "${accommodationInfo.minimumPrice}원"
-            tvPriceMaximum.text = "${accommodationInfo.maximumPrice}원"
+            tvPriceAverage.text = "${formatter.format(accommodationInfo.averagePrice)}원"
+            tvPriceMinimum.text = "${formatter.format(accommodationInfo.minimumPrice)}원"
+            tvPriceMaximum.text = "${formatter.format(accommodationInfo.maximumPrice)}원"
             if(accommodationInfo.isPetAvailable == "N") ivAmenityPet.alpha = 0.3f
             if(accommodationInfo.isRestaurantExist == "N") ivAmenityRestaurant.alpha = 0.3f
             if(accommodationInfo.isBarExist == "N") ivAmenityBar.alpha = 0.3f
