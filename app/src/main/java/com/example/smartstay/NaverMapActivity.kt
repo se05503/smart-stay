@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartstay.databinding.ActivityNaverMapBinding
 import com.example.smartstay.model.AccommodationInfo
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
@@ -97,6 +98,9 @@ class NaverMapActivity : AppCompatActivity(), OnMapReadyCallback {
         // NaverMap 객체가 준비되면 호출됨
         this.naverMap = naverMap
         isMapInit = true
+        // bottom sheet dialog 올라옴
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetLayout.root)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         // 마커 표시
         val markers = accommodationList.map {
             Marker(LatLng(it.latitude.toDouble(), it.longitude.toDouble())).apply {
