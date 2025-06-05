@@ -7,15 +7,16 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.smartstay.databinding.FragmentOnboardingPageBinding
+import com.example.smartstay.model.QuestionItem
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 
 class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
 
     private lateinit var binding: FragmentOnboardingPageBinding
+    private val viewModel: InitialSettingViewModel by activityViewModels()
     private var callback: OnboardingPageCallback? = null
     private var progress: Int = 0
-    private val viewModel: InitialSettingViewModel by activityViewModels()
 
     companion object {
         fun newInstance(item: QuestionItem): OnboardingPageFragment {
@@ -33,18 +34,16 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callback = parentFragment as? OnboardingPageCallback
+        callback = parentFragment as OnboardingPageCallback
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentOnboardingPageBinding.bind(view)
+        val viewStub = binding.viewStub // refactoring
         initViews()
-
-        val viewStub = binding.viewStub
-
         when(progress) {
-            1,4,5 -> {
+            1,4,5,7 -> {
                 // 이중 선택지
                 viewStub.layoutResource = R.layout.layout_initial_setting_dual_button
                 val inflatedView = viewStub.inflate()
@@ -75,7 +74,6 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             }
                         }
                     }
-
                     4 -> {
                         tvOption1.text = getString(R.string.option_married)
                         tvOption2.text = getString(R.string.option_single)
@@ -112,13 +110,31 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                             }
                         }
                     }
+                    7 -> {
+                        tvOption1.text = getString(R.string.option_present)
+                        tvOption2.text = getString(R.string.option_absent)
+                        cvOption1.setOnClickListener {
+                            if(!cvOption1.isSelected) {
+                                cvOption1.isSelected = true
+                                cvOption2.isSelected = false
+                                viewModel.userInitialInfoMap["companion_status"] = Constants.HAS_COMPANION
+                            }
+                        }
+                        cvOption2.setOnClickListener {
+                            if(!cvOption2.isSelected) {
+                                cvOption2.isSelected = true
+                                cvOption1.isSelected = false
+                                viewModel.userInitialInfoMap["companion_status"] = Constants.NO_COMPANION
+                            }
+                        }
+                    }
                 }
             }
-            3 -> {
+            3,8 -> {
                 // 다중 선택지 - view
                 viewStub.layoutResource = R.layout.layout_initial_setting_multiple_button
                 val inflatedView = viewStub.inflate()
-                val jobTextIds = listOf(
+                val textIds = listOf(
                     R.id.tv_multiple_option_1,
                     R.id.tv_multiple_option_2,
                     R.id.tv_multiple_option_3,
@@ -134,7 +150,7 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                     R.id.tv_multiple_option_13,
                     R.id.tv_multiple_option_14
                 )
-                val jobCardIds = listOf(
+                val cardIds = listOf(
                     R.id.cv_multiple_option_1,
                     R.id.cv_multiple_option_2,
                     R.id.cv_multiple_option_3,
@@ -150,45 +166,90 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                     R.id.cv_multiple_option_13,
                     R.id.cv_multiple_option_14,
                 )
-                val jobNames = listOf(
-                    R.string.job_manager,
-                    R.string.job_skilled_worker,
-                    R.string.job_technician,
-                    R.string.job_office_worker,
-                    R.string.job_general_worker,
-                    R.string.job_self_employed,
-                    R.string.job_professional,
-                    R.string.job_sales_service,
-                    R.string.job_freelancer,
-                    R.string.job_housewife,
-                    R.string.job_student,
-                    R.string.job_exam_prep,
-                    R.string.job_unemployed,
-                    R.string.job_etc
-                )
-                var selectedCard: MaterialCardView? = null
 
-                jobTextIds.zip(jobNames).forEach { (jobId, jobName) ->
-                    inflatedView.findViewById<TextView>(jobId).text = getString(jobName)
-                }
-                inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_15).visibility = View.INVISIBLE // chain 때문에 놔둠
+                when(progress) {
+                    3 -> {
+                        val jobNames = listOf(
+                            R.string.job_manager,
+                            R.string.job_skilled_worker,
+                            R.string.job_technician,
+                            R.string.job_office_worker,
+                            R.string.job_general_worker,
+                            R.string.job_self_employed,
+                            R.string.job_professional,
+                            R.string.job_sales_service,
+                            R.string.job_freelancer,
+                            R.string.job_housewife,
+                            R.string.job_student,
+                            R.string.job_exam_prep,
+                            R.string.job_unemployed,
+                            R.string.job_etc
+                        )
+                        var selectedCard: MaterialCardView? = null
 
-                // 다중 선택지 - event
-                inflatedView.apply {
-                    jobCardIds.zip(jobNames).forEach { (jobCardId, jobName) ->
-                        val card = findViewById<MaterialCardView>(jobCardId)
-                        card.setOnClickListener {
-                            if(!card.isSelected) {
-                                selectedCard?.isSelected = false // 기존 카드 선택 해제
-                                card.isSelected = true
-                                selectedCard = card
-                                viewModel.userInitialInfoMap["job"] = getString(jobName)
+                        textIds.zip(jobNames).forEach { (textId, jobName) ->
+                            inflatedView.findViewById<TextView>(textId).text = getString(jobName)
+                        }
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_15).visibility = View.INVISIBLE // chain 때문에 놔둠 (refactoring)
+
+                        // 다중 선택지 - event
+                        inflatedView.apply {
+                            cardIds.zip(jobNames).forEach { (cardId, jobName) ->
+                                val card = findViewById<MaterialCardView>(cardId)
+                                card.setOnClickListener {
+                                    if(!card.isSelected) {
+                                        selectedCard?.isSelected = false // 기존 카드 선택 해제
+                                        card.isSelected = true
+                                        selectedCard = card
+                                        viewModel.userInitialInfoMap["job"] = getString(jobName)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    8 -> {
+                        val companionNames = listOf(
+                            R.string.companion_spouse,
+                            R.string.companion_parents,
+                            R.string.companion_children,
+                            R.string.companion_siblings,
+                            R.string.companion_friend,
+                            R.string.companion_coworker,
+                            R.string.companion_lover,
+                            R.string.companion_pet,
+                            R.string.companion_alone,
+                            R.string.companion_other
+                        )
+                        textIds.zip(companionNames).forEach { (textId, companionName) ->
+                            inflatedView.findViewById<TextView>(textId).text = getString(companionName)
+                        }
+                        // 11 ~ 15 invisible 처리
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_11).visibility = View.INVISIBLE
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_12).visibility = View.INVISIBLE
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_13).visibility = View.INVISIBLE
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_14).visibility = View.INVISIBLE
+                        inflatedView.findViewById<MaterialCardView>(R.id.cv_multiple_option_15).visibility = View.INVISIBLE
+
+                        var companionList = mutableListOf<String>()
+                        cardIds.zip(companionNames).forEach { (cardId, companionName) ->
+                            val card = inflatedView.findViewById<MaterialCardView>(cardId)
+                            card.setOnClickListener {
+                                if(!card.isSelected) {
+                                    card.isSelected = true
+                                    companionList.add(getString(companionName))
+                                    viewModel.userInitialInfoMap["companion"] = companionList
+                                } else {
+                                    card.isSelected = false
+                                    companionList.remove(getString(companionName))
+                                    viewModel.userInitialInfoMap["companion"] = companionList
+                                }
                             }
                         }
                     }
                 }
+
             }
-            2, 6, 7 -> {
+            2,6,9 -> {
                 // 슬라이더
                 viewStub.layoutResource = R.layout.layout_initial_setting_slider
                 val inflatedView = viewStub.inflate()
@@ -233,7 +294,7 @@ class OnboardingPageFragment : Fragment(R.layout.fragment_onboarding_page) {
                         startValue.text = "3명"
                         endValue.text = "10명"
                     }
-                    7 -> {
+                    9 -> {
                         // 1인당 평균 월수익
                         slider.apply {
                             valueFrom = 0.0f

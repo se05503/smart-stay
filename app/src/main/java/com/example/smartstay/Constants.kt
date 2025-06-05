@@ -12,4 +12,8 @@ object Constants {
     // 자녀 여부
     const val HAS_CHILDREN = "자녀 있음"
     const val NO_CHILDREN = "자녀 없음"
+
+    // 동행자 여부
+    const val HAS_COMPANION = "Y"
+    const val NO_COMPANION = "N"
 }

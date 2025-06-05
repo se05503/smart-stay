@@ -4,4 +4,42 @@
     <string name="title_home">홈</string>
     <string name="title_favorites">찜</string>
     <string name="title_profiles">내 정보</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="question_title">question_title</string>
+    <string name="option_female">여자</string>
+    <string name="option_male">남자</string>
+    <string name="option_married">기혼</string>
+    <string name="option_single">미혼</string>
+    <string name="option_present">있음</string>
+    <string name="option_absent">없음</string>
+    <!-- 직업 분류 -->
+    <string name="job_manager">경영/\n관리직</string>
+    <string name="job_skilled_worker">기능/\n숙련공</string>
+    <string name="job_technician">기술직</string>
+    <string name="job_office_worker">사무직</string>
+    <string name="job_general_worker">일반 작업직</string>
+    <string name="job_self_employed">자영업</string>
+    <string name="job_professional">전문직</string>
+    <string name="job_sales_service">판매/\n서비스직</string>
+    <string name="job_freelancer">자유직</string>
+    <string name="job_housewife">전업주부</string>
+    <string name="job_student">대학(원)생</string>
+    <string name="job_exam_prep">재수/\n입시/\n유학준비</string>
+    <string name="job_unemployed">무직</string>
+    <string name="job_etc">기타</string>
+    <string name="companion_spouse">배우자</string>
+    <string name="companion_parents">부모님</string>
+    <string name="companion_children">자녀</string>
+    <string name="companion_siblings">형제/자매</string>
+    <string name="companion_friend">친구</string>
+    <string name="companion_coworker">직장동료</string>
+    <string name="companion_lover">연인</string>
+    <string name="companion_pet">반려동물</string>
+    <string name="companion_alone">혼자서</string>
+    <string name="companion_other">기타</string>
+
 </resources>
