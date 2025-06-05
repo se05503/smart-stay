@@ -6,15 +6,28 @@ sealed class ChatModel {
     data class UserMessage(
         val profile: String?,
         val nickname: String?,
-        val message: String
-    ): ChatModel()
+        val message: String,
+    ) : ChatModel()
 
     data class ChatBotMessage(
         val type: Int,
         val message: String,
         val accommodationInfo: List<AccommodationInfo>? = null
-    ): ChatModel()
+    ) : ChatModel()
+
 }
+
+data class UserInput(
+    val sexCode: String,
+    val age: Int,
+    val job: String,
+    val marriage: String,
+    val children: String,
+    val familyCount: String,
+    val income: Float,
+    val isCompanionExist: String,
+    val companionType: MutableList<String>
+): Serializable
 
 data class AccommodationInfo(
     val name: String, // 숙박업명
