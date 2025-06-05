@@ -104,7 +104,12 @@ class NaverMapActivity : AppCompatActivity(), OnMapReadyCallback {
         // 마커 표시
         val markers = accommodationList.map {
             Marker(LatLng(it.latitude.toDouble(), it.longitude.toDouble())).apply {
+                icon = OverlayImage.fromResource(R.drawable.ic_map_pin)
+                width = 150
+                height = 150
                 captionText = it.name
+                setCaptionAligns(Align.Top)
+                captionOffset = 10
                 map = naverMap
             }
         }
