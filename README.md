@@ -9,7 +9,7 @@
  3. Open API : Kakao Login API, Naver Map API
  4. Android Jetpack : Navigation, ViewModel
  5. 기타 : ViewPager2, Glide, RecyclerView(Multi View Type)
- 6. 추가 예정 : Google Login API, Naver Login API
+ 6. 추가 예정 : Google Login API, Naver Login API, Motion Layout, Lottie Animation
 
 # 구현과 관련된 글 
 
