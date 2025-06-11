@@ -78,10 +78,12 @@ class ChatActivity : AppCompatActivity() {
         binding.tvInduceChat.text = spannable
 
         // 툴바 설정
-        binding.toolbarChat.inflateMenu(R.menu.toolbar_menu)
         binding.toolbarChat.setOnMenuItemClickListener { item ->
             when(item.itemId) {
-                R.id.toolbar_filtering -> { true }
+                R.id.toolbar_filtering -> {
+                    binding.drawerLayout.openDrawer(GravityCompat.END, true)
+                    true
+                }
                 else -> false
             }
         }
