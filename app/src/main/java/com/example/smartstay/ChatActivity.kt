@@ -88,6 +88,12 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
+        // 뒤로 가기
+        val sideSheet = binding.sideSheet.getHeaderView(0)
+        sideSheet.findViewById<LinearLayout>(R.id.ll_side_sheet_back).setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.END, true)
+        }
+
         linearLayoutManager = LinearLayoutManager(applicationContext)
 
         chatAdapter = ChatAdapter(this)
