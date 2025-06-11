@@ -382,7 +382,6 @@ class ChatActivity : AppCompatActivity() {
             put("가족유형명", userInfo.familyCount) // string
             put("구성원 1인당 수익", userInfo.income) // 단위: 만원
             put("동행자여부", userInfo.isCompanionExist)
-            put("동행자유형", userInfo.companionType)
         }
 
         root.put("user_input", userInput)

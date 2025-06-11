@@ -14,8 +14,7 @@ class OnboardingPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
         QuestionItem("자녀가 있으신가요?", 5),
         QuestionItem("가족 인원은 몇명이세요?", 6),
         QuestionItem("동행자가 있으신가요?", 7),
-        QuestionItem("동행자 유형이 어떻게 되세요?(복수 선택 가능)", 8),
-        QuestionItem("구성원 1인당 평균 월수익이\n대략 얼마인가요?", 9)
+        QuestionItem("구성원 1인당 평균 월수익이\n대략 얼마인가요?", 8)
     )
 
     override fun createFragment(position: Int): Fragment {

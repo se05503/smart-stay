@@ -49,7 +49,6 @@ class InitialSettingEndFragment : Fragment(R.layout.fragment_initial_setting_end
             put("가족유형", viewModel.userInitialInfoMap["family_count"].toString())
             put("구성원 1인당 수익", viewModel.userInitialInfoMap["income_per_person"] as Float)
             put("동행자여부", viewModel.userInitialInfoMap["companion_status"] as String)
-            put("동행자 유형", viewModel.userInitialInfoMap["companion"] as MutableList<String>)
         }
         val requestBody =
             jsonObject.toString().toRequestBody("application/json; charset=utf-8".toMediaType())

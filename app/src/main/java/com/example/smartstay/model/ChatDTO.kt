@@ -25,8 +25,7 @@ data class UserInput(
     val children: String,
     val familyCount: String,
     val income: Float,
-    val isCompanionExist: String,
-    val companionType: MutableList<String>
+    val isCompanionExist: String
 ): Serializable
 
 data class AccommodationInfo(
