@@ -4,12 +4,19 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -19,6 +26,8 @@ import com.example.smartstay.databinding.ActivityChatBinding
 import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.UserInput
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
@@ -95,8 +104,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         // input chip
-        val editText = binding.etMessage
-        val inputChip = ChipDrawable.createFromAttributes(
+        val cafeChip = ChipDrawable.createFromAttributes(
             this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry
         ).apply {
             text = "카페"
@@ -105,11 +113,50 @@ class ChatActivity : AppCompatActivity() {
             isChipIconVisible = true
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
         }
-        val chipSpan = ImageSpan(inputChip, ImageSpan.ALIGN_BOTTOM)
-        val placeholder = "\uFFFC"
-        val chipSpannable = SpannableStringBuilder(placeholder)
-        chipSpannable.setSpan(chipSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        editText.setText(chipSpannable)
+        val cafeChipSpan = ImageSpan(cafeChip)
+
+        val petChip = ChipDrawable.createFromAttributes(this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry).apply {
+            text = "반려동물"
+            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_pet)
+            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+            isChipIconVisible = true
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        }
+        val petChipSpan = ImageSpan(petChip)
+
+        val restaurantChip = ChipDrawable.createFromAttributes(this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry).apply {
+            text = "레스토랑"
+            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_restaurant)
+            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+            isChipIconVisible = true
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        }
+        val restaurantChipSpan = ImageSpan(restaurantChip)
+
+        val receptionHallChip = ChipDrawable.createFromAttributes(this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry).apply {
+            text = "연회장"
+            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_reception)
+            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+            isChipIconVisible = true
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        }
+        val receptionHallChipSpan = ImageSpan(receptionHallChip)
+
+        val chipSpannable = SpannableStringBuilder()
+        chipSpannable.append("\uFFFC ")
+        chipSpannable.setSpan(cafeChipSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val firstChipSize = chipSpannable.length
+        chipSpannable.append("\uFFFC ")
+        chipSpannable.setSpan(petChipSpan, firstChipSize, firstChipSize+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val secondChipSize = chipSpannable.length // 4
+        chipSpannable.append("\uFFFC ")
+        chipSpannable.setSpan(restaurantChipSpan, secondChipSize, secondChipSize+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val thirdChipSize = chipSpannable.length // 6
+        chipSpannable.append("\uFFFC")
+        chipSpannable.setSpan(receptionHallChipSpan, thirdChipSize, thirdChipSize+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        binding.etMessage.setText(chipSpannable)
+        binding.etMessage.setSelection(chipSpannable.length)
 
 
         linearLayoutManager = LinearLayoutManager(applicationContext)
