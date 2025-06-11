@@ -147,6 +147,7 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:menu="@menu/toolbar_menu"/>
+        android:background="@color/white"
+        app:headerLayout="@layout/layout_side_sheet"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
