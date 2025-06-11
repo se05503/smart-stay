@@ -1,126 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
-    android:background="@color/white"
     android:layout_marginTop="40dp"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="대화 키워드 필터링 💬️"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.chip.ChipGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_pet"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="반려동물"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_pet"
-            app:chipIconVisible="true"
             app:chipIconSize="20dp"
-            app:iconStartPadding="4dp"/>
+            app:chipIconTint="@color/selector_chip_icon"
+            app:chipIconVisible="true"
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_restaurant"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="레스토랑"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_restaurant"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_bar"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="바"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_bar"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="8dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="8dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_cafe"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="카페"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_cafe"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_fitness"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="피트니스"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_fitness"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_swimming_pool"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="수영장"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_pool"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_spa"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="스파"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_spa"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_sauna"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="사우나"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_sauna"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_reception_hall"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="연회장"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_reception"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_business_center"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="비즈니스 센터"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_business"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="8dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="8dp" />
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_ocean_view"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="오션뷰"
+            android:textColor="@color/selector_chip_text"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F0F4F5"
             app:chipIcon="@drawable/ic_ocean_view"
+            app:chipIconSize="20dp"
+            app:chipIconTint="@color/selector_chip_icon"
             app:chipIconVisible="true"
-            app:iconStartPadding="4dp"
-            app:chipIconSize="20dp"/>
+            app:chipStrokeColor="@color/selector_chip_stroke"
+            app:chipStrokeWidth="2dp"
+            app:iconStartPadding="4dp" />
     </com.google.android.material.chip.ChipGroup>
 
 </LinearLayout>
