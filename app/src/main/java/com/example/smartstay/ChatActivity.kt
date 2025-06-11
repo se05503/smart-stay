@@ -94,6 +94,24 @@ class ChatActivity : AppCompatActivity() {
             binding.drawerLayout.closeDrawer(GravityCompat.END, true)
         }
 
+        // input chip
+        val editText = binding.etMessage
+        val inputChip = ChipDrawable.createFromAttributes(
+            this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry
+        ).apply {
+            text = "카페"
+            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_cafe)
+            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+            isChipIconVisible = true
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        }
+        val chipSpan = ImageSpan(inputChip, ImageSpan.ALIGN_BOTTOM)
+        val placeholder = "\uFFFC"
+        val chipSpannable = SpannableStringBuilder(placeholder)
+        chipSpannable.setSpan(chipSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        editText.setText(chipSpannable)
+
+
         linearLayoutManager = LinearLayoutManager(applicationContext)
 
         chatAdapter = ChatAdapter(this)
