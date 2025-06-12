@@ -103,6 +103,46 @@ class ChatActivity : AppCompatActivity() {
             binding.drawerLayout.closeDrawer(GravityCompat.END, true)
         }
 
+        val chipList = listOf(
+            sideSheet.findViewById<Chip>(R.id.chip_pet),
+            sideSheet.findViewById<Chip>(R.id.chip_restaurant),
+            sideSheet.findViewById<Chip>(R.id.chip_bar),
+            sideSheet.findViewById<Chip>(R.id.chip_cafe),
+            sideSheet.findViewById<Chip>(R.id.chip_fitness),
+            sideSheet.findViewById<Chip>(R.id.chip_swimming_pool),
+            sideSheet.findViewById<Chip>(R.id.chip_spa),
+            sideSheet.findViewById<Chip>(R.id.chip_sauna),
+            sideSheet.findViewById<Chip>(R.id.chip_reception_hall),
+            sideSheet.findViewById<Chip>(R.id.chip_business_center),
+            sideSheet.findViewById<Chip>(R.id.chip_ocean_view)
+        )
+
+        chipList.forEach { chip ->
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                if(isChecked) {
+                    val checkedChip = Chip(this).apply {
+                        text = chip.text
+                        chipIcon = chip.chipIcon
+                        chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.black)
+                        chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+                        chipCornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics)
+                        chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.black)
+                        isCloseIconVisible = true
+                        setOnCloseIconClickListener {
+                            binding.chipGroup.removeView(this)
+                            chip.isChecked = false
+                            chip.chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.unchecked_chip_icon)
+                        }
+                    }
+                    binding.chipGroup.addView(checkedChip)
+                } else {
+                    val uncheckedChip = binding.chipGroup.children.filterIsInstance<Chip>().firstOrNull { it.text == chip.text }
+                    binding.chipGroup.removeView(uncheckedChip)
+                }
+            }
+        }
+
+
         // input chip
         val cafeChip = ChipDrawable.createFromAttributes(
             this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry
