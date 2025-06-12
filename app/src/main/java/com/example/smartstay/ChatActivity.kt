@@ -203,8 +203,19 @@ class ChatActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(view.windowToken, 0)
             binding.etMessage.setText("")
 
+            // 필터 키워드 추출
+            val keywords = mutableListOf<Boolean>()
+            chipList.forEach { chip ->
+                if(chip.isChecked) keywords.add(true) else keywords.add(false)
+            }
+
             // server 연결 시도 코드
-            processWithServer(userId, myText, userInfo)
+            processWithServer(
+                userId = userId,
+                myText = myText,
+                userInfo = userInfo,
+                keywords = keywords
+            )
 
             // server 연결 실패 시 dummy data 로 임시 설정
             processWithoutServer()
@@ -366,11 +377,13 @@ class ChatActivity : AppCompatActivity() {
     private fun processWithServer(
         userId: String?,
         myText: String,
+        keywords: List<Boolean>,
         userInfo: UserInput
     ) {
         val root = JSONObject().apply {
             put("user_id", userId)
             put("message", myText)
+            put("keywords", keywords)
         }
 
         val userInput = JSONObject().apply {
