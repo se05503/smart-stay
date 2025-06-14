@@ -90,6 +90,7 @@ class ChatActivity : AppCompatActivity() {
         binding.toolbarChat.setOnMenuItemClickListener { item ->
             when(item.itemId) {
                 R.id.toolbar_filtering -> {
+                    binding.lottiePointer.isVisible = false
                     binding.drawerLayout.openDrawer(GravityCompat.END, true)
                     true
                 }
@@ -227,7 +228,9 @@ class ChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            binding.tvInduceChat.isVisible = false // refactoring
+            binding.lottieChatbot.isVisible = false // refactoring
+            binding.tvInduceChat.isVisible = false
+
             chatItemList.add(
                 ChatModel.UserMessage(
                     profile = userImage,
