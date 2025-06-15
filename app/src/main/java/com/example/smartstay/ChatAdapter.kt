@@ -12,6 +12,11 @@ import com.example.smartstay.databinding.ItemChatBotRecommendationBinding
 import com.example.smartstay.databinding.ItemChatBotTextBinding
 import com.example.smartstay.databinding.ItemChatUserBinding
 import com.example.smartstay.model.ChatModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ChatAdapter(
     private val context: Context
@@ -26,14 +31,41 @@ class ChatAdapter(
     }
 
     inner class ChatBotTextViewHolder(private val binding: ItemChatBotTextBinding): RecyclerView.ViewHolder(binding.root) {
+
+        private var typingJob: Job? = null
+
         fun bind(item: ChatModel.ChatBotMessage) {
-            binding.tvMessage.text = item.message
+
+            typingJob = null
+            binding.tvMessage.text = ""
+
+            typingJob = CoroutineScope(Dispatchers.Main).launch {
+                val message = item.message
+                for(i in message.indices) {
+                    binding.tvMessage.append(message[i].toString())
+                    delay((30..80).random().toLong())
+                }
+            }
         }
     }
 
     inner class ChatBotRecommendViewHolder(private val binding: ItemChatBotRecommendationBinding): RecyclerView.ViewHolder(binding.root) {
+
+        private var typingJob: Job? = null
+
         fun bind(item: ChatModel.ChatBotMessage) {
-            binding.tvMessage.text = item.message
+
+            typingJob = null
+            binding.tvMessage.text = ""
+
+            typingJob = CoroutineScope(Dispatchers.Main).launch {
+                val message = item.message
+                for(i in message.indices) {
+                    binding.tvMessage.append(message[i].toString())
+                    delay((30..80).random().toLong())
+                }
+            }
+
             binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList(), context)
             binding.btnNaverMap.setOnClickListener {
                 // 네이버 지도 이동
