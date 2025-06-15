@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -98,14 +99,14 @@ class ChatActivity : AppCompatActivity() {
                     val checkedChip = Chip(this).apply {
                         text = chip.text
                         chipIcon = chip.chipIcon
-                        chipIconTint = chip.chipIconTint
-                        chipBackgroundColor = chip.chipBackgroundColor
+                        chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                        chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
                         chipCornerRadius = TypedValue.applyDimension(
                             TypedValue.COMPLEX_UNIT_DIP,
                             16f,
                             resources.displayMetrics
                         )
-                        chipStrokeColor = chip.chipStrokeColor
+                        chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
                         isCloseIconVisible = true
                         setOnCloseIconClickListener {
                             binding.chipgroupInput.removeView(this)
@@ -396,8 +397,33 @@ class ChatActivity : AppCompatActivity() {
                     val decodedJson = decodeUnicode(rawJson)
                     Log.d("ttest(chat)", "decoded: $decodedJson")
                     val gson = Gson()
-                    val chatBotMessage =
-                        gson.fromJson(decodedJson, ChatModel.ChatBotMessage::class.java)
+                    val chatBotMessage = gson.fromJson(decodedJson, ChatModel.ChatBotMessage::class.java)
+
+                    // 필터링 자동 켜기
+                    if (chatBotMessage.keywords != null) {
+
+                        val sideSheet = binding.sideSheet.getHeaderView(0)
+                        val chipGroupFilter = sideSheet.findViewById<ChipGroup>(R.id.chipgroup_filter)
+
+                        // 기존 필터 초기화
+                        binding.chipgroupInput.removeAllViews()
+                        for(i in 0 until chipGroupFilter.childCount) {
+                            val chip = chipGroupFilter.getChildAt(i) as Chip
+                            chip.isChecked = false
+                        }
+
+                        chatBotMessage.keywords?.let { keywords ->
+                            keywords.forEach { keyword ->
+                                for (i in 0 until chipGroupFilter.childCount) {
+                                    val chip = chipGroupFilter.getChildAt(i) as Chip
+                                    if (chip.text == keyword) {
+                                        chip.isChecked = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     chatItemList.add(chatBotMessage)
                     chatAdapter.submitList(chatItemList.toList())
                 } else {
