@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 sealed class ChatModel {
+
     data class UserMessage(
         val profile: String?,
         val nickname: String?,
@@ -16,6 +17,8 @@ sealed class ChatModel {
         val keywords: List<String>? = null,
         val accommodationInfo: List<AccommodationInfo>? = null
     ) : ChatModel()
+
+    object ChatBotLoading: ChatModel()
 
 }
 

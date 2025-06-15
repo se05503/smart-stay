@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class ChatAdapter(
@@ -33,20 +34,44 @@ class ChatAdapter(
     inner class ChatBotTextViewHolder(private val binding: ItemChatBotTextBinding): RecyclerView.ViewHolder(binding.root) {
 
         private var typingJob: Job? = null
+        private var loadingJob: Job? = null
 
-        fun bind(item: ChatModel.ChatBotMessage) {
+        fun bind(item: ChatModel) {
 
-            typingJob = null
-            binding.tvMessage.text = ""
-
-            typingJob = CoroutineScope(Dispatchers.Main).launch {
-                val message = item.message
-                for(i in message.indices) {
-                    binding.tvMessage.append(message[i].toString())
-                    delay((30..80).random().toLong())
+            when(item) {
+                is ChatModel.ChatBotLoading -> {
+                    loadingJob?.cancel()
+                    loadingJob = CoroutineScope(Dispatchers.Main).launch {
+                        var dotCount = 0
+                        while(isActive) {
+                            var dots = ".".repeat(dotCount%4) // 0 ~ 3
+                            binding.tvMessage.text = "챗봇이 생각하는 중입니다. 조금만 기다려주세요${dots}"
+                            dotCount++
+                            delay((300..500).random().toLong())
+                        }
+                    }
                 }
+
+                is ChatModel.ChatBotMessage -> {
+                    typingJob = null
+                    loadingJob?.cancel()
+                    binding.tvMessage.text = ""
+
+                    typingJob = CoroutineScope(Dispatchers.Main).launch {
+                        val message = item.message
+                        for(i in message.indices) {
+                            binding.tvMessage.append(message[i].toString())
+                            delay((30..80).random().toLong())
+                        }
+                    }
+                }
+
+                is ChatModel.UserMessage -> {}
             }
+
         }
+
+        fun onViewRecycled() { loadingJob?.cancel() }
     }
 
     inner class ChatBotRecommendViewHolder(private val binding: ItemChatBotRecommendationBinding): RecyclerView.ViewHolder(binding.root) {
@@ -76,6 +101,13 @@ class ChatAdapter(
         }
     }
 
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if(holder is ChatBotTextViewHolder) {
+            holder.onViewRecycled()
+        }
+        super.onViewRecycled(holder)
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when(val item = getItem(position)) {
             is ChatModel.UserMessage -> {
@@ -88,27 +120,37 @@ class ChatAdapter(
                     else -> VIEW_TYPE_NONE
                 }
             }
+            is ChatModel.ChatBotLoading -> {
+                VIEW_TYPE_CHATBOT_LOADING
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if(viewType == VIEW_TYPE_USER) {
-            val binding = ItemChatUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            UserViewHolder(binding)
-        } else if(viewType == VIEW_TYPE_CHATBOT_TEXT) {
-            val binding = ItemChatBotTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            ChatBotTextViewHolder(binding)
-        } else {
-            val binding = ItemChatBotRecommendationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            ChatBotRecommendViewHolder(binding)
+        return when(viewType) {
+            VIEW_TYPE_USER -> {
+                val binding = ItemChatUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                UserViewHolder(binding)
+            }
+            VIEW_TYPE_CHATBOT_TEXT, VIEW_TYPE_CHATBOT_LOADING -> {
+                val binding = ItemChatBotTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ChatBotTextViewHolder(binding)
+            }
+            else -> {
+                val binding = ItemChatBotRecommendationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ChatBotRecommendViewHolder(binding)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+        val item = getItem(position)
+
         when(holder) {
-            is UserViewHolder -> holder.bind(getItem(position) as ChatModel.UserMessage)
-            is ChatBotTextViewHolder -> holder.bind(getItem(position) as ChatModel.ChatBotMessage)
-            is ChatBotRecommendViewHolder -> holder.bind(getItem(position) as ChatModel.ChatBotMessage)
+            is UserViewHolder -> holder.bind(item as ChatModel.UserMessage)
+            is ChatBotTextViewHolder -> holder.bind(item)
+            is ChatBotRecommendViewHolder -> holder.bind(item as ChatModel.ChatBotMessage)
         }
     }
 
@@ -133,6 +175,7 @@ class ChatAdapter(
         private const val VIEW_TYPE_USER = 0
         private const val VIEW_TYPE_CHATBOT_TEXT = 1
         private const val VIEW_TYPE_CHATBOT_RECOMMEND = 2
-        private const val VIEW_TYPE_NONE = 3 // 예외 처리용
+        private const val VIEW_TYPE_CHATBOT_LOADING = 3
+        private const val VIEW_TYPE_NONE = 4 // 예외 처리용
     }
 }

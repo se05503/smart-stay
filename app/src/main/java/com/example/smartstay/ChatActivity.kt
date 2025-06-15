@@ -160,6 +160,11 @@ class ChatActivity : AppCompatActivity() {
                     message = myText
                 )
             )
+
+            chatItemList.add(
+                ChatModel.ChatBotLoading
+            )
+
             chatAdapter.submitList(chatItemList.toList())
 
             // 키보드 내리고 입력창 초기화
@@ -424,7 +429,9 @@ class ChatActivity : AppCompatActivity() {
                         }
                     }
 
+                    if(chatItemList.lastOrNull() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.size - 1)
                     chatItemList.add(chatBotMessage)
+
                     chatAdapter.submitList(chatItemList.toList())
                 } else {
                     Log.d("ttest(chat)", response.message)
