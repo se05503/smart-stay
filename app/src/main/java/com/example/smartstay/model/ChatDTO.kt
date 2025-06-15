@@ -1,5 +1,6 @@
 package com.example.smartstay.model
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 sealed class ChatModel {
@@ -12,6 +13,7 @@ sealed class ChatModel {
     data class ChatBotMessage(
         val type: Int,
         val message: String,
+        val keywords: List<String>? = null,
         val accommodationInfo: List<AccommodationInfo>? = null
     ) : ChatModel()
 
@@ -29,13 +31,16 @@ data class UserInput(
 ): Serializable
 
 data class AccommodationInfo(
+    @SerializedName("숙박업명")
     val name: String, // 숙박업명
+    @SerializedName("숙박유형명")
     val type: String, // 숙박유형명
     val image: Int = 0, // 숙박업 이미지(서버x)
     val address: String, // 숙박업도로명주소
     val latitude: Float = 0f, // 위도 (y)
     val longitude: Float = 0f, // 경도 (x)
     val minimumPrice: Int, // 숙박업최저가격
+    @SerializedName("숙박업평균가격")
     val averagePrice: Int, // 숙박업평균가격
     val maximumPrice: Int, // 숙박업최대가격
     val starRating: String, // 숙박업등급값(3성, 4성)

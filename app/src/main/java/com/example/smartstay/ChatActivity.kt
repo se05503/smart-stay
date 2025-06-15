@@ -1,24 +1,17 @@
 package com.example.smartstay
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ImageSpan
-import android.text.style.StyleSpan
 import android.util.Log
+import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +20,7 @@ import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.UserInput
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
+import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
@@ -58,47 +51,28 @@ class ChatActivity : AppCompatActivity() {
             insets
         }
 
-        val userNickname = intent.getStringExtra("user_nickname")
-        val userImage = intent.getStringExtra("user_image")
-        val userId = intent.getStringExtra("user_id")
-        val userInfo = intent.getSerializableExtra("user_info") as UserInput
-
-        // 대화 시작 전 문구 부분적으로 bold 로 만들기
-        val fullText = "사용자님에게 적합한 숙소를 \n추천해드릴게요! \n원하시는 장소나 분위기를 \n말씀해주세요."
-        val boldTextFirst = "적합한 숙소를 \n추천"
-        val boldTextSecond = "원하시는 장소나 분위기"
-        val spannable = SpannableString(fullText)
-        val startIndexFirst = fullText.indexOf(boldTextFirst)
-        val endIndexFirst = startIndexFirst + boldTextFirst.length
-        val startIndexSecond = fullText.indexOf(boldTextSecond)
-        val endIndexSecond = startIndexSecond + boldTextSecond.length
-        spannable.setSpan(
-            StyleSpan(Typeface.BOLD),
-            startIndexFirst,
-            endIndexFirst,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        spannable.setSpan(
-            StyleSpan(Typeface.BOLD),
-            startIndexSecond,
-            endIndexSecond,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.tvInduceChat.text = spannable
+//        val userNickname = intent.getStringExtra("user_nickname")
+        val userNickname = "유저"
+        val userImage =
+            "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"
+//        val userImage = intent.getStringExtra("user_image")
+//        val userId = intent.getStringExtra("user_id")
+//        val userInfo = intent.getSerializableExtra("user_info") as UserInput
 
         // 툴바 설정
         binding.toolbarChat.setOnMenuItemClickListener { item ->
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.toolbar_filtering -> {
                     binding.lottiePointer.isVisible = false
                     binding.drawerLayout.openDrawer(GravityCompat.END, true)
                     true
                 }
+
                 else -> false
             }
         }
 
-        // 뒤로 가기
+        // side sheet
         val sideSheet = binding.sideSheet.getHeaderView(0)
         sideSheet.findViewById<LinearLayout>(R.id.ll_side_sheet_back).setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.END, true)
@@ -120,85 +94,32 @@ class ChatActivity : AppCompatActivity() {
 
         chipList.forEach { chip ->
             chip.setOnCheckedChangeListener { _, isChecked ->
-                if(isChecked) {
+                if (isChecked) {
                     val checkedChip = Chip(this).apply {
                         text = chip.text
                         chipIcon = chip.chipIcon
-                        chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.black)
-                        chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
-                        chipCornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics)
-                        chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.black)
+                        chipIconTint = chip.chipIconTint
+                        chipBackgroundColor = chip.chipBackgroundColor
+                        chipCornerRadius = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            16f,
+                            resources.displayMetrics
+                        )
+                        chipStrokeColor = chip.chipStrokeColor
                         isCloseIconVisible = true
                         setOnCloseIconClickListener {
-                            binding.chipGroup.removeView(this)
+                            binding.chipgroupInput.removeView(this)
                             chip.isChecked = false
-                            chip.chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.unchecked_chip_icon)
                         }
                     }
-                    binding.chipGroup.addView(checkedChip)
+                    binding.chipgroupInput.addView(checkedChip)
                 } else {
-                    val uncheckedChip = binding.chipGroup.children.filterIsInstance<Chip>().firstOrNull { it.text == chip.text }
-                    binding.chipGroup.removeView(uncheckedChip)
+                    val uncheckedChip = binding.chipgroupInput.children.filterIsInstance<Chip>()
+                        .firstOrNull { it.text == chip.text }
+                    binding.chipgroupInput.removeView(uncheckedChip)
                 }
             }
         }
-
-
-        // input chip
-        val cafeChip = ChipDrawable.createFromAttributes(
-            this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry
-        ).apply {
-            text = "카페"
-            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_cafe)
-            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
-            isChipIconVisible = true
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        }
-        val cafeChipSpan = ImageSpan(cafeChip)
-
-        val petChip = ChipDrawable.createFromAttributes(this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry).apply {
-            text = "반려동물"
-            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_pet)
-            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
-            isChipIconVisible = true
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        }
-        val petChipSpan = ImageSpan(petChip)
-
-        val restaurantChip = ChipDrawable.createFromAttributes(this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry).apply {
-            text = "레스토랑"
-            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_restaurant)
-            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
-            isChipIconVisible = true
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        }
-        val restaurantChipSpan = ImageSpan(restaurantChip)
-
-        val receptionHallChip = ChipDrawable.createFromAttributes(this, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Entry).apply {
-            text = "연회장"
-            chipIcon = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_reception)
-            chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
-            isChipIconVisible = true
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        }
-        val receptionHallChipSpan = ImageSpan(receptionHallChip)
-
-        val chipSpannable = SpannableStringBuilder()
-        chipSpannable.append("\uFFFC ")
-        chipSpannable.setSpan(cafeChipSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val firstChipSize = chipSpannable.length
-        chipSpannable.append("\uFFFC ")
-        chipSpannable.setSpan(petChipSpan, firstChipSize, firstChipSize+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val secondChipSize = chipSpannable.length // 4
-        chipSpannable.append("\uFFFC ")
-        chipSpannable.setSpan(restaurantChipSpan, secondChipSize, secondChipSize+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val thirdChipSize = chipSpannable.length // 6
-        chipSpannable.append("\uFFFC")
-        chipSpannable.setSpan(receptionHallChipSpan, thirdChipSize, thirdChipSize+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        binding.etMessage.setText(chipSpannable)
-        binding.etMessage.setSelection(chipSpannable.length)
-
 
         linearLayoutManager = LinearLayoutManager(applicationContext)
 
@@ -249,39 +170,33 @@ class ChatActivity : AppCompatActivity() {
             // 필터 키워드 추출
             val keywords = mutableListOf<Boolean>()
             chipList.forEach { chip ->
-                if(chip.isChecked) keywords.add(true) else keywords.add(false)
+                if (chip.isChecked) keywords.add(true) else keywords.add(false)
             }
 
             // server 연결 시도 코드
-            processWithServer(
-                userId = userId,
-                myText = myText,
-                userInfo = userInfo,
-                keywords = keywords
-            )
+//            processWithServer(
+//                userId = userId,
+//                myText = myText,
+//                userInfo = userInfo,
+//                keywords = keywords
+//            )
 
-            // server 연결 실패 시 dummy data 로 임시 설정
+//             server 연결 실패 시 dummy data 로 임시 설정
             processWithoutServer()
         }
     }
 
     private fun processWithoutServer() {
-        val chatMessages = listOf(
-            "안녕하세요! 무엇을 도와드릴까요?",
-            "오늘 하루도 좋은 하루 되세요!",
-            "무엇을 찾고 계신가요?",
-            "도움이 필요하시면 말씀해주세요!",
-            "앱 사용 중 궁금한 점이 있으신가요?"
-        )
 
-        val chatbotRandomMessage = chatMessages.random()
+        val chatbotRandomMessage = "안녕하세요! 서버를 연결하지 않은 테스트용 응답입니다."
 
         val lastUserMessage = chatItemList.last()
 
         if ((lastUserMessage as ChatModel.UserMessage).message.contains("추천")) {
             chatBotMessage = ChatModel.ChatBotMessage(
                 type = 1,
-                message = "숙소를 추천해드렸어요! 아래 숙소는 어떠세요?",
+                message = "숙소를 추천해드렸어요!",
+                keywords = listOf("반려동물", "레스토랑", "바"),
                 accommodationInfo = listOf(
                     AccommodationInfo(
                         name = "서울 센트럴 호텔",
@@ -413,6 +328,31 @@ class ChatActivity : AppCompatActivity() {
             )
         }
 
+        // 필터링 자동 켜기
+        if (chatBotMessage.keywords != null) {
+
+            val sideSheet = binding.sideSheet.getHeaderView(0)
+            val chipGroupFilter = sideSheet.findViewById<ChipGroup>(R.id.chipgroup_filter)
+
+            // 기존 필터 초기화
+            binding.chipgroupInput.removeAllViews()
+            for(i in 0 until chipGroupFilter.childCount) {
+                val chip = chipGroupFilter.getChildAt(i) as Chip
+                chip.isChecked = false
+            }
+
+            chatBotMessage.keywords?.let { keywords ->
+                keywords.forEach { keyword ->
+                    for (i in 0 until chipGroupFilter.childCount) {
+                        val chip = chipGroupFilter.getChildAt(i) as Chip
+                        if (chip.text == keyword) {
+                            chip.isChecked = true
+                        }
+                    }
+                }
+            }
+        }
+
         chatItemList.add(chatBotMessage)
         chatAdapter.submitList(chatItemList.toList())
     }
@@ -452,11 +392,12 @@ class ChatActivity : AppCompatActivity() {
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    val jsonResponse = response.body?.string() ?: ""
-                    Log.d("ttest(chat)", "success: ${jsonResponse}")
+                    val rawJson = response.body?.string() ?: ""
+                    val decodedJson = decodeUnicode(rawJson)
+                    Log.d("ttest(chat)", "decoded: $decodedJson")
                     val gson = Gson()
                     val chatBotMessage =
-                        gson.fromJson(jsonResponse, ChatModel.ChatBotMessage::class.java)
+                        gson.fromJson(decodedJson, ChatModel.ChatBotMessage::class.java)
                     chatItemList.add(chatBotMessage)
                     chatAdapter.submitList(chatItemList.toList())
                 } else {
@@ -469,5 +410,14 @@ class ChatActivity : AppCompatActivity() {
             }
         })
     }
+
+    fun decodeUnicode(input: String): String {
+        val regex = Regex("""\\u([0-9a-fA-F]{4})""")
+        return regex.replace(input) {
+            val intVal = it.groupValues[1].toInt(16)
+            intVal.toChar().toString()
+        }
+    }
+
 
 }
