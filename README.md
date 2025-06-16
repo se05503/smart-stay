@@ -17,3 +17,6 @@
  - [kakao login api] https://soung-appdeveloper.tistory.com/147
  - [naver map api] https://soung-appdeveloper.tistory.com/149
  - [bottom sheet dialog, progressbar, slider] https://soung-appdeveloper.tistory.com/151
+
+## 앱 시연 영상
+[![스마트스테이 영상 보기](https://img.youtube.com/vi/R0NQOPzyeyY/0.jpg)](https://youtu.be/R0NQOPzyeyY)
