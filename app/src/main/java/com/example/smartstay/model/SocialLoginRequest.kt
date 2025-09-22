@@ -1,7 +1,7 @@
 package com.example.smartstay.model
 
 data class SocialLoginRequest(
-    val provider: String, // 카카오, 네이버, 구글 식별
+    val provider: LOGIN, // 카카오, 네이버, 구글 식별
     val user_id: String,
     val email: String,
     val nickname: String,
@@ -13,6 +13,12 @@ data class SocialLoginResponse(
     val message: String, // 회원가입이 되었는가 안되었는가?
     val user: UserInfo
 )
+
+enum class LOGIN {
+    KAKAO,
+    NAVER,
+    GOGGLE
+}
 
 data class UserInfo(
     val provider: String = "",

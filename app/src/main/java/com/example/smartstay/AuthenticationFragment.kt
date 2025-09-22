@@ -14,6 +14,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import androidx.fragment.app.activityViewModels
+import com.example.smartstay.model.LOGIN
 import com.example.smartstay.model.UserInfo
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -29,58 +30,12 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
     private lateinit var binding: FragmentAuthenticationBinding
     private val viewModel: InitialSettingViewModel by activityViewModels()
 
+    private var naverRefreshToken: String? = null
+    private var naverAccessToken: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAuthenticationBinding.bind(view)
-
-        // initialize
-        binding.ivLoginNaver.setOnClickListener {
-            val profileCallback = object: NidProfileCallback<NidProfileResponse> {
-
-                override fun onSuccess(response: NidProfileResponse) {
-                    val id = response.profile?.id
-                    val nickname = response.profile?.nickname
-                    val email = response.profile?.email
-                    val profileImage = response.profile?.profileImage
-                    val gender = response.profile?.gender
-                    val name = response.profile?.name
-                    val age = response.profile?.age
-                    val birthday = response.profile?.birthday
-                    val birthYear = response.profile?.birthYear
-                    Log.e("naver profile", "id: $id, nickname: $nickname, email: $email, profileImage: $profileImage, gender: $gender, name: $name, age: $age, birthday: $birthday, birthYear: $birthYear")
-                }
-
-                override fun onError(errorCode: Int, message: String) {
-                    Log.e("naver profile", "errorCode: $errorCode, message: $message")
-                }
-
-                override fun onFailure(httpStatus: Int, message: String) {
-                    Log.e("naver profile", "httpStatus: $httpStatus, message: $message")
-                }
-            }
-
-            val oauthLoginCallback = object: OAuthLoginCallback {
-
-                override fun onSuccess() {
-                    Toast.makeText(context, "네이버 로그인에 성공했습니다", Toast.LENGTH_SHORT).show()
-                    val accessToken = NaverIdLoginSDK.getAccessToken()
-                    val refreshToken = NaverIdLoginSDK.getRefreshToken()
-                    Log.e("naver login", "accessToken: $accessToken, refreshToken: $refreshToken")
-                    NidOAuthLogin().callProfileApi(profileCallback)
-                }
-
-                override fun onError(errorCode: Int, message: String) {
-                    Log.e("naver login", "errorCode: $errorCode, message: $message")
-                }
-
-                override fun onFailure(httpStatus: Int, message: String) {
-                    Log.e("naver login", "httpStatus: ${NaverIdLoginSDK.getLastErrorCode()}, message: ${NaverIdLoginSDK.getLastErrorDescription()}")
-                }
-            }
-
-            NaverIdLoginSDK.authenticate(requireContext(), oauthLoginCallback)
-        }
-
         initListeners()
     }
 
@@ -126,7 +81,7 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
 //                        findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
 
                         val request = SocialLoginRequest(
-                            provider = "kakao",
+                            provider = LOGIN.KAKAO,
                             user_id = viewModel.userInfo.user_id,
                             email = viewModel.userInfo.email ?: "",
                             nickname = viewModel.userInfo.nickname ?: "",
@@ -162,6 +117,90 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                 UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = callback)
             }
         }
+
+        ivLoginNaver.setOnClickListener {
+
+            val profileCallback = object: NidProfileCallback<NidProfileResponse> {
+
+                override fun onSuccess(response: NidProfileResponse) {
+
+                    val userId = response.profile?.id ?: ""
+                    val nickname = response.profile?.nickname ?: ""
+                    val email = response.profile?.email ?: ""
+                    val profileImage = response.profile?.profileImage
+                    val gender = response.profile?.gender
+                    val name = response.profile?.name
+                    val age = response.profile?.age
+                    val birthday = response.profile?.birthday
+                    val birthYear = response.profile?.birthYear
+                    Log.e("naver profile", "id: $userId, nickname: $nickname, email: $email, profileImage: $profileImage, gender: $gender, name: $name, age: $age, birthday: $birthday, birthYear: $birthYear")
+
+                    // server 전송
+                    RetrofitInstance.networkService.postSocialLogin(
+                        SocialLoginRequest(
+                            provider = LOGIN.NAVER,
+                            user_id = userId,
+                            email = email,
+                            nickname = nickname,
+                            refreshToken = naverRefreshToken ?: "",
+                            accessToken = naverAccessToken ?: ""
+                        )
+                    ).enqueue(object: Callback<SocialLoginResponse> {
+                        override fun onResponse(
+                            p0: Call<SocialLoginResponse?>,
+                            p1: Response<SocialLoginResponse?>
+                        ) {
+                            if(p1.isSuccessful) {
+                                val response = p1.body()
+                                findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
+                                Log.e(NAVER_LOGIN, "message: ${response?.message}, userInfo: ${response?.user}")
+                                Toast.makeText(context, "네이버 로그인에 성공했습니다", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onFailure(
+                            p0: Call<SocialLoginResponse?>,
+                            p1: Throwable
+                        ) {
+                            Log.e(NAVER_LOGIN, "server error: ${p1.message}")
+                        }
+
+                    })
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    Log.e("naver profile", "errorCode: $errorCode, message: $message")
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    Log.e("naver profile", "httpStatus: $httpStatus, message: $message")
+                }
+            }
+
+            val oauthLoginCallback = object: OAuthLoginCallback {
+
+                override fun onSuccess() {
+                    naverAccessToken = NaverIdLoginSDK.getAccessToken()
+                    naverRefreshToken = NaverIdLoginSDK.getRefreshToken()
+                    Log.e("naver login", "accessToken: $naverAccessToken, refreshToken: $naverRefreshToken")
+                    NidOAuthLogin().callProfileApi(profileCallback)
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    Log.e("naver login", "errorCode: $errorCode, message: $message")
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    Log.e("naver login", "httpStatus: ${NaverIdLoginSDK.getLastErrorCode()}, message: ${NaverIdLoginSDK.getLastErrorDescription()}")
+                }
+            }
+
+            NaverIdLoginSDK.authenticate(requireContext(), oauthLoginCallback)
+        }
+    }
+
+    companion object {
+        private const val NAVER_LOGIN = "naver"
     }
 
 }
