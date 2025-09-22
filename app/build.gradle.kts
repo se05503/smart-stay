@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -67,5 +68,7 @@ dependencies {
 
     implementation("com.naver.maps:map-sdk:3.21.0") // naver map
     implementation("com.navercorp.nid:oauth:5.10.0") // naver login (jdk 11)
+
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0")) // firebase (google)
 
 }
