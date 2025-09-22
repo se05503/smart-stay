@@ -38,40 +38,34 @@
         android:layout_marginTop="60dp"
         android:src="@drawable/kakao_login_large_wide"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_login_naver"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_naver_login_small"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_authentication_description"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login_naver"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:backgroundTint="#03C75A"
-        android:background="@drawable/shape_button_round"
-        android:drawableStart="@drawable/ic_naver_login"
-        android:paddingStart="8dp"
-        android:text="네이버 로그인"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/iv_login_kakao"
-        app:layout_constraintStart_toStartOf="@+id/iv_login_kakao"
-        app:layout_constraintTop_toBottomOf="@id/iv_login_kakao"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login_google"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:backgroundTint="@color/white"
-        android:background="@drawable/shape_button_round"
-        android:text="구글 로그인"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:drawableStart="@drawable/ic_login_google"
-        android:paddingStart="12dp"
-        app:layout_constraintStart_toStartOf="@id/btn_login_naver"
-        app:layout_constraintEnd_toEndOf="@id/btn_login_naver"
-        app:layout_constraintTop_toBottomOf="@id/btn_login_naver"/>
+    <!--    <androidx.appcompat.widget.AppCompatButton-->
+    <!--        android:id="@+id/btn_login_google"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="60dp"-->
+    <!--        android:backgroundTint="@color/btn_color"-->
+    <!--        android:background="@drawable/shape_button_round"-->
+    <!--        android:text="구글 로그인"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="18sp"-->
+    <!--        android:textStyle="bold"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:drawableStart="@drawable/ic_login_google"-->
+    <!--        android:paddingStart="12dp"-->
+    <!--        app:layout_constraintStart_toStartOf="@id/btn_login_naver"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/btn_login_naver"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/btn_login_naver"/>-->
 
     <TextView
         android:layout_width="wrap_content"

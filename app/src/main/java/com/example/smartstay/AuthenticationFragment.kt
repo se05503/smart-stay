@@ -15,6 +15,11 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import androidx.fragment.app.activityViewModels
 import com.example.smartstay.model.UserInfo
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,7 +32,60 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAuthenticationBinding.bind(view)
-        binding.ivLoginKakao.setOnClickListener {
+
+        // initialize
+        binding.ivLoginNaver.setOnClickListener {
+            val profileCallback = object: NidProfileCallback<NidProfileResponse> {
+
+                override fun onSuccess(response: NidProfileResponse) {
+                    val id = response.profile?.id
+                    val nickname = response.profile?.nickname
+                    val email = response.profile?.email
+                    val profileImage = response.profile?.profileImage
+                    val gender = response.profile?.gender
+                    val name = response.profile?.name
+                    val age = response.profile?.age
+                    val birthday = response.profile?.birthday
+                    val birthYear = response.profile?.birthYear
+                    Log.e("naver profile", "id: $id, nickname: $nickname, email: $email, profileImage: $profileImage, gender: $gender, name: $name, age: $age, birthday: $birthday, birthYear: $birthYear")
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    Log.e("naver profile", "errorCode: $errorCode, message: $message")
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    Log.e("naver profile", "httpStatus: $httpStatus, message: $message")
+                }
+            }
+
+            val oauthLoginCallback = object: OAuthLoginCallback {
+
+                override fun onSuccess() {
+                    Toast.makeText(context, "네이버 로그인에 성공했습니다", Toast.LENGTH_SHORT).show()
+                    val accessToken = NaverIdLoginSDK.getAccessToken()
+                    val refreshToken = NaverIdLoginSDK.getRefreshToken()
+                    Log.e("naver login", "accessToken: $accessToken, refreshToken: $refreshToken")
+                    NidOAuthLogin().callProfileApi(profileCallback)
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    Log.e("naver login", "errorCode: $errorCode, message: $message")
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    Log.e("naver login", "httpStatus: ${NaverIdLoginSDK.getLastErrorCode()}, message: ${NaverIdLoginSDK.getLastErrorDescription()}")
+                }
+            }
+
+            NaverIdLoginSDK.authenticate(requireContext(), oauthLoginCallback)
+        }
+
+        initListeners()
+    }
+
+    private fun initListeners() = with(binding) {
+        ivLoginKakao.setOnClickListener {
             val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
                 if (error != null) {
                     Log.e("error", "카카오계정으로 로그인 실패", error)
@@ -41,15 +99,12 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                 UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
                     if (error != null) {
                         Log.e("error", "카카오톡으로 로그인 실패", error)
-
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
                         }
-
                         UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = callback)
                     } else if (token != null) {
                         Log.i("error", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                        // 회원가입 후 바로 로그인되는건가?
                         // 카카오계정 정보 가져오기
                         UserApiClient.instance.me { user, meError ->
                             if(meError != null) {
@@ -66,6 +121,10 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                             }
                         }
 
+                        // 서버 통신 되면 지우기(두줄 다)
+//                        Toast.makeText(requireContext(), "로그인에 성공했습니다!", Toast.LENGTH_SHORT).show()
+//                        findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
+
                         val request = SocialLoginRequest(
                             provider = "kakao",
                             user_id = viewModel.userInfo.user_id,
@@ -81,10 +140,11 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                                 response: Response<SocialLoginResponse?>
                             ) {
                                 if(response.isSuccessful) {
-                                    Toast.makeText(requireContext(), "로그인에 성공했습니다!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), "카카오 로그인이 되었습니다!", Toast.LENGTH_SHORT).show()
                                     findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
+                                    Log.d("ttest(login)", response.body()?.message ?: "메세지 없음")
                                 } else {
-                                    Log.d("ttest(else)",""+response.errorBody()?.string())
+                                    Log.d("ttest(login)",""+response.errorBody()?.string())
                                 }
                             }
 
@@ -92,7 +152,7 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                                 call: Call<SocialLoginResponse?>,
                                 t: Throwable
                             ) {
-                                Log.d("ttest", ""+t.message)
+                                Log.d("ttest(login)", ""+t.message)
                             }
 
                         })
@@ -103,4 +163,5 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
             }
         }
     }
+
 }
