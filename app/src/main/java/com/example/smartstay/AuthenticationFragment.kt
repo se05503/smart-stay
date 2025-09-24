@@ -44,6 +44,12 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentAuthenticationBinding.bind(view)
+
+        /**
+         * 카카오/네이버는 앱 클라이언트 내에서 refreshToken, accessToken 을 클라이언트에서 받을 수 있다
+         * 구글은 serverAuthCode 를 클라이언트가 서버에 넘겨줘서 서버가 refreshToken, accessToken 을 발급해야한다.
+         * 구글은 클라이언트에서 idToken 만 발급받을 수 있다.
+         */
         googleLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val resultCode: Int = result.resultCode
             val intent: Intent? = result.data
@@ -51,10 +57,39 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
             try {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
                 val account = task.getResult(ApiException::class.java)
-                Toast.makeText(context, "구글 로그인이 되었습니다", Toast.LENGTH_SHORT).show()
                 Log.e(GOOGLE_LOGIN, "accountId: ${account.id}, idToken: ${account.idToken}, email: ${account.email}, photoUrl: ${account.photoUrl}, displayName: ${account.displayName}")
+                RetrofitInstance.networkService.postSocialLogin(
+                    SocialLoginRequest(
+                        provider = LOGIN.GOGGLE,
+                        user_id = account.id ?: "",
+                        email = account.email ?: "",
+                        nickname = account.displayName ?: "",
+                        refreshToken = account.idToken ?: "",
+                        accessToken = "null"
+                    )
+                ).enqueue(object: Callback<SocialLoginResponse> {
+                    override fun onResponse(
+                        p0: Call<SocialLoginResponse?>,
+                        p1: Response<SocialLoginResponse?>
+                    ) {
+                        if(p1.isSuccessful) {
+                            val response = p1.body()
+                            Log.e(GOOGLE_LOGIN, "message: ${response?.message}, userInfo: ${response?.user}")
+                            Toast.makeText(context, "구글 로그인이 되었습니다", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
+                        }
+                    }
+
+                    override fun onFailure(
+                        p0: Call<SocialLoginResponse?>,
+                        p1: Throwable
+                    ) {
+                        Log.e(GOOGLE_LOGIN, "backend server error: ${p1.message}")
+                    }
+
+                })
             } catch (e: ApiException) {
-                Log.e(GOOGLE_LOGIN, ""+ e.message)
+                Log.e(GOOGLE_LOGIN, "google login error: ${e.message}")
             }
         }
 
