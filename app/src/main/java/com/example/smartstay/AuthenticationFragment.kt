@@ -1,9 +1,12 @@
 package com.example.smartstay
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.smartstay.databinding.FragmentAuthenticationBinding
@@ -16,6 +19,9 @@ import com.kakao.sdk.user.UserApiClient
 import androidx.fragment.app.activityViewModels
 import com.example.smartstay.model.LOGIN
 import com.example.smartstay.model.UserInfo
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
@@ -28,6 +34,7 @@ import retrofit2.Response
 class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
 
     private lateinit var binding: FragmentAuthenticationBinding
+    private lateinit var googleLoginResult: ActivityResultLauncher<Intent>
     private val viewModel: InitialSettingViewModel by activityViewModels()
 
     private var naverRefreshToken: String? = null
@@ -35,9 +42,25 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentAuthenticationBinding.bind(view)
+        googleLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val resultCode: Int = result.resultCode
+            val intent: Intent? = result.data
+            Log.e(GOOGLE_LOGIN, "resultCode: $resultCode")
+            try {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
+                val account = task.getResult(ApiException::class.java)
+                Toast.makeText(context, "구글 로그인이 되었습니다", Toast.LENGTH_SHORT).show()
+                Log.e(GOOGLE_LOGIN, "accountId: ${account.id}, idToken: ${account.idToken}, email: ${account.email}, photoUrl: ${account.photoUrl}, displayName: ${account.displayName}")
+            } catch (e: ApiException) {
+                Log.e(GOOGLE_LOGIN, ""+ e.message)
+            }
+        }
+
         initListeners()
     }
+
 
     private fun initListeners() = with(binding) {
         ivLoginKakao.setOnClickListener {
@@ -197,10 +220,23 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
 
             NaverIdLoginSDK.authenticate(requireContext(), oauthLoginCallback)
         }
+
+        ivLoginGoogle.setOnClickListener {
+            val googleSignInOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.google_server_client_id))
+                .requestEmail()
+                .requestId()
+                .requestProfile()
+                .build()
+            val googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOption)
+            googleLoginResult.launch(googleSignInClient.signInIntent)
+        }
     }
 
     companion object {
         private const val NAVER_LOGIN = "naver"
+        private const val KAKAO_LOGIN = "kakao"
+        private const val GOOGLE_LOGIN = "google"
     }
 
 }

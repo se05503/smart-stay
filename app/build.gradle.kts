@@ -70,5 +70,6 @@ dependencies {
     implementation("com.navercorp.nid:oauth:5.10.0") // naver login (jdk 11)
 
     implementation(platform("com.google.firebase:firebase-bom:34.3.0")) // firebase (google)
+    implementation("com.google.android.gms:play-services-auth:21.4.0") // google login
 
 }
