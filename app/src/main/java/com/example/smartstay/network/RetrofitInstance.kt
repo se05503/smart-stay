@@ -6,12 +6,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitInstance {
-    const val BASE_URL = ""
+
+    const val BACKEND_BASE_URL = ""
+    const val NAVER_MAP_BASE_URL = "https://maps.apigw.ntruss.com/"
+
     val gson = GsonBuilder().setLenient().create()
 
     val networkService: NetworkService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BACKEND_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
