@@ -1,4 +1,4 @@
-package com.example.smartstay
+package com.example.smartstay.network
 
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitInstance {
-    const val BASE_URL = "https://adbb-223-194-21-240.ngrok-free.app/"
+    const val BASE_URL = ""
     val gson = GsonBuilder().setLenient().create()
 
     val networkService: NetworkService by lazy {
