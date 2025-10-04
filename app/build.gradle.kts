@@ -72,4 +72,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.3.0")) // firebase (google)
     implementation("com.google.android.gms:play-services-auth:21.4.0") // google login
 
+    // TMAP - Vector Map API
+    implementation(files("libs/tmap-sdk-3.0.aar"))
+    implementation(files("libs/vsm-tmap-sdk-v2-android-1.7.45.aar"))
+
 }
