@@ -5,6 +5,7 @@ import com.example.smartstay.model.NaverDirectionsResponse
 import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
 import com.example.smartstay.model.UserRequest
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,4 +37,19 @@ interface NetworkService {
         @Query("start") departurePoint: String, // ex. 127.12345,37.12345
         @Query("goal") arrivalPoint: String, // ex. 123.45678,34.56789
     ): NaverDirectionsResponse
+
+    /**
+     * SK Telecom's Tmap API
+     */
+    @GET("tmap/staticMap")
+    suspend fun getTMapThumbnailImage(
+        @Header("appKey") appKey: String,
+        @Header("Accept") accept: String = "application/json",
+        @Query("version") version: String,
+        @Query("longitude") longitude: Float,
+        @Query("latitude") latitude: Float,
+        @Query("width") width: Int = 512,
+        @Query("height") height: Int = 512,
+        @Query("zoom") zoom: Int // min 6 ~  max 19
+    ): ResponseBody
 }

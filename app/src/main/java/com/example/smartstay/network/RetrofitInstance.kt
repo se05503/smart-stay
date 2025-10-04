@@ -9,12 +9,13 @@ object RetrofitInstance {
 
     const val BACKEND_BASE_URL = ""
     const val NAVER_MAP_BASE_URL = "https://maps.apigw.ntruss.com/"
+    const val SK_TMAP_BASE_URL = "https://apis.openapi.sk.com/"
 
     val gson = GsonBuilder().setLenient().create()
 
     val networkService: NetworkService by lazy {
         Retrofit.Builder()
-            .baseUrl(BACKEND_BASE_URL)
+            .baseUrl(SK_TMAP_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
