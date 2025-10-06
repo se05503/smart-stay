@@ -209,7 +209,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         mapViewModel.tMapMultiModelRouteInfo.observe(viewLifecycleOwner) { routeInfo ->
             Log.e(TAG, ""+ routeInfo)
         }
-        mapViewModel.findTMapMultiModalRoute(
+        mapViewModel.findTMapMultiModalRouteSummary(
             tMapRouteRequest = TMapRouteRequest(
                 startX = "126.936928",
                 startY = "37.555162",

@@ -50,4 +50,17 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
             }
         }
     }
+
+    fun findTMapMultiModalRouteSummary(tMapRouteRequest: TMapRouteRequest, context: Context) {
+        viewModelScope.launch {
+            try {
+                _tMapMultiModelRouteInfo.value = networkService.findTMapMultiModalRouteSummary(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    tMapRouteRequest = tMapRouteRequest
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "findTMapMultiModalRouteSummary: ${e.message}")
+            }
+        }
+    }
 }

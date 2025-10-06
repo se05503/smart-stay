@@ -64,4 +64,13 @@ interface NetworkService {
         @Header("appKey") appKey: String,
         @Body tMapRouteRequest: TMapRouteRequest
     ): TMapRouteResponse
+
+    @POST("transit/routes/sub")
+    suspend fun findTMapMultiModalRouteSummary(
+        @Header("Accept") accept: String = "application/json",
+        @Header("Content-Type") contentType: String = "application/json",
+        @Header("appKey") appKey: String,
+        @Body tMapRouteRequest: TMapRouteRequest
+    ): TMapRouteResponse
+
 }
