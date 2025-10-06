@@ -2,8 +2,10 @@ package com.example.smartstay.network
 
 import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.NaverDirectionsResponse
+import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
+import com.example.smartstay.model.TMapRouteResponse
 import com.example.smartstay.model.UserRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -39,7 +41,9 @@ interface NetworkService {
     ): NaverDirectionsResponse
 
     /**
-     * SK Telecom's Tmap API
+     * SK Telecom's TMAP API
+     * getTMapThumbnailImage = 위도, 경도 좌표에 대한 지도 썸네일 이미지 제공
+     * findTMapMultiModalRoute = 출발지/목적지에 대한 대중교통 경로탐색 정보 및 전체 보행자 이동 경로 제공
      */
     @GET("tmap/staticMap")
     suspend fun getTMapThumbnailImage(
@@ -52,4 +56,12 @@ interface NetworkService {
         @Query("height") height: Int = 512,
         @Query("zoom") zoom: Int // min 6 ~  max 19
     ): ResponseBody
+
+    @POST("transit/routes")
+    suspend fun findTMapMultiModalRoute(
+        @Header("Accept") accept: String = "application/json",
+        @Header("Content-Type") contentType: String = "application/json",
+        @Header("appKey") appKey: String,
+        @Body tMapRouteRequest: TMapRouteRequest
+    ): TMapRouteResponse
 }

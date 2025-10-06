@@ -21,15 +21,23 @@ import com.skt.tmap.overlay.TMapPolyLine
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
+import androidx.fragment.app.activityViewModels
+import com.example.smartstay.model.TMapRouteRequest
+import com.example.smartstay.network.RetrofitInstance
 
 class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
     private lateinit var binding: FragmentTMapVectorBinding
+    private val mapViewModel: MapViewModel by activityViewModels {
+        MapViewModelFactory(RetrofitInstance.networkService)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTMapVectorBinding.bind(view)
         initViews()
+        initObservers()
     }
 
     private fun initViews() = with(binding) {
@@ -195,6 +203,25 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         tmapView.addTMapPolyLine(line)
 
 
+    }
+
+    private fun initObservers() = with(binding) {
+        mapViewModel.tMapMultiModelRouteInfo.observe(viewLifecycleOwner) { routeInfo ->
+            Log.e(TAG, ""+ routeInfo)
+        }
+        mapViewModel.findTMapMultiModalRoute(
+            tMapRouteRequest = TMapRouteRequest(
+                startX = "126.936928",
+                startY = "37.555162",
+                endX = "127.029281",
+                endY = "37.564436",
+            ),
+            context = requireContext()
+        )
+    }
+
+    companion object {
+        const val TAG = "TMAP"
     }
 
 }
