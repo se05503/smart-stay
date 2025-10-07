@@ -10,8 +10,9 @@ import com.example.smartstay.model.NaverDirectionsResponse
 import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.TMapRouteResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
+import com.example.smartstay.model.TMapTravelDailyVisitorResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
-import com.example.smartstay.model.TMapTravelVisitorResponse
+import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.network.NetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -104,10 +105,10 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
         }
     }
 
-    private val _tMapTravelVisitorsInfo: MutableLiveData<TMapTravelVisitorResponse> = MutableLiveData()
-    val tMapTravelVisitorsInfo: LiveData<TMapTravelVisitorResponse> get() = _tMapTravelVisitorsInfo
+    private val _tMapTravelMonthlyVisitorsInfo: MutableLiveData<TMapTravelMonthlyVisitorResponse> = MutableLiveData()
+    val tMapTravelMonthlyVisitorsInfo: LiveData<TMapTravelMonthlyVisitorResponse> get() = _tMapTravelMonthlyVisitorsInfo
 
-    fun getTravelVisitorsCountMonthly(
+    fun getTravelMonthlyVisitorsCount(
         context: Context,
         districtCode: String,
         yearMonth: String = "latest",
@@ -117,7 +118,7 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                _tMapTravelVisitorsInfo.value = networkService.getTravelVisitorsCountMonthly(
+                _tMapTravelMonthlyVisitorsInfo.value = networkService.getTravelMonthlyVisitorsCount(
                     appKey = context.getString(R.string.sk_telecom_open_api_app_key),
                     districtCode = districtCode,
                     yearMonth = yearMonth,
@@ -127,6 +128,31 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelVisitorsCountMonthly: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelDailyVisitorsInfo: MutableLiveData<TMapTravelDailyVisitorResponse> = MutableLiveData()
+    val tMapTravelDailyVisitorsInfo: LiveData<TMapTravelDailyVisitorResponse> get() = _tMapTravelDailyVisitorsInfo
+
+    fun getTravelDailyVisitorsCount(
+        context: Context,
+        districtCode: String,
+        gender: String = "all",
+        ageGrp: String = "all",
+        companionType: String = "all"
+    ) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelDailyVisitorsInfo.value = networkService.getTravelDailyVisitorsCount(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    districtCode = districtCode,
+                    gender = gender,
+                    ageGrp = ageGrp,
+                    companionType = companionType
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelVisitorsCountDaily: ${e.message}")
             }
         }
     }

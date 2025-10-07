@@ -7,7 +7,9 @@ import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
 import com.example.smartstay.model.TMapRouteResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
+import com.example.smartstay.model.TMapTravelDailyVisitorResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
+import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.UserRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -105,13 +107,25 @@ interface NetworkService {
      * 상세 여행자 특성 파라미터를 지정하지 않으면 전체 여행자 수를 반환합니다.
      */
     @GET("puzzle/travel/visit/count/raw/monthly/districts/{districtCode}")
-    suspend fun getTravelVisitorsCountMonthly(
+    suspend fun getTravelMonthlyVisitorsCount(
         @Header("appKey") appKey: String,
         @Path("districtCode") districtCode: String, // 데이터 제공 가능 여행지 검색에서 반환된 시, 군, 구 지역 중 검색할 여행지의 법정동 코드(10자리 숫자)를 지정합니다.
         @Query("yearMonth") yearMonth: String, // 검색 기준 월(연도+월)입니다. 기준 월을 입력하지 않으면 최근 월(latest)에 대한 데이터를 반환합니다. 날짜 입력: 검색할 월을 YYYYMM(연도+월) 형식으로 입력. latest(기본값): 최근 월 검색
         @Query("gender") gender: String, // 여행자의 성별을 지정합니다. 성별을 입력하지 않으면 모든 성별에 대한 데이터를 반환합니다. male: 남성, female: 여성, all(기본값): 모든 성별
         @Query("ageGrp") ageGrp: String, // 여행자의 연령대를 지정합니다. 연령대를 입력하지 않으면 모든 연령대에 대한 데이터를 반환합니다. 10: 10대, 20: 20대, ... 50: 50대, 60_over: 60대 이상, all(기본값): 모든 연령대
         @Query("companionType") companionType: String // 동반자 유형을 지정합니다. 동반자 유형을 입력하지 않으면 모든 동반자 유형에 대한 데이터를 반환합니다. family: 가족 동반, family_w_child: 자녀 동반, not_family: 가족 동반자 확인되지 않음, all(기본값): 모든 동반자 유형
-    ): TMapTravelVisitorResponse
+    ): TMapTravelMonthlyVisitorResponse
 
+    /**
+     * 특정 여행지(시, 군, 구)의 일별 추정 여행자 수 정보 제공합니다.
+     * 요청일 기준 33일 전부터 4일 전까지 총 30일의 기간에 대해 일자별로 추정된 여행자 수를 제공합니다(해당일에 여행을 시작하거나 마친 여행자 및 여행 중인 여행자 수를 추정)
+     */
+    @GET("puzzle/travel/visit/count/raw/daily/districts/{districtCode}")
+    suspend fun getTravelDailyVisitorsCount(
+        @Header("appKey") appKey: String,
+        @Path("districtCode") districtCode: String, // ex) "5011000000" = 제주특별자치도 제주시, "all" = 국내 전 지역의 여행자 수 제공
+        @Query("gender") gender: String, // [option] male: 남성, female: 여성, all: 모든 성별
+        @Query("ageGrp") ageGrp: String, // [option] 10: 10대, 20: 20대, ... 50: 50대, 60_over: 60대 이상, all(default): 모든 연령대
+        @Query("companionType") companionType: String // [option] family: 가족 동반, family_w_child: 자녀 동반, not_family: 가족 동반자 확인되지 않음, all: 모든 동반자 유형
+    ): TMapTravelDailyVisitorResponse
 }
