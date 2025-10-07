@@ -86,7 +86,6 @@ interface NetworkService {
         @Query("type") type: String, // 검색할 법정동 유형, 지정하지 않으면 시, 군, 구 단위 여행지 정보를 반환함. ri = 동, 리 단위 / sig = 시, 군, 구 단위
         @Query("offset") offset: Int, // 여행지 목록을 조회하는 시작점 (n번째 여행지부터 조회)
         @Query("limit") limit: Int // 여행지 목록을 offset부터 시작해서 얼만큼 가져올 것인지 한도를 지정함
-    ): TMapTravelResponse
     ): TMapTravelDistrictResponse
 
     @GET("puzzle/travel/meta/accommodation/districts/{districtCode}")
@@ -96,5 +95,23 @@ interface NetworkService {
         @Query("offset") offset: Int, // 숙소 목록을 조회하는 시작점. 예를 들면, 숙소가 총 100개 있을 때, offset을 50으로 지정하면 50번째 숙소부터 목록을 조회한다.
         @Query("limit") limit: Int // 숙소 목록을 offset부터 시작해서 얼마나 가져올 것인지 한도 지정
     ): TMapTravelAccommodationResponse
+
+    /**
+     * 특정 여행지(시, 군, 구)의 월별 추정 여행자 수 정보를 제공합니다.
+     * 데이터 제공 가능 여행지 검색에서 반환된 시, 군, 구 지역을 대상으로 추정 여행자 수를 확인할 수 있습니다.
+     * 추정 여행자 수는 매 기준월 1일에서 말일 사이 여행을 마친 여행자를 대상으로 계산됩니다.
+     * 기준 월(yearMonth)을 입력하지 않으면 최근 월을 기준으로 정보를 반환합니다.
+     * 요청 쿼리에 성별, 연령대, 동반자 유형 등 여행자 특성 파라미터를 지정하면 지정된 여행자 특성에 따라 추정된 여행자 수를 반환합니다.
+     * 상세 여행자 특성 파라미터를 지정하지 않으면 전체 여행자 수를 반환합니다.
+     */
+    @GET("puzzle/travel/visit/count/raw/monthly/districts/{districtCode}")
+    suspend fun getTravelVisitorsCountMonthly(
+        @Header("appKey") appKey: String,
+        @Path("districtCode") districtCode: String, // 데이터 제공 가능 여행지 검색에서 반환된 시, 군, 구 지역 중 검색할 여행지의 법정동 코드(10자리 숫자)를 지정합니다.
+        @Query("yearMonth") yearMonth: String, // 검색 기준 월(연도+월)입니다. 기준 월을 입력하지 않으면 최근 월(latest)에 대한 데이터를 반환합니다. 날짜 입력: 검색할 월을 YYYYMM(연도+월) 형식으로 입력. latest(기본값): 최근 월 검색
+        @Query("gender") gender: String, // 여행자의 성별을 지정합니다. 성별을 입력하지 않으면 모든 성별에 대한 데이터를 반환합니다. male: 남성, female: 여성, all(기본값): 모든 성별
+        @Query("ageGrp") ageGrp: String, // 여행자의 연령대를 지정합니다. 연령대를 입력하지 않으면 모든 연령대에 대한 데이터를 반환합니다. 10: 10대, 20: 20대, ... 50: 50대, 60_over: 60대 이상, all(기본값): 모든 연령대
+        @Query("companionType") companionType: String // 동반자 유형을 지정합니다. 동반자 유형을 입력하지 않으면 모든 동반자 유형에 대한 데이터를 반환합니다. family: 가족 동반, family_w_child: 자녀 동반, not_family: 가족 동반자 확인되지 않음, all(기본값): 모든 동반자 유형
+    ): TMapTravelVisitorResponse
 
 }

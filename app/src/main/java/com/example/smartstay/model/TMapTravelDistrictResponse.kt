@@ -9,8 +9,8 @@ data class CommonStatus(
     val code: String, // 응답 코드 ex) 00 = 데이터 조회 성공
     val message: String, // 요청 성공 여부 ex) success
     val totalCount: Int, // 검색 결과 데이터 건수
-    val offset: Int, // 여행지 목록을 조회하는 시작점
-    val limit: Int, // 데이터 조회 한도 → 여행지 목록을 offset부터 시작해서 얼마나 가져올 것인지 한도 지정
+    val offset: Int? = null, // 여행지 목록을 조회하는 시작점
+    val limit: Int? = null, // 데이터 조회 한도 → 여행지 목록을 offset부터 시작해서 얼마나 가져올 것인지 한도 지정
 )
 
 data class DistrictContents(
