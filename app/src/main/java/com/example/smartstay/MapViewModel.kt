@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartstay.model.NaverDirectionsResponse
 import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.TMapRouteResponse
+import com.example.smartstay.model.TMapTravelResponse
 import com.example.smartstay.network.NetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -60,6 +61,24 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "findTMapMultiModalRouteSummary: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelDestinationInfo: MutableLiveData<TMapTravelResponse> = MutableLiveData()
+    val tMapTravelDestinationInfo: LiveData<TMapTravelResponse> get() = _tMapTravelDestinationInfo
+
+    fun getTravelDestination(context: Context, type: String = "sig", offset: Int = 0, limit: Int = 100) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelDestinationInfo.value = networkService.getTravelDestination(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    type = type,
+                    offset = offset,
+                    limit = limit
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelDestination: ${e.message}")
             }
         }
     }

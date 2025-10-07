@@ -218,6 +218,11 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             ),
             context = requireContext()
         )
+
+        mapViewModel.getTravelDestination(context = requireContext())
+        mapViewModel.tMapTravelDestinationInfo.observe(viewLifecycleOwner) { travelDestinationInfo ->
+            Log.e(TAG, ""+ travelDestinationInfo)
+        }
     }
 
     companion object {
