@@ -219,18 +219,25 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             context = requireContext()
         )
 
-        mapViewModel.getTravelDestination(context = requireContext())
-        mapViewModel.tMapTravelDestinationInfo.observe(viewLifecycleOwner) { travelDestinationInfo ->
-            Log.e(TAG, ""+ travelDestinationInfo)
-        mapViewModel.getTravelAccommodationInfo(context = requireContext(), districtCode = "5013000000")
-        mapViewModel.tMapTravelAccommodationsInfo.observe(viewLifecycleOwner) { accommodationInfo ->
-            Log.e(TAG, ""+ accommodationInfo)
-        mapViewModel.getTravelVisitorsCountMonthly(context = requireContext(), districtCode = "5011000000")
-        mapViewModel.tMapTravelVisitorsInfo.observe(viewLifecycleOwner) { travelVisitorInfo ->
-            Log.e(TAG, ""+travelVisitorInfo)
-        mapViewModel.getTravelDailyVisitorsCount(context = requireContext(), districtCode = "5011000000")
-        mapViewModel.tMapTravelDailyVisitorsInfo.observe(viewLifecycleOwner) { travelDailyVisitorInfo ->
-            Log.e(TAG, ""+travelDailyVisitorInfo)
+        // 테스트 시작점 (할당량 초과로 테스트 못함)
+//        mapViewModel.getTravelAccommodationInfo(context = requireContext(), districtCode = "5013000000")
+//        mapViewModel.tMapTravelAccommodationsInfo.observe(viewLifecycleOwner) { accommodationInfo ->
+//            Log.e(TAG, ""+ accommodationInfo)
+//        }
+
+//        mapViewModel.getTravelMonthlyVisitorsCount(context = requireContext(), districtCode = "5011000000")
+//        mapViewModel.tMapTravelMonthlyVisitorsInfo.observe(viewLifecycleOwner) { travelMonthlyVisitorInfo ->
+//            Log.e(TAG, ""+travelMonthlyVisitorInfo)
+//        }
+
+//        mapViewModel.getTravelDailyVisitorsCount(context = requireContext(), districtCode = "5011000000")
+//        mapViewModel.tMapTravelDailyVisitorsInfo.observe(viewLifecycleOwner) { travelDailyVisitorInfo ->
+//            Log.e(TAG, ""+travelDailyVisitorInfo)
+//        }
+
+        mapViewModel.getTravelMonthlyDistrictDuration(context = requireContext(), districtCode = "5013032023")
+        mapViewModel.tMapTravelDistrictDurationInfo.observe(viewLifecycleOwner) { travelDistrictDurationInfo ->
+            Log.e(TAG, ""+travelDistrictDurationInfo)
         }
     }
 

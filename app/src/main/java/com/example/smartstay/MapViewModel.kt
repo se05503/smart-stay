@@ -11,6 +11,7 @@ import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.TMapRouteResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
+import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.network.NetworkService
@@ -153,6 +154,23 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelVisitorsCountDaily: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelDistrictDurationInfo: MutableLiveData<TMapTravelDistrictDurationResponse> = MutableLiveData()
+    val tMapTravelDistrictDurationInfo: LiveData<TMapTravelDistrictDurationResponse> get() = _tMapTravelDistrictDurationInfo
+
+    fun getTravelMonthlyDistrictDuration(context: Context, districtCode: String, yearMonth: String = "latest") {
+        viewModelScope.launch {
+            try {
+                _tMapTravelDistrictDurationInfo.value = networkService.getTravelMonthlyDistrictDuration(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    districtCode = districtCode,
+                    yearMonth = yearMonth
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelMonthlyDistrictDuration: ${e.message}")
             }
         }
     }

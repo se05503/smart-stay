@@ -8,6 +8,7 @@ import com.example.smartstay.model.SocialLoginResponse
 import com.example.smartstay.model.TMapRouteResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
+import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.UserRequest
@@ -128,4 +129,18 @@ interface NetworkService {
         @Query("ageGrp") ageGrp: String, // [option] 10: 10대, 20: 20대, ... 50: 50대, 60_over: 60대 이상, all(default): 모든 연령대
         @Query("companionType") companionType: String // [option] family: 가족 동반, family_w_child: 자녀 동반, not_family: 가족 동반자 확인되지 않음, all: 모든 동반자 유형
     ): TMapTravelDailyVisitorResponse
+
+    /**
+     * 특정 여행지(동, 리)를 여행하는 여행자의 월별 평균 체류시간 정보를 제공합니다.
+     * 데이터 제공 가능 여행지 검색에서 반환된 동, 리 지역을 대상으로 월별 여행자 체류 시간을 확인할 수 있습니다.
+     * 매 기준월 1일에서 말일 사이 해당 지역(동, 리)을 여행한 여행자의 워렬 평균 체류시간을 초 단위로 제공합니다.
+     * 데이터가 충분하지 않아 통계 산출이 어려운 경우 체류시간 값으로 null을 반환합니다.
+     * 기준 월(yearMonth)을 입력하지 않으면 최근 월을 기준으로 정보를 반환합니다.
+     */
+    @GET("puzzle/travel/visit/duration/raw/monthly/districts/{districtCode}")
+    suspend fun getTravelMonthlyDistrictDuration(
+        @Header("appKey") appKey: String,
+        @Path("districtCode") districtCode: String,
+        @Query("yearMonth") yearMonth: String, // [option] 검색 기준 월(연도+월)입니다. 기준 월을 입력하지 않으면 최근 월(latest)에 대한 데이터를 반환합니다. 날짜 입력: 검색할 월을 YYYYMM(연도+월) 형식으로 입력. latest(기본값): 최근 월 검색
+    ): TMapTravelDistrictDurationResponse
 }
