@@ -6,6 +6,7 @@ import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
 import com.example.smartstay.model.TMapRouteResponse
+import com.example.smartstay.model.TMapTravelAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
@@ -143,4 +144,13 @@ interface NetworkService {
         @Path("districtCode") districtCode: String,
         @Query("yearMonth") yearMonth: String, // [option] 검색 기준 월(연도+월)입니다. 기준 월을 입력하지 않으면 최근 월(latest)에 대한 데이터를 반환합니다. 날짜 입력: 검색할 월을 YYYYMM(연도+월) 형식으로 입력. latest(기본값): 최근 월 검색
     ): TMapTravelDistrictDurationResponse
+
+    /**
+     * 통화 통계, 기지국 기반 위치 정보를 바탕으로 한 숙소 인기 순위를 조회합니다
+     */
+    @GET("puzzle/travel/accommodation/ranking/pois/{poiId}")
+    suspend fun getTravelAccommodationRanking(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String // 순위를 조회할 숙소의 코드입니다. "데이터 제공 가능한 숙소"에서 숙소 코드를 검색할 수 있습니다. ex) 6453368
+    ): TMapTravelAccommodationRankingResponse
 }

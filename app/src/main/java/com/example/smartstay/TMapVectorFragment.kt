@@ -238,6 +238,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         mapViewModel.getTravelMonthlyDistrictDuration(context = requireContext(), districtCode = "5013032023")
         mapViewModel.tMapTravelDistrictDurationInfo.observe(viewLifecycleOwner) { travelDistrictDurationInfo ->
             Log.e(TAG, ""+travelDistrictDurationInfo)
+        mapViewModel.getTravelAccommodationRanking(context = requireContext(), poiId = "6453368")
+        mapViewModel.tMapTravelAccommodationRankingInfo.observe(viewLifecycleOwner) { travelAccommodationRankingInfo ->
+            Log.e(TAG, ""+travelAccommodationRankingInfo)
         }
     }
 

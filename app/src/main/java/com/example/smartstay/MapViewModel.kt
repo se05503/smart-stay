@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartstay.model.NaverDirectionsResponse
 import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.TMapRouteResponse
+import com.example.smartstay.model.TMapTravelAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
@@ -171,6 +172,22 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelMonthlyDistrictDuration: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelAccommodationRankingInfo: MutableLiveData<TMapTravelAccommodationRankingResponse> = MutableLiveData()
+    val tMapTravelAccommodationRankingInfo: LiveData<TMapTravelAccommodationRankingResponse> get() = _tMapTravelAccommodationRankingInfo
+
+    fun getTravelAccommodationRanking(context: Context, poiId: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelAccommodationRankingInfo.value = networkService.getTravelAccommodationRanking(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    poiId = poiId
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelAccommodationRanking: ${e.message}")
             }
         }
     }
