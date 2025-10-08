@@ -9,9 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartstay.model.NaverDirectionsResponse
 import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.TMapRouteResponse
-import com.example.smartstay.model.TMapTravelAccommodationRankingResponse
+import com.example.smartstay.model.TMapTravelSpecificAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
+import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
@@ -178,16 +179,34 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
 
     private val _tMapTravelAccommodationRankingInfo: MutableLiveData<TMapTravelAccommodationRankingResponse> = MutableLiveData()
     val tMapTravelAccommodationRankingInfo: LiveData<TMapTravelAccommodationRankingResponse> get() = _tMapTravelAccommodationRankingInfo
+    private val _tMapTravelSpecificAccommodationRankingInfo: MutableLiveData<TMapTravelSpecificAccommodationRankingResponse> = MutableLiveData()
+    val tMapTravelSpecificAccommodationRankingInfo: LiveData<TMapTravelSpecificAccommodationRankingResponse> get() = _tMapTravelSpecificAccommodationRankingInfo
 
-    fun getTravelAccommodationRanking(context: Context, poiId: String) {
+    fun getTravelSpecificAccommodationRanking(context: Context, poiId: String) {
         viewModelScope.launch {
             try {
-                _tMapTravelAccommodationRankingInfo.value = networkService.getTravelAccommodationRanking(
+                _tMapTravelSpecificAccommodationRankingInfo.value = networkService.getTravelSpecificAccommodationRanking(
                     appKey = context.getString(R.string.sk_telecom_open_api_app_key),
                     poiId = poiId
                 )
             } catch (e: Exception) {
-                Log.e(TMapVectorFragment.TAG, "getTravelAccommodationRanking: ${e.message}")
+                Log.e(TMapVectorFragment.TAG, "getTravelSpecificAccommodationRanking: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelDistrictAccommodationRankingInfo: MutableLiveData<TMapTravelDistrictAccommodationRankingResponse> = MutableLiveData()
+    val tMapTravelDistrictAccommodationRankingInfo: LiveData<TMapTravelDistrictAccommodationRankingResponse> get() = _tMapTravelDistrictAccommodationRankingInfo
+
+    fun getTravelDistrictAccommodationRanking(context: Context, districtCode: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelDistrictAccommodationRankingInfo.value = networkService.getTravelDistrictAccommodationRanking(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    districtCode = districtCode
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelDistrictAccommodationRanking: ${e.message}")
             }
         }
     }

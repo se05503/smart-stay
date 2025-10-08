@@ -6,9 +6,10 @@ import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
 import com.example.smartstay.model.TMapRouteResponse
-import com.example.smartstay.model.TMapTravelAccommodationRankingResponse
+import com.example.smartstay.model.TMapTravelSpecificAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
+import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
@@ -149,8 +150,17 @@ interface NetworkService {
      * 통화 통계, 기지국 기반 위치 정보를 바탕으로 한 숙소 인기 순위를 조회합니다
      */
     @GET("puzzle/travel/accommodation/ranking/pois/{poiId}")
-    suspend fun getTravelAccommodationRanking(
+    suspend fun getTravelSpecificAccommodationRanking(
         @Header("appKey") appKey: String,
         @Path("poiId") poiId: String // 순위를 조회할 숙소의 코드입니다. "데이터 제공 가능한 숙소"에서 숙소 코드를 검색할 수 있습니다. ex) 6453368
-    ): TMapTravelAccommodationRankingResponse
+    ): TMapTravelSpecificAccommodationRankingResponse
+
+    /**
+     * 시도 내 지역 숙소 순위를 조회합니다.
+     */
+    @GET("puzzle/travel/accommodation/ranking/districts/{districtCode}")
+    suspend fun getTravelDistrictAccommodationRanking(
+        @Header("appKey") appKey: String,
+        @Path("districtCode") districtCode: String // 순위를 조회할 시도 법정동 코드 ex) 500000000 = 제주특별자치도
+    ): TMapTravelDistrictAccommodationRankingResponse
 }
