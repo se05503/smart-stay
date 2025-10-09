@@ -15,6 +15,7 @@ import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
+import com.example.smartstay.model.TMapTravelVisitorSegmentsResponse
 import com.example.smartstay.model.UserRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -188,4 +189,13 @@ interface NetworkService {
         @Path("poiId") poiId: String, // 조회할 숙소 코드
         @Query("type") type: String, // 조회할 숙소의 특징값 유형. percentile: 백분위, lift: 지역 평균 대비 빈도수의 향상도
     ): TMapTravelSpecificAccommodationFeatureResponse
+
+    /**
+     * 숙소를 방문한 고객의 성별, 연령별 비율을 조회합니다.
+     */
+    @GET("puzzle/travel/accommodation/analytics/visit-seg/pois/{poiId}")
+    suspend fun getTravelVisitorSegmentsRate(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String // 조회할 숙소 코드
+    ): TMapTravelVisitorSegmentsResponse
 }

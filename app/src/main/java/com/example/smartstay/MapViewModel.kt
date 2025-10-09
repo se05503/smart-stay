@@ -18,6 +18,7 @@ import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
+import com.example.smartstay.model.TMapTravelVisitorSegmentsResponse
 import com.example.smartstay.network.NetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -246,6 +247,22 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelSpecificAccommodationFeature: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelVisitorSegmentsInfo: MutableLiveData<TMapTravelVisitorSegmentsResponse> = MutableLiveData()
+    val tMapTravelVisitorSegmentsInfo: LiveData<TMapTravelVisitorSegmentsResponse> get() = _tMapTravelVisitorSegmentsInfo
+
+    fun getTravelVisitorSegmentsRate(context: Context, poiId: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelVisitorSegmentsInfo.value = networkService.getTravelVisitorSegmentsRate(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    poiId = poiId,
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelVisitorSegmentsRate: ${e.message}")
             }
         }
     }
