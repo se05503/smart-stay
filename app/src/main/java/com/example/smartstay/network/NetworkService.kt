@@ -10,6 +10,7 @@ import com.example.smartstay.model.TMapTravelSpecificAccommodationRankingRespons
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
 import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingResponse
+import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
@@ -163,4 +164,17 @@ interface NetworkService {
         @Header("appKey") appKey: String,
         @Path("districtCode") districtCode: String // 순위를 조회할 시도 법정동 코드 ex) 500000000 = 제주특별자치도
     ): TMapTravelDistrictAccommodationRankingResponse
+
+    /**
+     * 시도 내 지역 숙소 순위를 테마별로 조회합니다.
+     */
+    @GET("puzzle/travel/accommodation/ranking/{theme}/districts/{districtCode}")
+    suspend fun getTravelDistrictAccommodationThemeRanking(
+        @Header("appKey") appKey: String,
+        @Path("theme") theme: String, // 순위를 조회할 숙소의 테마입니다. ex) hot-rate: 요즘 뜨는, companion-rate: 동반자 유형(신혼부부, 아이와 함께, 가족여행), seg-rate 성별, 연령대별 (*segment: 부분, 단편, 분할)
+        @Path("districtCode") districtCode: String, // 순위를 조회할 시도 법정동 코드를 지정합니다. ex) 5000000000 = 제주특별자치도
+        @Query("companionType") companionType: String, // 동반자 유형별 순위를 조회할 때 필수값입니다. newly_weds: 신혼부부, family_w_child: 아이와 함께, family: 가족여행
+        @Query("gender") gender: String, // [option] 성별 구분입니다. male: 남성, female: 여성, all(default): 전체
+        @Query("ageGrp") ageGrp: String, // [option] 연령대 구분입니다. 0: 10세 미만, 10: 10대, ... 90: 90대, 100_over: 100세 이상, all(default): 전체
+    ): TMapTravelDistrictAccommodationThemeRankingResponse
 }

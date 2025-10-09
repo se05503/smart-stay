@@ -13,6 +13,7 @@ import com.example.smartstay.model.TMapTravelSpecificAccommodationRankingRespons
 import com.example.smartstay.model.TMapTravelAccommodationResponse
 import com.example.smartstay.model.TMapTravelDailyVisitorResponse
 import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingResponse
+import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
@@ -207,6 +208,26 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelDistrictAccommodationRanking: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelDistrictAccommodationThemeRankingInfo: MutableLiveData<TMapTravelDistrictAccommodationThemeRankingResponse> = MutableLiveData()
+    val tMapTravelDistrictAccommodationThemeRankingInfo: LiveData<TMapTravelDistrictAccommodationThemeRankingResponse> get() = _tMapTravelDistrictAccommodationThemeRankingInfo
+
+    fun getTravelDistrictAccommodationThemeRanking(context: Context, theme: String, districtCode: String, companionType: String, gender: String = "all", ageGrp: String = "all") {
+        viewModelScope.launch {
+            try {
+                _tMapTravelDistrictAccommodationThemeRankingInfo.value = networkService.getTravelDistrictAccommodationThemeRanking(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    theme = theme,
+                    districtCode = districtCode,
+                    companionType = companionType,
+                    gender = gender,
+                    ageGrp = ageGrp
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelDistrictAccommodationThemeRanking: ${e.message}")
             }
         }
     }
