@@ -17,6 +17,7 @@ import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingRe
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
+import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.network.NetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -228,6 +229,23 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelDistrictAccommodationThemeRanking: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelSpecificAccommodationFeatureInfo: MutableLiveData<TMapTravelSpecificAccommodationFeatureResponse> = MutableLiveData()
+    val tMapTravelSpecificAccommodationFeatureInfo: LiveData<TMapTravelSpecificAccommodationFeatureResponse> get() = _tMapTravelSpecificAccommodationFeatureInfo
+
+    fun getTravelSpecificAccommodationFeature(context: Context, poiId: String, type: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelSpecificAccommodationFeatureInfo.value = networkService.getTravelSpecificAccommodationFeature(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    poiId = poiId,
+                    type = type
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelSpecificAccommodationFeature: ${e.message}")
             }
         }
     }

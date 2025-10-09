@@ -14,6 +14,7 @@ import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingRe
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
+import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.UserRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -177,4 +178,14 @@ interface NetworkService {
         @Query("gender") gender: String, // [option] 성별 구분입니다. male: 남성, female: 여성, all(default): 전체
         @Query("ageGrp") ageGrp: String, // [option] 연령대 구분입니다. 0: 10세 미만, 10: 10대, ... 90: 90대, 100_over: 100세 이상, all(default): 전체
     ): TMapTravelDistrictAccommodationThemeRankingResponse
+
+    /**
+     * 소재한 시도 지역 내에서 특정 숙소의 두드러지는 특징을 조회합니다.
+     */
+    @GET("puzzle/travel/accommodation/analytics/feature/pois/{poiId}")
+    suspend fun getTravelSpecificAccommodationFeature(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String, // 조회할 숙소 코드
+        @Query("type") type: String, // 조회할 숙소의 특징값 유형. percentile: 백분위, lift: 지역 평균 대비 빈도수의 향상도
+    ): TMapTravelSpecificAccommodationFeatureResponse
 }
