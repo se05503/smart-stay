@@ -13,9 +13,10 @@ import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingRespons
 import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
+import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
-import com.example.smartstay.model.TMapTravelVisitorSegmentsResponse
+import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.UserRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -194,8 +195,17 @@ interface NetworkService {
      * 숙소를 방문한 고객의 성별, 연령별 비율을 조회합니다.
      */
     @GET("puzzle/travel/accommodation/analytics/visit-seg/pois/{poiId}")
-    suspend fun getTravelVisitorSegmentsRate(
+    suspend fun getTravelSpecificAccommodationVisitorSegmentsRate(
         @Header("appKey") appKey: String,
         @Path("poiId") poiId: String // 조회할 숙소 코드
-    ): TMapTravelVisitorSegmentsResponse
+    ): TMapTravelSpecificAccommodationVisitorSegmentsResponse
+
+    /**
+     * 시군구 지역 숙소를 방문한 고객의 성별, 연령별 비율을 조회합니다.
+     */
+    @GET("puzzle/travel/accommodation/analytics/visit-seg/districts/{districtCode}")
+    suspend fun getTravelDistrictsAccommodationVisitorSegmentsRate(
+        @Header("appKey") appKey: String,
+        @Path("districtCode") districtCode: String // 조회할 시군구 법정동 코드를 지정합니다.
+    ): TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 }

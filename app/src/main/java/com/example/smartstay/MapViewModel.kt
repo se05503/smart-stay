@@ -16,9 +16,10 @@ import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingRespons
 import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingResponse
 import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
+import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
-import com.example.smartstay.model.TMapTravelVisitorSegmentsResponse
+import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
 import com.example.smartstay.network.NetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -251,18 +252,34 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
         }
     }
 
-    private val _tMapTravelVisitorSegmentsInfo: MutableLiveData<TMapTravelVisitorSegmentsResponse> = MutableLiveData()
-    val tMapTravelVisitorSegmentsInfo: LiveData<TMapTravelVisitorSegmentsResponse> get() = _tMapTravelVisitorSegmentsInfo
+    private val _tMapTravelSpecificAccommodationVisitorSegmentsInfo: MutableLiveData<TMapTravelSpecificAccommodationVisitorSegmentsResponse> = MutableLiveData()
+    val tMapTravelSpecificAccommodationVisitorSegmentsInfo: LiveData<TMapTravelSpecificAccommodationVisitorSegmentsResponse> get() = _tMapTravelSpecificAccommodationVisitorSegmentsInfo
 
-    fun getTravelVisitorSegmentsRate(context: Context, poiId: String) {
+    fun getTravelSpecificAccommodationVisitorSegmentsRate(context: Context, poiId: String) {
         viewModelScope.launch {
             try {
-                _tMapTravelVisitorSegmentsInfo.value = networkService.getTravelVisitorSegmentsRate(
+                _tMapTravelSpecificAccommodationVisitorSegmentsInfo.value = networkService.getTravelSpecificAccommodationVisitorSegmentsRate(
                     appKey = context.getString(R.string.sk_telecom_open_api_app_key),
                     poiId = poiId,
                 )
             } catch (e: Exception) {
-                Log.e(TMapVectorFragment.TAG, "getTravelVisitorSegmentsRate: ${e.message}")
+                Log.e(TMapVectorFragment.TAG, "getTravelSpecificAccommodationVisitorSegmentsRate: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelDistrictsAccommodationVisitorSegmentsInfo: MutableLiveData<TMapTravelDistrictsAccommodationVisitorSegmentsResponse> = MutableLiveData()
+    val tMapTravelDistrictsAccommodationVisitorSegmentsInfo: LiveData<TMapTravelDistrictsAccommodationVisitorSegmentsResponse> get() = _tMapTravelDistrictsAccommodationVisitorSegmentsInfo
+
+    fun getTravelDistrictsAccommodationVisitorSegmentsRate(context: Context, districtCode: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelDistrictsAccommodationVisitorSegmentsInfo.value = networkService.getTravelDistrictsAccommodationVisitorSegmentsRate(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    districtCode = districtCode
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelDistrictsAccommodationVisitorSegmentsRate: ${e.message}")
             }
         }
     }

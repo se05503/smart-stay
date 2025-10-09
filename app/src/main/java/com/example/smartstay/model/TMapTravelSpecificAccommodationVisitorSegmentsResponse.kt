@@ -1,11 +1,11 @@
 package com.example.smartstay.model
 
-data class TMapTravelVisitorSegmentsResponse(
+data class TMapTravelSpecificAccommodationVisitorSegmentsResponse(
     val status: CommonStatus,
-    val contents: VisitorSegmentsContents
+    val contents: SpecificAccommodationVisitorSegmentsContents
 )
 
-data class VisitorSegmentsContents(
+data class SpecificAccommodationVisitorSegmentsContents(
     val poiId: String, // 조회한 숙소 코드
     val poiName: String, // 숙소명
     val category: String, // 숙소 분류
@@ -14,7 +14,7 @@ data class VisitorSegmentsContents(
     val stat: List<VisitorStats>,
     val statStartDate: String, // 통계를 산출한 데이터의 시작일
     val statEndDate: String, // 통계를 산출한 데이터의 종료일
-    val yearMonth: String, // 통계 기준 년월 ex) 202301
+    val yearMonth: String // 통계 기준 년월 ex) 202301
 )
 
 data class VisitorStats(

@@ -253,6 +253,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         mapViewModel.getTravelVisitorSegmentsRate(context = requireContext(), poiId = "6453368")
         mapViewModel.tMapTravelVisitorSegmentsInfo.observe(viewLifecycleOwner) { travelVisitorSegmentsInfo ->
             Log.e(TAG, ""+travelVisitorSegmentsInfo)
+        mapViewModel.getTravelDistrictsAccommodationVisitorSegmentsRate(context = requireContext(), districtCode = "5013000000")
+        mapViewModel.tMapTravelDistrictsAccommodationVisitorSegmentsInfo.observe(viewLifecycleOwner) { travelDistrictsAccommodationVisitorSegmentsInfo ->
+            Log.e(TAG, ""+travelDistrictsAccommodationVisitorSegmentsInfo)
         }
     }
 
