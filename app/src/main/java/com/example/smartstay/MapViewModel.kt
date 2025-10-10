@@ -18,6 +18,7 @@ import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
+import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
 import com.example.smartstay.network.NetworkService
@@ -280,6 +281,23 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelDistrictsAccommodationVisitorSegmentsRate: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelSimilarAccommodationInfo: MutableLiveData<TMapTravelSimilarAccommodationResponse> = MutableLiveData()
+    val tMapTravelSimilarAccommodationInfo: LiveData<TMapTravelSimilarAccommodationResponse> get() = _tMapTravelSimilarAccommodationInfo
+
+    fun getTravelSimilarAccommodation(context: Context, poiId: String, type: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelSimilarAccommodationInfo.value = networkService.getTravelSimilarAccommodation(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    poiId = poiId,
+                    type = type
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelSimilarAccommodation: ${e.message}")
             }
         }
     }

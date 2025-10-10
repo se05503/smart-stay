@@ -15,6 +15,7 @@ import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
+import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.UserRequest
@@ -208,4 +209,14 @@ interface NetworkService {
         @Header("appKey") appKey: String,
         @Path("districtCode") districtCode: String // 조회할 시군구 법정동 코드를 지정합니다.
     ): TMapTravelDistrictsAccommodationVisitorSegmentsResponse
+
+    /**
+     * 특정 숙소와 함께 찾는 숙소를 조회합니다.
+     */
+    @GET("puzzle/travel/accommodation/analytics/similar/pois/{poiId}")
+    suspend fun getTravelSimilarAccommodation(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String, // 조회할 숙소 코드
+        @Query("type") type: String // 숙소 조회 범위 → all: 전국, ctp: 시도 내, sig: 시군구 내
+    ): TMapTravelSimilarAccommodationResponse
 }
