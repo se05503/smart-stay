@@ -15,6 +15,7 @@ import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
+import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbyResponse
 import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
@@ -219,4 +220,14 @@ interface NetworkService {
         @Path("poiId") poiId: String, // 조회할 숙소 코드
         @Query("type") type: String // 숙소 조회 범위 → all: 전국, ctp: 시도 내, sig: 시군구 내
     ): TMapTravelSimilarAccommodationResponse
+
+    /**
+     * 여행객이 선호하는 숙소 주변 인기 음식점 Top 5를 음식점 분류별로 제공합니다.
+     */
+    @GET("puzzle/travel/accommodation/nearby/restaurant/pois/{poiId}")
+    suspend fun getTravelPopularRestaurantsNearby(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String, // 조회할 숙소 코드
+        @Query("category") category: String // 음식점 분류 → kor: 한식, chn: 중식, jpn: 일식, wes: 양식, asi: 아시아음식, etc: 기타, all: 전체
+    ): TMapTravelPopularRestaurantsNearbyResponse
 }

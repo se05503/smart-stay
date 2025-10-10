@@ -18,6 +18,7 @@ import com.example.smartstay.model.TMapTravelDistrictDurationResponse
 import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
+import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbyResponse
 import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
@@ -298,6 +299,23 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelSimilarAccommodation: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelPopularRestaurantsNearbyInfo: MutableLiveData<TMapTravelPopularRestaurantsNearbyResponse> = MutableLiveData()
+    val tMapTravelPopularRestaurantsNearbyInfo: LiveData<TMapTravelPopularRestaurantsNearbyResponse> get() = _tMapTravelPopularRestaurantsNearbyInfo
+
+    fun getTravelPopularRestaurantsNearby(context: Context, poiId: String, category: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelPopularRestaurantsNearbyInfo.value = networkService.getTravelPopularRestaurantsNearby(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    poiId = poiId,
+                    category = category
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelPopularRestaurantsNearby: ${e.message}")
             }
         }
     }
