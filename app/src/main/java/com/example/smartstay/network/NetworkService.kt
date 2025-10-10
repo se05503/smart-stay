@@ -16,6 +16,7 @@ import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbyResponse
+import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbySegmentRateResponse
 import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
@@ -230,4 +231,15 @@ interface NetworkService {
         @Path("poiId") poiId: String, // 조회할 숙소 코드
         @Query("category") category: String // 음식점 분류 → kor: 한식, chn: 중식, jpn: 일식, wes: 양식, asi: 아시아음식, etc: 기타, all: 전체
     ): TMapTravelPopularRestaurantsNearbyResponse
+
+    /**
+     * 여행객이 선호하는 숙소 주변 인기 음식점 Top 5를 성·연령별로 제공합니다.
+     */
+    @GET("puzzle/travel/accommodation/nearby/restaurant/seg-rate/pois/{poiId}")
+    suspend fun getTravelPopularRestaurantsNearBySegmentRate(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String, // 조회할 숙소 코드
+        @Query("gender") gender: String, // 성별 → male: 남성, female: 여성, all: 전체
+        @Query("ageGrp") ageGrp: String // 연령대 구분 → 0: 10세 미만, 10: 10대, ... 90: 90대, 100_over: 100세 이상, all: 전체
+    ): TMapTravelPopularRestaurantsNearbySegmentRateResponse
 }

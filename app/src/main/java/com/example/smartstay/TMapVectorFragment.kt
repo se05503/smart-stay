@@ -262,6 +262,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         mapViewModel.getTravelPopularRestaurantsNearby(context = requireContext(), poiId = "6453368", category = "kor")
         mapViewModel.tMapTravelPopularRestaurantsNearbyInfo.observe(viewLifecycleOwner) { travelPopularRestaurantsNearbyInfo ->
             Log.e(TAG, ""+travelPopularRestaurantsNearbyInfo)
+        mapViewModel.getTravelPopularRestaurantsNearBySegmentRate(context = requireContext(), poiId = "6453368", gender = "male", ageGrp = "30")
+        mapViewModel.tMapTravelPopularRestaurantsNearbySegmentRateInfo.observe(viewLifecycleOwner) { travelPopularRestaurantsNearbySegmentRateInfo ->
+            Log.e(TAG, ""+travelPopularRestaurantsNearbySegmentRateInfo)
         }
     }
 
