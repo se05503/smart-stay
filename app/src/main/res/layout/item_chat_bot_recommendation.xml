@@ -11,7 +11,7 @@
         android:layout_height="40dp"
         android:background="@drawable/bg_circle"
         android:clipToOutline="true"
-        android:src="@drawable/ic_professor"
+        android:src="@drawable/ic_chatbot"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:text="챗봇 AI"
+        android:text="챗봇 제제"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_profile"
@@ -52,7 +52,19 @@
                 android:id="@+id/viewpager2_recommend_stays"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_naver_map"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#CDDC39"
+                android:background="@drawable/shape_button_round"
+                android:layout_marginTop="8dp"
+                android:text="지도보기"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

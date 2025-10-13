@@ -11,7 +11,7 @@
         android:id="@+id/iv_profile"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        tools:src="@drawable/ic_professor"
+        android:src="@drawable/ic_woony"
         android:background="@drawable/bg_circle"
         android:clipToOutline="true"
         app:layout_constraintTop_toTopOf="parent"

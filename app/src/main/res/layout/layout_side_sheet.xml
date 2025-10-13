@@ -31,12 +31,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="대화 키워드 필터링 💬️"
+        android:text="추천 숙소 필터링 💬️"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"/>
 
     <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipgroup_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

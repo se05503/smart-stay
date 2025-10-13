@@ -28,7 +28,7 @@
     <string name="job_freelancer">자유직</string>
     <string name="job_housewife">전업주부</string>
     <string name="job_student">대학(원)생</string>
-    <string name="job_exam_prep">재수/\n입시/\n유학준비</string>
+    <string name="job_exam_prep">재수/\n입시/\n유학 준비</string>
     <string name="job_unemployed">무직</string>
     <string name="job_etc">기타</string>
     <string name="companion_spouse">배우자</string>
@@ -41,5 +41,6 @@
     <string name="companion_pet">반려동물</string>
     <string name="companion_alone">혼자서</string>
     <string name="companion_other">기타</string>
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

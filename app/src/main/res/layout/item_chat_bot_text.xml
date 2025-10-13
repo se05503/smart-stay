@@ -9,7 +9,7 @@
         android:id="@+id/iv_profile"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        tools:src="@drawable/ic_chatbot"
+        android:src="@drawable/ic_chatbot"
         android:background="@drawable/bg_circle"
         android:clipToOutline="true"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_profile"
         app:layout_constraintBottom_toBottomOf="@id/iv_profile"
         app:layout_constraintStart_toEndOf="@id/iv_profile"
-        tools:text="닉네임" />
+        android:text="챗봇 제제" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
