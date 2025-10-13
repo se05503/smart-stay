@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.ItemTmapAccomodationBinding
 import com.example.smartstay.model.AccommodationInfo
 
-class TMapAdapter: ListAdapter<AccommodationInfo, TMapAdapter.TMapViewHolder>(differ) {
+class TMapAdapter(private val onClicked: (AccommodationInfo) -> Unit): ListAdapter<AccommodationInfo, TMapAdapter.TMapViewHolder>(differ) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,6 +32,9 @@ class TMapAdapter: ListAdapter<AccommodationInfo, TMapAdapter.TMapViewHolder>(di
             tvTMapAccommodationName.text = item.name
             tvTMapAccommodationAddress.text = item.address
             tvTMapAccommodationMinimumPrice.text = "${item.minimumPrice}원~"
+            root.setOnClickListener {
+                onClicked(item)
+            }
         }
     }
 

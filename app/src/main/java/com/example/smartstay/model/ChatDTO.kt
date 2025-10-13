@@ -40,8 +40,8 @@ data class AccommodationInfo(
     val type: String, // 숙박유형명
     val image: Int = 0, // 숙박업 이미지(서버x)
     val address: String, // 숙박업도로명주소
-    val latitude: Float = 0f, // 위도 (y)
-    val longitude: Float = 0f, // 경도 (x)
+    val latitude: Double, // 위도 (y)
+    val longitude: Double, // 경도 (x)
     val minimumPrice: Int, // 숙박업최저가격
     @SerializedName("숙박업평균가격")
     val averagePrice: Int, // 숙박업평균가격
