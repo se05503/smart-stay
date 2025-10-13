@@ -24,6 +24,7 @@ import android.os.Message
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.network.RetrofitInstance
@@ -173,6 +174,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         recyclerViewTMap.adapter = tMapAdapter
         recyclerViewTMap.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         tMapAdapter.submitList(testAccommodationList)
+
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(recyclerViewTMap)
 
         /**
          * 지도 생성하기 (필요 O)

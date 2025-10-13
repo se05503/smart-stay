@@ -23,6 +23,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="40dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/item_tmap_accomodation"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
