@@ -42,7 +42,7 @@ interface NetworkService {
     ): Call<Any>
 
     @POST("/social-login")
-    fun postSocialLogin(@Body request: SocialLoginRequest): Call<SocialLoginResponse>
+    suspend fun postSocialLogin(@Body request: SocialLoginRequest): SocialLoginResponse
 
     @POST("/social-chat")
     fun postChat(@Body request: ChatRequest): Call<String>

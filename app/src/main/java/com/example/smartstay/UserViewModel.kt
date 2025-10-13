@@ -1,9 +1,9 @@
 package com.example.smartstay
 
 import androidx.lifecycle.ViewModel
-import com.example.smartstay.model.UserInfo
+import com.example.smartstay.model.UserModel
 
-class InitialSettingViewModel: ViewModel() {
-    var userInfo: UserInfo = UserInfo()
+class UserViewModel: ViewModel() {
+    var userInfo: UserModel = UserModel()
     val userInitialInfoMap: MutableMap<String, Any> = mutableMapOf()
 }

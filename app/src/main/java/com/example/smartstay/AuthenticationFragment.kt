@@ -11,14 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.smartstay.databinding.FragmentAuthenticationBinding
 import com.example.smartstay.model.SocialLoginRequest
-import com.example.smartstay.model.SocialLoginResponse
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import androidx.fragment.app.activityViewModels
-import com.example.smartstay.model.LOGIN
-import com.example.smartstay.model.UserInfo
+import com.example.smartstay.model.UserModel
+import com.example.smartstay.network.RetrofitInstance
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -27,24 +26,24 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
+class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     private lateinit var binding: FragmentAuthenticationBinding
     private lateinit var googleLoginResult: ActivityResultLauncher<Intent>
-    private val viewModel: InitialSettingViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by activityViewModels {
+        LoginViewModelFactory(RetrofitInstance.networkService)
+    }
 
     private var naverRefreshToken: String? = null
     private var naverAccessToken: String? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding = FragmentAuthenticationBinding.bind(view)
-
+    /**
+     * 뷰와 관련없는 초기화 작업을 하기에 적합한 생명주기
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         /**
          * 카카오/네이버는 앱 클라이언트 내에서 refreshToken, accessToken 을 클라이언트에서 받을 수 있다
          * 구글은 serverAuthCode 를 클라이언트가 서버에 넘겨줘서 서버가 refreshToken, accessToken 을 발급해야한다.
@@ -53,47 +52,50 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
         googleLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val resultCode: Int = result.resultCode
             val intent: Intent? = result.data
-            Log.e(GOOGLE_LOGIN, "resultCode: $resultCode")
-            try {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
-                val account = task.getResult(ApiException::class.java)
-                Log.e(GOOGLE_LOGIN, "accountId: ${account.id}, idToken: ${account.idToken}, email: ${account.email}, photoUrl: ${account.photoUrl}, displayName: ${account.displayName}")
-                RetrofitInstance.networkService.postSocialLogin(
-                    SocialLoginRequest(
-                        provider = LOGIN.GOGGLE,
-                        user_id = account.id ?: "",
-                        email = account.email ?: "",
-                        nickname = account.displayName ?: "",
-                        refreshToken = account.idToken ?: "",
-                        accessToken = "null"
-                    )
-                ).enqueue(object: Callback<SocialLoginResponse> {
-                    override fun onResponse(
-                        p0: Call<SocialLoginResponse?>,
-                        p1: Response<SocialLoginResponse?>
-                    ) {
-                        if(p1.isSuccessful) {
-                            val response = p1.body()
-                            Log.e(GOOGLE_LOGIN, "message: ${response?.message}, userInfo: ${response?.user}")
-                            Toast.makeText(context, "구글 로그인이 되었습니다", Toast.LENGTH_SHORT).show()
-                            findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
-                        }
-                    }
 
-                    override fun onFailure(
-                        p0: Call<SocialLoginResponse?>,
-                        p1: Throwable
-                    ) {
-                        Log.e(GOOGLE_LOGIN, "backend server error: ${p1.message}")
-                    }
+            val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
+            val account = task.getResult(ApiException::class.java)
 
-                })
-            } catch (e: ApiException) {
-                Log.e(GOOGLE_LOGIN, "google login error: ${e.message}")
+            Log.e(
+                GOOGLE_LOGIN,
+                "accountId: ${account.id}, idToken: ${account.idToken}, email: ${account.email}, photoUrl: ${account.photoUrl}, displayName: ${account.displayName}"
+            )
+
+            loginViewModel.postSocialLogin(
+                socialLoginRequest = SocialLoginRequest(
+                    provider = "google",
+                    user_id = account.id ?: "",
+                    email = account.email ?: "",
+                    nickname = account.displayName ?: "",
+                    refreshToken = "",
+                    accessToken = account.idToken ?: ""
+                )
+            )
+
+            userViewModel.userInfo = UserModel(
+                id = account.id ?: "",
+                nickname = account.displayName ?: "",
+                imageUrl = account.photoUrl.toString()
+            )
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentAuthenticationBinding.bind(view)
+        initListeners()
+        initObservers()
+    }
+
+    private fun initObservers() {
+        loginViewModel.socialLoginInfo.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(context, "소셜 로그인이 성공했습니다.", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
+            }.onFailure { error ->
+                Toast.makeText(context, error.message ?: "소셜 로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
-
-        initListeners()
     }
 
 
@@ -101,129 +103,89 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
         ivLoginKakao.setOnClickListener {
             val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
                 if (error != null) {
-                    Log.e("error", "카카오계정으로 로그인 실패", error)
+                    Toast.makeText(context, "카카오계정으로 로그인 실패", Toast.LENGTH_SHORT).show()
+                    Log.e(KAKAO_LOGIN, error.message ?: "no message")
                 } else if (token != null) {
-                    Log.i("error", "카카오계정으로 로그인 성공 ${token.accessToken}")
-                    Toast.makeText(requireContext(), "${token.accessToken}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "카카오계정으로 로그인 성공", Toast.LENGTH_SHORT).show()
+                    Log.e(KAKAO_LOGIN, token.accessToken)
                 }
             }
-
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
                 UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
                     if (error != null) {
-                        Log.e("error", "카카오톡으로 로그인 실패", error)
+                        Toast.makeText(context, "카카오톡으로 로그인 실패", Toast.LENGTH_SHORT).show()
+                        Log.e(KAKAO_LOGIN, error.message ?: "no message")
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
                         }
-                        UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = callback)
+                        UserApiClient.instance.loginWithKakaoAccount(
+                            requireContext(),
+                            callback = callback
+                        )
                     } else if (token != null) {
-                        Log.i("error", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                        // 카카오계정 정보 가져오기
+                        Log.e(KAKAO_LOGIN, "카카오톡으로 로그인 성공 ${token.accessToken}")
                         UserApiClient.instance.me { user, meError ->
-                            if(meError != null) {
-                                Log.e("kakao", "사용자 정보 요청 실패", meError)
+                            if (meError != null) {
+                                Log.e(KAKAO_LOGIN, "사용자 정보 요청 실패", meError)
                             } else if (user != null) {
-                                val userInfo = UserInfo(
-                                    provider = "kakao",
-                                    user_id = user.id.toString(),
-                                    email = user.kakaoAccount?.email,
-                                    nickname = user.kakaoAccount?.profile?.nickname,
-                                    imageUrl = user.kakaoAccount?.profile?.profileImageUrl
+                                loginViewModel.postSocialLogin(
+                                    socialLoginRequest = SocialLoginRequest(
+                                        provider = "kakao",
+                                        user_id = user.id.toString(),
+                                        email = user.kakaoAccount?.email ?: "",
+                                        nickname = user.kakaoAccount?.profile?.nickname ?: "",
+                                        refreshToken = token.refreshToken,
+                                        accessToken = token.accessToken
+                                    )
                                 )
-                                viewModel.userInfo = userInfo
+                                userViewModel.userInfo = UserModel(
+                                    id = user.id.toString(),
+                                    nickname = user.kakaoAccount?.profile?.nickname ?: "",
+                                    imageUrl = user.kakaoAccount?.profile?.profileImageUrl ?: ""
+                                )
                             }
                         }
-
-                        // 서버 통신 되면 지우기(두줄 다)
-//                        Toast.makeText(requireContext(), "로그인에 성공했습니다!", Toast.LENGTH_SHORT).show()
-//                        findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
-
-                        val request = SocialLoginRequest(
-                            provider = LOGIN.KAKAO,
-                            user_id = viewModel.userInfo.user_id,
-                            email = viewModel.userInfo.email ?: "",
-                            nickname = viewModel.userInfo.nickname ?: "",
-                            refreshToken = token.refreshToken,
-                            accessToken = token.accessToken
-                        )
-
-                        RetrofitInstance.networkService.postSocialLogin(request).enqueue(object: Callback<SocialLoginResponse> {
-                            override fun onResponse(
-                                call: Call<SocialLoginResponse?>,
-                                response: Response<SocialLoginResponse?>
-                            ) {
-                                if(response.isSuccessful) {
-                                    Toast.makeText(requireContext(), "카카오 로그인이 되었습니다!", Toast.LENGTH_SHORT).show()
-                                    findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
-                                    Log.d("ttest(login)", response.body()?.message ?: "메세지 없음")
-                                } else {
-                                    Log.d("ttest(login)",""+response.errorBody()?.string())
-                                }
-                            }
-
-                            override fun onFailure(
-                                call: Call<SocialLoginResponse?>,
-                                t: Throwable
-                            ) {
-                                Log.d("ttest(login)", ""+t.message)
-                            }
-
-                        })
                     }
                 }
             } else {
                 UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = callback)
             }
         }
-
         ivLoginNaver.setOnClickListener {
-
-            val profileCallback = object: NidProfileCallback<NidProfileResponse> {
-
+            val profileCallback = object : NidProfileCallback<NidProfileResponse> {
                 override fun onSuccess(response: NidProfileResponse) {
 
                     val userId = response.profile?.id ?: ""
                     val nickname = response.profile?.nickname ?: ""
                     val email = response.profile?.email ?: ""
-                    val profileImage = response.profile?.profileImage
+                    val profileImage = response.profile?.profileImage ?: ""
                     val gender = response.profile?.gender
                     val name = response.profile?.name
                     val age = response.profile?.age
                     val birthday = response.profile?.birthday
                     val birthYear = response.profile?.birthYear
-                    Log.e("naver profile", "id: $userId, nickname: $nickname, email: $email, profileImage: $profileImage, gender: $gender, name: $name, age: $age, birthday: $birthday, birthYear: $birthYear")
 
-                    // server 전송
-                    RetrofitInstance.networkService.postSocialLogin(
-                        SocialLoginRequest(
-                            provider = LOGIN.NAVER,
+                    Log.e(
+                        NAVER_LOGIN,
+                        "id: $userId, nickname: $nickname, email: $email, profileImage: $profileImage, gender: $gender, name: $name, age: $age, birthday: $birthday, birthYear: $birthYear"
+                    )
+
+                    loginViewModel.postSocialLogin(
+                        socialLoginRequest = SocialLoginRequest(
+                            provider = "naver",
                             user_id = userId,
                             email = email,
                             nickname = nickname,
                             refreshToken = naverRefreshToken ?: "",
                             accessToken = naverAccessToken ?: ""
                         )
-                    ).enqueue(object: Callback<SocialLoginResponse> {
-                        override fun onResponse(
-                            p0: Call<SocialLoginResponse?>,
-                            p1: Response<SocialLoginResponse?>
-                        ) {
-                            if(p1.isSuccessful) {
-                                val response = p1.body()
-                                findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
-                                Log.e(NAVER_LOGIN, "message: ${response?.message}, userInfo: ${response?.user}")
-                                Toast.makeText(context, "네이버 로그인에 성공했습니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                    )
 
-                        override fun onFailure(
-                            p0: Call<SocialLoginResponse?>,
-                            p1: Throwable
-                        ) {
-                            Log.e(NAVER_LOGIN, "server error: ${p1.message}")
-                        }
-
-                    })
+                    userViewModel.userInfo = UserModel(
+                        id = userId,
+                        nickname = nickname,
+                        imageUrl = profileImage
+                    )
                 }
 
                 override fun onError(errorCode: Int, message: String) {
@@ -235,43 +197,48 @@ class AuthenticationFragment: Fragment(R.layout.fragment_authentication) {
                 }
             }
 
-            val oauthLoginCallback = object: OAuthLoginCallback {
-
+            val oauthLoginCallback = object : OAuthLoginCallback {
                 override fun onSuccess() {
                     naverAccessToken = NaverIdLoginSDK.getAccessToken()
                     naverRefreshToken = NaverIdLoginSDK.getRefreshToken()
-                    Log.e("naver login", "accessToken: $naverAccessToken, refreshToken: $naverRefreshToken")
+                    Log.e(
+                        NAVER_LOGIN,
+                        "accessToken: $naverAccessToken, refreshToken: $naverRefreshToken"
+                    )
                     NidOAuthLogin().callProfileApi(profileCallback)
                 }
 
                 override fun onError(errorCode: Int, message: String) {
-                    Log.e("naver login", "errorCode: $errorCode, message: $message")
+                    Log.e(NAVER_LOGIN, "errorCode: $errorCode, message: $message")
                 }
 
                 override fun onFailure(httpStatus: Int, message: String) {
-                    Log.e("naver login", "httpStatus: ${NaverIdLoginSDK.getLastErrorCode()}, message: ${NaverIdLoginSDK.getLastErrorDescription()}")
+                    Log.e(
+                        NAVER_LOGIN,
+                        "httpStatus: ${NaverIdLoginSDK.getLastErrorCode()}, message: ${NaverIdLoginSDK.getLastErrorDescription()}"
+                    )
                 }
             }
 
             NaverIdLoginSDK.authenticate(requireContext(), oauthLoginCallback)
         }
-
         ivLoginGoogle.setOnClickListener {
-            val googleSignInOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.google_server_client_id))
-                .requestEmail()
-                .requestId()
-                .requestProfile()
-                .build()
+            val googleSignInOption =
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.google_server_client_id))
+                    .requestEmail()
+                    .requestId()
+                    .requestProfile()
+                    .build()
             val googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOption)
             googleLoginResult.launch(googleSignInClient.signInIntent)
         }
     }
 
     companion object {
-        private const val NAVER_LOGIN = "naver"
-        private const val KAKAO_LOGIN = "kakao"
-        private const val GOOGLE_LOGIN = "google"
+        const val NAVER_LOGIN = "NAVER"
+        const val KAKAO_LOGIN = "KAKAO"
+        const val GOOGLE_LOGIN = "GOOGLE"
     }
 
 }
