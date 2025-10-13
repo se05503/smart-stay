@@ -16,6 +16,7 @@ import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelPopularCommercialDistrictNearbyResponse
+import com.example.smartstay.model.TMapTravelPopularCommercialDistrictNearbySegmentRateResponse
 import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbyResponse
 import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbySegmentRateResponse
 import com.example.smartstay.model.TMapTravelPopularSpotsNearbyResponse
@@ -275,4 +276,12 @@ interface NetworkService {
         @Header("appKey") appKey: String,
         @Path("poiId") poiId: String, // 조회할 숙소 코
     ): TMapTravelPopularCommercialDistrictNearbyResponse
+
+    @GET("puzzle/travel/accommodation/nearby/area/seg-rate/pois/{poiId}")
+    suspend fun getTravelPopularCommercialDistrictNearbySegmentRate(
+        @Header("appKey") appKey: String,
+        @Path("poiId") poiId: String, // 조회할 숙소 코드
+        @Query("gender") gender: String,
+        @Query("ageGrp") ageGrp: String
+    ): TMapTravelPopularCommercialDistrictNearbySegmentRateResponse
 }

@@ -19,6 +19,7 @@ import com.example.smartstay.model.TMapTravelDistrictResponse
 import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
 import com.example.smartstay.model.TMapTravelPopularCommercialDistrictNearbyResponse
+import com.example.smartstay.model.TMapTravelPopularCommercialDistrictNearbySegmentRateResponse
 import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbyResponse
 import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbySegmentRateResponse
 import com.example.smartstay.model.TMapTravelPopularSpotsNearbyResponse
@@ -389,6 +390,24 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "getTravelPopularCommercialDistrictNearby: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapTravelPopularCommercialDistrictNearbySegmentRateInfo: MutableLiveData<TMapTravelPopularCommercialDistrictNearbySegmentRateResponse> = MutableLiveData()
+    val tMapTravelPopularCommercialDistrictNearbySegmentRateInfo: LiveData<TMapTravelPopularCommercialDistrictNearbySegmentRateResponse> get() = _tMapTravelPopularCommercialDistrictNearbySegmentRateInfo
+
+    fun getTravelPopularCommercialDistrictNearbySegmentRate(context: Context, poiId: String, gender: String, ageGrp: String) {
+        viewModelScope.launch {
+            try {
+                _tMapTravelPopularCommercialDistrictNearbySegmentRateInfo.value = networkService.getTravelPopularCommercialDistrictNearbySegmentRate(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    poiId = poiId,
+                    gender = gender,
+                    ageGrp = ageGrp
+                )
+            } catch (e: Exception) {
+                Log.e(TMapVectorFragment.TAG, "getTravelPopularCommercialDistrictNearbySegmentRate: ${e.message}")
             }
         }
     }
