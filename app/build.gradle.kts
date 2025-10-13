@@ -53,10 +53,10 @@ dependencies {
     implementation(libs.material.v1120)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
-    implementation("com.kakao.sdk:v2-user:2.21.7") // 카카오 로그인 API 모듈
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
     implementation("com.squareup.retrofit2:retrofit:2.9.0") // retrofit2
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
@@ -65,6 +65,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0") // glide
     implementation("com.airbnb.android:lottie:5.2.0") // lottie animation
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // coroutine
+
+    implementation("com.kakao.sdk:v2-user:2.21.7") // kakao login
 
     implementation("com.naver.maps:map-sdk:3.21.0") // naver map
     implementation("com.navercorp.nid:oauth:5.10.0") // naver login (jdk 11)
