@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smartstay.databinding.ItemTmapAccomodationBinding
 import com.example.smartstay.model.AccommodationInfo
 
@@ -28,10 +29,10 @@ class TMapAdapter(private val onClicked: (AccommodationInfo) -> Unit): ListAdapt
 
     inner class TMapViewHolder(private val binding: ItemTmapAccomodationBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AccommodationInfo) = with(binding) {
-            ivAccommodationPhoto.setImageDrawable(ContextCompat.getDrawable(binding.root.context, item.image))
+            Glide.with(ivAccommodationPhoto).load(item.image).into(ivAccommodationPhoto)
             tvTMapAccommodationName.text = item.name
             tvTMapAccommodationAddress.text = item.address
-            tvTMapAccommodationMinimumPrice.text = "${item.minimumPrice}원~"
+            tvTMapAccommodationMinimumPrice.text = "${Utils.formatPrice(item.minimumPrice)}~"
             root.setOnClickListener {
                 onClicked(item)
             }

@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.example.smartstay.databinding.ActivityStayDetailBinding
 import com.example.smartstay.model.AccommodationInfo
 import java.text.DecimalFormat
@@ -18,25 +19,23 @@ class StayDetailActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityStayDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val accommodationInfo = intent.getSerializableExtra("accommodationInfo") as AccommodationInfo
-        val formatter = DecimalFormat("#,###")
-        binding.apply {
         val accommodationInfo = intent.getSerializableExtra(BUNDLE_KEY) as AccommodationInfo
+        with(binding) {
             ivDetailBack.setOnClickListener { finish() }
-            ivDetailStayImage.setImageResource(accommodationInfo.image)
+            Glide.with(ivDetailStayImage).load(accommodationInfo.image).into(ivDetailStayImage)
             tvDetailStayName.text = accommodationInfo.name
             tvDetailStayType.text = accommodationInfo.type
             tvDetailStayLocation.text = accommodationInfo.address
             tvDetailRatingFinal.text = "${accommodationInfo.finalRating}.0"
             tvDetailRatingStar.text = accommodationInfo.starRating
-            tvPriceAverage.text = "${formatter.format(accommodationInfo.averagePrice)}원"
-            tvPriceMinimum.text = "${formatter.format(accommodationInfo.minimumPrice)}원"
-            tvPriceMaximum.text = "${formatter.format(accommodationInfo.maximumPrice)}원"
+            tvPriceAverage.text = Utils.formatPrice(accommodationInfo.averagePrice)
+            tvPriceMinimum.text = Utils.formatPrice(accommodationInfo.minimumPrice)
+            tvPriceMaximum.text = Utils.formatPrice(accommodationInfo.maximumPrice)
             if(accommodationInfo.isPetAvailable == "N") ivAmenityPet.alpha = 0.3f
             if(accommodationInfo.isRestaurantExist == "N") ivAmenityRestaurant.alpha = 0.3f
             if(accommodationInfo.isBarExist == "N") ivAmenityBar.alpha = 0.3f
