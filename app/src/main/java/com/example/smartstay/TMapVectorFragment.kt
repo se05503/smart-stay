@@ -1,8 +1,12 @@
 package com.example.smartstay
 
 import android.graphics.BitmapFactory
+import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -12,8 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.network.RetrofitInstance
+import com.skt.tmap.TMapPoint
 import com.skt.tmap.TMapView
 import com.skt.tmap.overlay.TMapMarkerItem
+import com.skt.tmap.overlay.TMapOverlay
+import com.skt.tmap.poi.TMapPOIItem
+import java.util.ArrayList
 
 class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
@@ -166,21 +174,57 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                  * 마커 추가하기
                  */
                 val originalBitmap =
-                    BitmapFactory.decodeResource(context?.resources, R.drawable.ic_sample_marker)
-                val resizedBitmap = originalBitmap.scale(60, 60, false)
+                    BitmapFactory.decodeResource(context?.resources, R.drawable.ic_tmap_marker_blue)
+                val resizedBitmap = originalBitmap.scale(70, 70, false)
 
                 for (accommodationInfo in testAccommodationList) {
                     val marker = TMapMarkerItem().apply {
                         id = accommodationInfo.name
                         icon = resizedBitmap
                         setTMapPoint(accommodationInfo.latitude, accommodationInfo.longitude)
-                        calloutTitle = accommodationInfo.name
-                        calloutSubTitle = accommodationInfo.address
-                        canShowCallout = true
-                        isAnimation = true
+                        canShowCallout = false
+                        name = accommodationInfo.minimumPrice.toString()
                     }
                     tmapView.addTMapMarkerItem(marker)
                 }
+
+                /**
+                 * 마커 말풍선 커스터마이징
+                 */
+                tmapView.setOnMapGestureListener(object: TMapView.OnMapGestureListenerCallback() {
+                    override fun onSingleTapMapObject(
+                        markerList: ArrayList<TMapMarkerItem?>?, // 클릭된 마커 리스트
+                        poiList: ArrayList<TMapPOIItem?>?, // 클릭된 POI 리스트
+                        point: TMapPoint?, // 클릭된 지점의 좌표
+                        screenPoint: PointF? // 클릭된 지점의 화면 좌표
+                    ): Boolean {
+                        if(markerList != null) {
+                            val clickedMarker = markerList[0]
+                            if(clickedMarker != null) {
+                                Log.e(TAG, ""+clickedMarker)
+                                val customCallOutLayout = LayoutInflater.from(tmapView.context).inflate(R.layout.custom_tmap_callout, tmapView, false)
+                                customCallOutLayout.measure(
+                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                                )
+                                Log.e(TAG, "width: ${customCallOutLayout.measuredWidth}, height: ${customCallOutLayout.measuredHeight}")
+                                customCallOutLayout.findViewById<TextView>(R.id.tvCallOutAccommodationName).text = clickedMarker.id
+                                customCallOutLayout.findViewById<TextView>(R.id.tvCallOutAccommodationPrice).text = "${clickedMarker.name}원"
+                                val x = (customCallOutLayout.measuredWidth/2).toDouble()
+                                val y = (customCallOutLayout.measuredHeight/2).toDouble()
+                                val tMapOverlay = TMapOverlay().apply {
+                                    id = clickedMarker.id + "_CallOut"
+                                    setOverlayImage(customCallOutLayout)
+                                    leftTopPoint = TMapPoint(clickedMarker.tMapPoint.latitude - x, clickedMarker.tMapPoint.longitude - y)
+                                    rightBottomPoint = TMapPoint(clickedMarker.tMapPoint.latitude + x, clickedMarker.tMapPoint.longitude + y)
+                                }
+                                tmapView.addTMapOverlay(tMapOverlay)
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                })
 
                 /**
                  * 자동차 경로안내
