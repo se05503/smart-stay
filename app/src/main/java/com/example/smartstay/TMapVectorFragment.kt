@@ -1,5 +1,6 @@
 package com.example.smartstay
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.os.Bundle
@@ -303,7 +304,10 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
          * 하단 숙소 목록 보여주기 (recyclerview)
          */
         val tMapAdapter = TMapAdapter(onClicked = { accommodationInfo ->
-            // TODO: 상세 정보 이동하기
+            val intent = Intent(context, StayDetailActivity::class.java).apply {
+                putExtra(StayDetailActivity.BUNDLE_KEY, accommodationInfo)
+            }
+            startActivity(intent)
         })
         recyclerViewTMap.adapter = tMapAdapter
         recyclerViewTMap.layoutManager =

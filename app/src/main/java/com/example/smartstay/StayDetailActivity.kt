@@ -26,6 +26,7 @@ class StayDetailActivity : AppCompatActivity() {
         val accommodationInfo = intent.getSerializableExtra("accommodationInfo") as AccommodationInfo
         val formatter = DecimalFormat("#,###")
         binding.apply {
+        val accommodationInfo = intent.getSerializableExtra(BUNDLE_KEY) as AccommodationInfo
             ivDetailBack.setOnClickListener { finish() }
             ivDetailStayImage.setImageResource(accommodationInfo.image)
             tvDetailStayName.text = accommodationInfo.name
@@ -48,5 +49,9 @@ class StayDetailActivity : AppCompatActivity() {
             if(accommodationInfo.isBusinessCenterExist == "N") ivAmenityBusiness.alpha = 0.3f
             if(accommodationInfo.isOceanViewExist == "N") ivAmenityOceanView.alpha = 0.3f
         }
+    }
+
+    companion object {
+        const val BUNDLE_KEY = "ACCOMMODATION_DETAIL_KEY"
     }
 }
