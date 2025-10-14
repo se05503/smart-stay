@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.network.RetrofitInstance
@@ -21,7 +22,128 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         MapViewModelFactory(RetrofitInstance.networkService)
     }
     private lateinit var tmapView: TMapView
-    private lateinit var testAccommodationList: List<AccommodationInfo>
+    private val testAccommodationList: List<AccommodationInfo> = listOf(
+        AccommodationInfo(
+            name = "서울 센트럴 호텔",
+            type = "호텔",
+            image = R.drawable.img_stay_1,
+            address = "서울특별시 중구 세종대로 110",
+            latitude = 37.5665,
+            longitude = 126.9780,
+            minimumPrice = 85000,
+            averagePrice = 100000,
+            maximumPrice = 120000,
+            starRating = "3성",
+            finalRating = 4,
+            isPetAvailable = "N",
+            isRestaurantExist = "Y",
+            isBarExist = "Y",
+            isCafeExist = "Y",
+            isFitnessCenterExist = "N",
+            isSwimmingPoolExist = "N",
+            isSpaExist = "N",
+            isSaunaExist = "N",
+            isReceptionCenterExist = "Y",
+            isBusinessCenterExist = "Y",
+            isOceanViewExist = "N"
+        ),
+        AccommodationInfo(
+            name = "강남 프리미엄 레지던스",
+            type = "레지던스",
+            image = R.drawable.img_stay_2,
+            address = "서울특별시 강남구 테헤란로 212",
+            latitude = 37.5013,
+            longitude = 127.0396,
+            minimumPrice = 110000,
+            averagePrice = 130000,
+            maximumPrice = 160000,
+            starRating = "4성",
+            finalRating = 5,
+            isPetAvailable = "Y",
+            isRestaurantExist = "Y",
+            isBarExist = "N",
+            isCafeExist = "Y",
+            isFitnessCenterExist = "Y",
+            isSwimmingPoolExist = "N",
+            isSpaExist = "N",
+            isSaunaExist = "N",
+            isReceptionCenterExist = "N",
+            isBusinessCenterExist = "Y",
+            isOceanViewExist = "N"
+        ),
+        AccommodationInfo(
+            name = "홍대 스타일 게스트하우스",
+            type = "게스트하우스",
+            image = R.drawable.img_stay_3,
+            address = "서울특별시 마포구 와우산로 29",
+            latitude = 37.5561,
+            longitude = 126.9229,
+            minimumPrice = 35000,
+            averagePrice = 50000,
+            maximumPrice = 60000,
+            starRating = "2성",
+            finalRating = 3,
+            isPetAvailable = "N",
+            isRestaurantExist = "N",
+            isBarExist = "Y",
+            isCafeExist = "Y",
+            isFitnessCenterExist = "N",
+            isSwimmingPoolExist = "N",
+            isSpaExist = "N",
+            isSaunaExist = "N",
+            isReceptionCenterExist = "N",
+            isBusinessCenterExist = "N",
+            isOceanViewExist = "N"
+        ),
+        AccommodationInfo(
+            name = "이태원 뷰 호텔",
+            type = "호텔",
+            image = R.drawable.img_stay_4,
+            address = "서울특별시 용산구 이태원로 188",
+            latitude = 37.5349,
+            longitude = 126.9948,
+            minimumPrice = 90000,
+            averagePrice = 110000,
+            maximumPrice = 140000,
+            starRating = "3성",
+            finalRating = 4,
+            isPetAvailable = "Y",
+            isRestaurantExist = "Y",
+            isBarExist = "Y",
+            isCafeExist = "Y",
+            isFitnessCenterExist = "Y",
+            isSwimmingPoolExist = "N",
+            isSpaExist = "N",
+            isSaunaExist = "N",
+            isReceptionCenterExist = "Y",
+            isBusinessCenterExist = "N",
+            isOceanViewExist = "N"
+        ),
+        AccommodationInfo(
+            name = "한강 리버뷰 호텔",
+            type = "호텔",
+            image = R.drawable.img_stay_5,
+            address = "서울특별시 영등포구 여의대로 24",
+            latitude = 37.5219,
+            longitude = 126.9246,
+            minimumPrice = 130000,
+            averagePrice = 150000,
+            maximumPrice = 180000,
+            starRating = "5성",
+            finalRating = 5,
+            isPetAvailable = "N",
+            isRestaurantExist = "Y",
+            isBarExist = "Y",
+            isCafeExist = "Y",
+            isFitnessCenterExist = "Y",
+            isSwimmingPoolExist = "Y",
+            isSpaExist = "Y",
+            isSaunaExist = "Y",
+            isReceptionCenterExist = "Y",
+            isBusinessCenterExist = "Y",
+            isOceanViewExist = "Y"
+        )
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -134,133 +256,10 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         })
 
         /**
-         * 하단 숙소 목록 보여주기
+         * 하단 숙소 목록 보여주기 (recyclerview)
          */
-        testAccommodationList = listOf(
-            AccommodationInfo(
-                name = "서울 센트럴 호텔",
-                type = "호텔",
-                image = R.drawable.img_stay_1,
-                address = "서울특별시 중구 세종대로 110",
-                latitude = 37.5665,
-                longitude = 126.9780,
-                minimumPrice = 85000,
-                averagePrice = 100000,
-                maximumPrice = 120000,
-                starRating = "3성",
-                finalRating = 4,
-                isPetAvailable = "N",
-                isRestaurantExist = "Y",
-                isBarExist = "Y",
-                isCafeExist = "Y",
-                isFitnessCenterExist = "N",
-                isSwimmingPoolExist = "N",
-                isSpaExist = "N",
-                isSaunaExist = "N",
-                isReceptionCenterExist = "Y",
-                isBusinessCenterExist = "Y",
-                isOceanViewExist = "N"
-            ),
-            AccommodationInfo(
-                name = "강남 프리미엄 레지던스",
-                type = "레지던스",
-                image = R.drawable.img_stay_2,
-                address = "서울특별시 강남구 테헤란로 212",
-                latitude = 37.5013,
-                longitude = 127.0396,
-                minimumPrice = 110000,
-                averagePrice = 130000,
-                maximumPrice = 160000,
-                starRating = "4성",
-                finalRating = 5,
-                isPetAvailable = "Y",
-                isRestaurantExist = "Y",
-                isBarExist = "N",
-                isCafeExist = "Y",
-                isFitnessCenterExist = "Y",
-                isSwimmingPoolExist = "N",
-                isSpaExist = "N",
-                isSaunaExist = "N",
-                isReceptionCenterExist = "N",
-                isBusinessCenterExist = "Y",
-                isOceanViewExist = "N"
-            ),
-            AccommodationInfo(
-                name = "홍대 스타일 게스트하우스",
-                type = "게스트하우스",
-                image = R.drawable.img_stay_3,
-                address = "서울특별시 마포구 와우산로 29",
-                latitude = 37.5561,
-                longitude = 126.9229,
-                minimumPrice = 35000,
-                averagePrice = 50000,
-                maximumPrice = 60000,
-                starRating = "2성",
-                finalRating = 3,
-                isPetAvailable = "N",
-                isRestaurantExist = "N",
-                isBarExist = "Y",
-                isCafeExist = "Y",
-                isFitnessCenterExist = "N",
-                isSwimmingPoolExist = "N",
-                isSpaExist = "N",
-                isSaunaExist = "N",
-                isReceptionCenterExist = "N",
-                isBusinessCenterExist = "N",
-                isOceanViewExist = "N"
-            ),
-            AccommodationInfo(
-                name = "이태원 뷰 호텔",
-                type = "호텔",
-                image = R.drawable.img_stay_4,
-                address = "서울특별시 용산구 이태원로 188",
-                latitude = 37.5349,
-                longitude = 126.9948,
-                minimumPrice = 90000,
-                averagePrice = 110000,
-                maximumPrice = 140000,
-                starRating = "3성",
-                finalRating = 4,
-                isPetAvailable = "Y",
-                isRestaurantExist = "Y",
-                isBarExist = "Y",
-                isCafeExist = "Y",
-                isFitnessCenterExist = "Y",
-                isSwimmingPoolExist = "N",
-                isSpaExist = "N",
-                isSaunaExist = "N",
-                isReceptionCenterExist = "Y",
-                isBusinessCenterExist = "N",
-                isOceanViewExist = "N"
-            ),
-            AccommodationInfo(
-                name = "한강 리버뷰 호텔",
-                type = "호텔",
-                image = R.drawable.img_stay_5,
-                address = "서울특별시 영등포구 여의대로 24",
-                latitude = 37.5219,
-                longitude = 126.9246,
-                minimumPrice = 130000,
-                averagePrice = 150000,
-                maximumPrice = 180000,
-                starRating = "5성",
-                finalRating = 5,
-                isPetAvailable = "N",
-                isRestaurantExist = "Y",
-                isBarExist = "Y",
-                isCafeExist = "Y",
-                isFitnessCenterExist = "Y",
-                isSwimmingPoolExist = "Y",
-                isSpaExist = "Y",
-                isSaunaExist = "Y",
-                isReceptionCenterExist = "Y",
-                isBusinessCenterExist = "Y",
-                isOceanViewExist = "Y"
-            )
-        )
         val tMapAdapter = TMapAdapter(onClicked = { accommodationInfo ->
-            tmapView.setCenterPoint(accommodationInfo.latitude, accommodationInfo.longitude)
-            tmapView.zoomLevel = 14
+            // TODO: 상세 정보 이동하기
         })
         recyclerViewTMap.adapter = tMapAdapter
         recyclerViewTMap.layoutManager =
@@ -268,6 +267,25 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         tMapAdapter.submitList(testAccommodationList)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerViewTMap)
+
+        recyclerViewTMap.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val layoutManager = recyclerView.layoutManager ?: return
+                    val snappedView = snapHelper.findSnapView(layoutManager)
+                    snappedView?.let { view ->
+                        val snappedViewPosition = layoutManager.getPosition(view)
+                        val snappedAccommodationInfo = testAccommodationList[snappedViewPosition]
+                        tmapView.setCenterPoint(snappedAccommodationInfo.latitude, snappedAccommodationInfo.longitude)
+                        tmapView.zoomLevel = 14
+                    }
+                }
+            }
+        })
+
+
+
 
         /**
          * 지도 이벤트 설정하기 (필요 X)
