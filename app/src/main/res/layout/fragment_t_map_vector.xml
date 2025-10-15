@@ -6,6 +6,89 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TMapVectorFragment">
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="3dp"
+        app:cardCornerRadius="12dp"
+        app:strokeColor="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:id="@+id/ivMapSwapPoint"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_swap"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/ivMapStartPoint"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_location"
+                app:tint="@color/primary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/viewPointDivider"
+                app:layout_constraintStart_toStartOf="@id/viewPointDivider"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="출발지 입력"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_marginStart="4dp"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivMapStartPoint"
+                app:layout_constraintTop_toTopOf="@id/ivMapStartPoint"
+                app:layout_constraintBottom_toBottomOf="@id/ivMapStartPoint"/>
+
+            <View
+                android:id="@+id/viewPointDivider"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="@color/divider"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toEndOf="@id/ivMapSwapPoint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/ivMapEndPoint"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_location"
+                app:tint="@color/secondary"
+                app:layout_constraintTop_toBottomOf="@id/viewPointDivider"
+                app:layout_constraintStart_toStartOf="@id/viewPointDivider"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="도착지 입력"
+                android:inputType="text"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_marginStart="4dp"
+                app:layout_constraintStart_toEndOf="@id/ivMapEndPoint"
+                app:layout_constraintTop_toTopOf="@id/ivMapEndPoint"
+                app:layout_constraintBottom_toBottomOf="@id/ivMapEndPoint"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <FrameLayout
         android:id="@+id/tmapVectorView"
         android:layout_width="0dp"
