@@ -153,15 +153,23 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             isOceanViewExist = "Y"
         )
     )
+    private lateinit var endPoint: AccommodationInfo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTMapVectorBinding.bind(view)
         initViews()
+        initListeners()
         initObservers()
     }
 
     private fun initViews() = with(binding) {
+
+        /**
+         * 초기 도착지 첫번째 숙소로 설정하기
+         */
+        etMapEndPoint.setText(testAccommodationList[0].address)
+        endPoint = testAccommodationList[0]
 
         /**
          * 지도 생성하기
@@ -316,6 +324,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerViewTMap)
 
+        /**
+         * 하단 가운데 숙소 아이템 감지하기
+         */
         recyclerViewTMap.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -327,6 +338,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         val snappedAccommodationInfo = testAccommodationList[snappedViewPosition]
                         tmapView.setCenterPoint(snappedAccommodationInfo.latitude, snappedAccommodationInfo.longitude)
                         tmapView.zoomLevel = 14
+                        etMapEndPoint.setText(snappedAccommodationInfo.address)
+                        endPoint = snappedAccommodationInfo
                     }
                 }
             }
@@ -432,6 +445,12 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 //        val line = TMapPolyLine("line1", pointList)
 //        tmapView.addTMapPolyLine(line)
 
+    }
+
+    private fun initListeners() = with(binding) {
+        ivMapNavigate.setOnClickListener {
+            Log.e(TAG, "name: ${endPoint.name}, lat: ${endPoint.latitude}, lng: ${endPoint.longitude}")
+        }
     }
 
     private fun initObservers() = with(binding) {
