@@ -36,7 +36,7 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
     private val _tMapThumbnailImage: MutableLiveData<ResponseBody> = MutableLiveData()
     val tMapThumbnailImage: LiveData<ResponseBody> get() = _tMapThumbnailImage
 
-    fun getTMapThumbnailImage(longitude: Float, latitude: Float, zoom: Int, context: Context) {
+    fun getTMapThumbnailImage(longitude: Double, latitude: Double, markers: String, zoom: Int, context: Context) {
         viewModelScope.launch {
             try {
                 _tMapThumbnailImage.value = networkService.getTMapThumbnailImage(
@@ -44,6 +44,7 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                     version = "1",
                     longitude = longitude,
                     latitude = latitude,
+                    markers = markers,
                     zoom = zoom
                 )
             } catch (e: Exception) {

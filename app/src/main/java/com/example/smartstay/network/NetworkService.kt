@@ -72,8 +72,9 @@ interface NetworkService {
         @Header("appKey") appKey: String,
         @Header("Accept") accept: String = "application/json",
         @Query("version") version: String,
-        @Query("longitude") longitude: Float,
-        @Query("latitude") latitude: Float,
+        @Query("longitude") longitude: Double,
+        @Query("latitude") latitude: Double,
+        @Query("markers") markers: String, // 마커를 표시할 좌표를 지정합니다. 경위도 좌푯값은 쉼표(,)로 구분하는데, UTF-8 기반의 URL 인코딩 처리가 필요합니다.
         @Query("width") width: Int = 512,
         @Query("height") height: Int = 512,
         @Query("zoom") zoom: Int // min 6 ~  max 19
