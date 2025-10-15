@@ -23,15 +23,6 @@
             android:paddingHorizontal="16dp">
 
             <ImageView
-                android:id="@+id/ivMapSwapPoint"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_swap"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <ImageView
                 android:id="@+id/ivMapStartPoint"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
@@ -42,13 +33,14 @@
                 app:layout_constraintStart_toStartOf="@id/viewPointDivider"/>
 
             <EditText
+                android:id="@+id/etMapStartPoint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="출발지 입력"
                 android:backgroundTint="@android:color/transparent"
-                android:layout_marginStart="4dp"
+                android:layout_marginHorizontal="4dp"
                 android:inputType="text"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivMapSwap"
                 app:layout_constraintStart_toEndOf="@id/ivMapStartPoint"
                 app:layout_constraintTop_toTopOf="@id/ivMapStartPoint"
                 app:layout_constraintBottom_toBottomOf="@id/ivMapStartPoint"/>
@@ -58,9 +50,9 @@
                 android:layout_width="0dp"
                 android:layout_height="2dp"
                 android:background="@color/divider"
-                android:layout_marginStart="16dp"
-                app:layout_constraintStart_toEndOf="@id/ivMapSwapPoint"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivMapSwap"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -75,15 +67,34 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <EditText
+                android:id="@+id/etMapEndPoint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="도착지 입력"
                 android:inputType="text"
                 android:backgroundTint="@android:color/transparent"
-                android:layout_marginStart="4dp"
+                android:layout_marginHorizontal="4dp"
                 app:layout_constraintStart_toEndOf="@id/ivMapEndPoint"
                 app:layout_constraintTop_toTopOf="@id/ivMapEndPoint"
                 app:layout_constraintBottom_toBottomOf="@id/ivMapEndPoint"
+                app:layout_constraintEnd_toStartOf="@id/ivMapNavigate"/>
+
+            <ImageView
+                android:id="@+id/ivMapNavigate"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_navigate"
+                app:layout_constraintTop_toTopOf="@id/etMapEndPoint"
+                app:layout_constraintBottom_toBottomOf="@id/etMapEndPoint"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageView
+                android:id="@+id/ivMapSwap"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_swap"
+                app:layout_constraintTop_toTopOf="@id/etMapStartPoint"
+                app:layout_constraintBottom_toBottomOf="@id/etMapStartPoint"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -93,10 +104,12 @@
         android:id="@+id/tmapVectorView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTMap"
