@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.smartstay"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -77,5 +77,8 @@ dependencies {
     // TMAP - Vector Map API
     implementation(files("libs/tmap-sdk-3.0.aar"))
     implementation(files("libs/vsm-tmap-sdk-v2-android-1.7.45.aar"))
+
+    // GPS Location
+    implementation(libs.play.services.location)
 
 }

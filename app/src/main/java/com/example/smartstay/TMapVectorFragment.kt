@@ -1,13 +1,22 @@
 package com.example.smartstay
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.PointF
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
 import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,11 +26,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.network.RetrofitInstance
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.skt.tmap.TMapPoint
 import com.skt.tmap.TMapView
 import com.skt.tmap.overlay.TMapMarkerItem
 import com.skt.tmap.overlay.TMapOverlay
 import com.skt.tmap.poi.TMapPOIItem
+import java.time.Instant
+import java.time.ZoneId
 import java.util.ArrayList
 
 class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
@@ -154,6 +169,37 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         )
     )
     private lateinit var endPoint: AccommodationInfo
+    private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /**
+         * 1) 위치 요청을 위해 **최대 기다릴 시간(Timeout)**을 밀리초(ms) 단위로 설정
+         * 이 시간 내에 위치 정보가 성공적으로 도착하지 않으면, 시스템은 위치 요청을 실패 처리하고 작업을 중단함
+         * 2) null을 전달했다는 것은 이 위치 요청을 수동으로 취소할 수 있는 메커니즘을 사용하지 않겠다는 의미
+         */
+        locationPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    getUserFineLocation()
+                }
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    getUserCoarseLocation()
+                }
+                else -> {
+                    Toast.makeText(context, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                    // TODO: 교육용 팝업 띄우기 / 설정창으로 이동
+//                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+//                            data = Uri.fromParts("package", `package`, null)
+//                        }
+//                        startActivity(intent)
+//                        requireActivity().finish()
+                }
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -345,9 +391,6 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             }
         })
 
-
-
-
         /**
          * 지도 이벤트 설정하기 (필요 X)
          */
@@ -451,6 +494,59 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         ivMapNavigate.setOnClickListener {
             Log.e(TAG, "name: ${endPoint.name}, lat: ${endPoint.latitude}, lng: ${endPoint.longitude}")
         }
+        fabMapGps.setOnClickListener {
+
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                locationPermissionRequest.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+                return@setOnClickListener
+            }
+
+            getUserFineLocation()
+
+        }
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    private fun getUserCoarseLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            val zonedDateTime = Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
+            Log.e(
+                TAG,
+                "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
+            )
+        }
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    private fun getUserFineLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        val currentLocationRequest = CurrentLocationRequest.Builder()
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .setDurationMillis(5000) // DOCS 1
+            .build()
+        fusedLocationClient.getCurrentLocation(currentLocationRequest, null)
+            .addOnSuccessListener { location -> // DOCS 2
+                val zonedDateTime =
+                    Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
+                Log.e(
+                    TAG,
+                    "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
+                )
+            }
     }
 
     private fun initObservers() = with(binding) {
