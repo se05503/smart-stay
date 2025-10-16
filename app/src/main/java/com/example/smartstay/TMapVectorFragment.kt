@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.PointF
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -170,6 +171,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     )
     private lateinit var endPoint: AccommodationInfo
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
+    private lateinit var userCurrentLocation: Location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -184,9 +186,13 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                     getUserFineLocation()
+                    Log.e(TAG, "" + userCurrentLocation)
+                    // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                     getUserCoarseLocation()
+                    Log.e(TAG, "" + userCurrentLocation)
+                    // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
                 }
                 else -> {
                     Toast.makeText(context, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -515,6 +521,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             }
 
             getUserFineLocation()
+            Log.e(TAG, "" + userCurrentLocation)
 
         }
     }
@@ -528,6 +535,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 TAG,
                 "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
             )
+            userCurrentLocation = location
         }
     }
 
@@ -546,6 +554,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     TAG,
                     "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
                 )
+                userCurrentLocation = location
             }
     }
 
