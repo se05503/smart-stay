@@ -8,6 +8,9 @@ import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.graphics.scale
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -31,14 +35,18 @@ import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.skt.tmap.TMapData
 import com.skt.tmap.TMapPoint
 import com.skt.tmap.TMapView
 import com.skt.tmap.overlay.TMapMarkerItem
 import com.skt.tmap.overlay.TMapOverlay
 import com.skt.tmap.poi.TMapPOIItem
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.util.ArrayList
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
@@ -185,30 +193,21 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    getUserFineLocation()
-                    Log.e(TAG, "" + userCurrentLocation)
-                    // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
                     lifecycleScope.launch {
                         userCurrentLocation = getUserFineLocation()
                         Log.e(TAG, "" + userCurrentLocation)
-                        // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
                     }
+
                 }
+
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                     lifecycleScope.launch {
                         userCurrentLocation = getUserCoarseLocation()
                         Log.e(TAG, "" + userCurrentLocation)
-                        // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
                     }
                 }
                 else -> {
                     Toast.makeText(context, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-                    // TODO: 교육용 팝업 띄우기 / 설정창으로 이동
-//                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-//                            data = Uri.fromParts("package", `package`, null)
-//                        }
-//                        startActivity(intent)
-//                        requireActivity().finish()
                 }
             }
         }
@@ -529,7 +528,27 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
             lifecycleScope.launch {
                 userCurrentLocation = getUserFineLocation()
-                Log.e(TAG, "" + userCurrentLocation)
+
+                val handler = Handler(Looper.getMainLooper()) { message ->
+                    if(message.what == 1) {
+                        val address = message.data.getString(KEY_GPS)
+                        etMapStartPoint.setText(address)
+                    }
+                    true
+                }
+
+                TMapData().convertGpsToAddress(userCurrentLocation.latitude, userCurrentLocation.longitude, object: TMapData.OnConvertGPSToAddressListener {
+                    override fun onConverGPSToAddress(address: String?) {
+                        val bundle = Bundle().apply {
+                            putString(KEY_GPS, address)
+                        }
+                        val message = Message().apply {
+                            data = bundle
+                            what = 1
+                        }
+                        handler.sendMessage(message)
+                    }
+                })
             }
         }
     }
@@ -680,6 +699,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
     companion object {
         const val TAG = "TMAP"
+        const val KEY_GPS = "GPS"
     }
 
 }
