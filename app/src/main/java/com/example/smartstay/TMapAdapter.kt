@@ -30,6 +30,7 @@ class TMapAdapter(private val onClicked: (AccommodationInfo) -> Unit): ListAdapt
     inner class TMapViewHolder(private val binding: ItemTmapAccomodationBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AccommodationInfo) = with(binding) {
             Glide.with(ivAccommodationPhoto).load(item.image).into(ivAccommodationPhoto)
+            tvTMapAccommodationType.text = item.type
             tvTMapAccommodationName.text = item.name
             tvTMapAccommodationAddress.text = item.address
             tvTMapAccommodationMinimumPrice.text = "${Utils.formatPrice(item.minimumPrice)}~"

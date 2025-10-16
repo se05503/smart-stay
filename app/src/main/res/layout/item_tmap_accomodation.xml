@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp"
+    android:layout_marginEnd="12dp"
     app:contentPadding="16dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="16dp"
     app:cardBackgroundColor="@color/white"
     app:strokeColor="@android:color/transparent">
 
@@ -17,9 +17,8 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvTMapAccommodationPhoto"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="140dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
             <ImageView
@@ -30,32 +29,33 @@
                 tools:src="@drawable/img_stay_1" />
         </com.google.android.material.card.MaterialCardView>
 
-        <ImageView
-            android:id="@+id/ivTMapAccommodationHeart"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_heart"
-            android:layout_margin="16dp"
+        <TextView
+            android:id="@+id/tvTMapAccommodationType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            tools:text="호텔"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#7C7C7C"
             app:layout_constraintTop_toTopOf="@id/cvTMapAccommodationPhoto"
-            app:layout_constraintEnd_toEndOf="@id/cvTMapAccommodationPhoto"/>
+            app:layout_constraintStart_toEndOf="@id/cvTMapAccommodationPhoto"/>
 
         <TextView
             android:id="@+id/tvTMapAccommodationName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/cvTMapAccommodationPhoto"
-            app:layout_constraintTop_toBottomOf="@id/cvTMapAccommodationPhoto"
-            tools:text="라비드아틀란 호텔" />
+            app:layout_constraintStart_toStartOf="@id/tvTMapAccommodationType"
+            app:layout_constraintTop_toBottomOf="@id/tvTMapAccommodationType"
+            tools:text="종로 HOTEL" />
 
         <TextView
             android:id="@+id/tvTMapAccommodationAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="#929292"
+            android:textColor="#B3B3B3"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/tvTMapAccommodationName"
@@ -66,14 +66,18 @@
             android:id="@+id/tvTMapAccommodationMinimumPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="4dp"
-            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTMapAccommodationAddress"
             tools:text="58,000원~" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/ivTMapAccommodationHeart"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:src="@drawable/ic_heart"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
