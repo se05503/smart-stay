@@ -188,11 +188,18 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     getUserFineLocation()
                     Log.e(TAG, "" + userCurrentLocation)
                     // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
+                    lifecycleScope.launch {
+                        userCurrentLocation = getUserFineLocation()
+                        Log.e(TAG, "" + userCurrentLocation)
+                        // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
+                    }
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    getUserCoarseLocation()
-                    Log.e(TAG, "" + userCurrentLocation)
-                    // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
+                    lifecycleScope.launch {
+                        userCurrentLocation = getUserCoarseLocation()
+                        Log.e(TAG, "" + userCurrentLocation)
+                        // TODO: 리버스 지오코딩 + 출발지 입력 UI 표시
+                    }
                 }
                 else -> {
                     Toast.makeText(context, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -520,42 +527,49 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 return@setOnClickListener
             }
 
-            getUserFineLocation()
-            Log.e(TAG, "" + userCurrentLocation)
-
+            lifecycleScope.launch {
+                userCurrentLocation = getUserFineLocation()
+                Log.e(TAG, "" + userCurrentLocation)
+            }
         }
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    private fun getUserCoarseLocation() {
+    private suspend fun getUserCoarseLocation(): Location {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            val zonedDateTime = Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
-            Log.e(
-                TAG,
-                "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
-            )
-            userCurrentLocation = location
+        return suspendCoroutine { continuation ->
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                val zonedDateTime = Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
+                Log.e(
+                    TAG,
+                    "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
+                )
+                continuation.resume(location)
+            }
         }
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    private fun getUserFineLocation() {
+    private suspend fun getUserFineLocation(): Location {
+
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         val currentLocationRequest = CurrentLocationRequest.Builder()
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
             .setDurationMillis(5000) // DOCS 1
             .build()
-        fusedLocationClient.getCurrentLocation(currentLocationRequest, null)
-            .addOnSuccessListener { location -> // DOCS 2
-                val zonedDateTime =
-                    Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
-                Log.e(
-                    TAG,
-                    "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
-                )
-                userCurrentLocation = location
-            }
+
+        return suspendCoroutine { continuation ->
+            fusedLocationClient.getCurrentLocation(currentLocationRequest, null)
+                .addOnSuccessListener { location -> // DOCS 2
+                    val zonedDateTime =
+                        Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
+                    Log.e(
+                        TAG,
+                        "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
+                    )
+                    continuation.resume(location)
+                }
+        }
     }
 
     private fun initObservers() = with(binding) {
