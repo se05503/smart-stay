@@ -551,6 +551,40 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 })
             }
         }
+        ivMapNavigate.setOnClickListener {
+            if(etMapStartPoint.text.isNotBlank()) {
+                Log.e(TAG, "startX: ${userCurrentLocation.longitude}, startY: ${userCurrentLocation.latitude}, endX: ${endPoint.longitude}, endY: ${endPoint.latitude}")
+
+
+                // 자동차 경로안내
+                val startPoint = TMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                val endPoint = TMapPoint(endPoint.latitude, endPoint.longitude)
+
+                val mapData = TMapData()
+
+                mapData.findPathData(startPoint, endPoint, object: TMapData.OnFindPathDataListener {
+                    override fun onFindPathData(tmapPolyLine: TMapPolyLine?) {
+                        tmapPolyLine?.let {
+                            it.lineWidth = 3f
+                            it.lineColor = Color.BLUE
+                            it.lineAlpha = 255
+
+                            it.outLineWidth = 5f
+                            it.outLineColor = Color.RED
+                            it.outLineAlpha = 255
+
+                            tmapView.addTMapPolyLine(it)
+
+                            val info: TMapInfo = tmapView.getDisplayTMapInfo(it.linePointList)
+                            tmapView.zoomLevel = info.zoom
+                            tmapView.setCenterPoint(info.point.latitude, info.point.longitude)
+                        }
+                    }
+                })
+            } else {
+                Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
