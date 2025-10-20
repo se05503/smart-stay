@@ -81,8 +81,8 @@
 
             <ImageView
                 android:id="@+id/ivMapNavigate"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_navigate"
                 app:layout_constraintTop_toTopOf="@id/etMapEndPoint"
                 app:layout_constraintBottom_toBottomOf="@id/etMapEndPoint"
@@ -90,8 +90,8 @@
 
             <ImageView
                 android:id="@+id/ivMapSwap"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_swap"
                 app:layout_constraintTop_toTopOf="@id/etMapStartPoint"
                 app:layout_constraintBottom_toBottomOf="@id/etMapStartPoint"

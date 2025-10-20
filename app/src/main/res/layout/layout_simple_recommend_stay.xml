@@ -51,7 +51,7 @@
                         android:id="@+id/tv_stay_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="6dp"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         tools:text="라비드아틀란 호텔" />
@@ -62,6 +62,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#929292"
                         android:textStyle="bold"
+                        android:layout_marginTop="2dp"
                         tools:text="해운대해수욕장 도보 3분"
                         android:textSize="13sp"/>
 
@@ -71,6 +72,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:textStyle="bold"
+                        android:layout_marginTop="4dp"
                         android:layout_gravity="end"
                         tools:text="58,000원~" />
                 </LinearLayout>
