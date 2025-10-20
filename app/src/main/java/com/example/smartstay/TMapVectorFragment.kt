@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
@@ -30,16 +31,19 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.AccommodationInfo
+import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.network.RetrofitInstance
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.skt.tmap.TMapData
+import com.skt.tmap.TMapInfo
 import com.skt.tmap.TMapPoint
 import com.skt.tmap.TMapView
 import com.skt.tmap.overlay.TMapMarkerItem
 import com.skt.tmap.overlay.TMapOverlay
+import com.skt.tmap.overlay.TMapPolyLine
 import com.skt.tmap.poi.TMapPOIItem
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -581,6 +585,35 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         }
                     }
                 })
+            } else {
+                Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
+        chipRouteCar.setOnClickListener {
+            if(etMapStartPoint.text.isNotBlank()) {
+                val startPoint = TMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                val endPoint = TMapPoint(endPoint.latitude, endPoint.longitude)
+                val mapData = TMapData()
+                mapData.findPathData(startPoint, endPoint, object: TMapData.OnFindPathDataListener {
+                    override fun onFindPathData(tmapPolyLine: TMapPolyLine?) {
+                        tmapPolyLine?.let {
+                            it.lineWidth = 3f
+                            it.lineColor = Color.BLUE
+                            it.lineAlpha = 255
+
+                            it.outLineWidth = 5f
+                            it.outLineColor = Color.RED
+                            it.outLineAlpha = 255
+
+                            tmapView.addTMapPolyLine(it)
+
+                            val info: TMapInfo = tmapView.getDisplayTMapInfo(it.linePointList)
+                            tmapView.zoomLevel = info.zoom
+                            tmapView.setCenterPoint(info.point.latitude, info.point.longitude)
+                        }
+                    }
+                })
+                Toast.makeText(context, "자동차 경로를 검색합니다.", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
             }

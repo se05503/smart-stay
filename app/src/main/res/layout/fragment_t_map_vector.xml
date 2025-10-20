@@ -6,7 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TMapVectorFragment">
 
+    <FrameLayout
+        android:id="@+id/tmapVectorView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvMapRouteNavigation"
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_margin="16dp"
@@ -100,16 +110,27 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <FrameLayout
-        android:id="@+id/tmapVectorView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupRouteModal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/cvMapRouteNavigation"
+        app:layout_constraintStart_toStartOf="@id/cvMapRouteNavigation">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipRouteCar"
+        style="@style/Widget.MaterialComponents.Chip.Action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="자동차"
+        app:chipIcon="@drawable/ic_car"
+        app:chipIconVisible="true"
+        app:chipIconTint="#009688"
+        app:chipIconSize="20dp"
+        app:iconStartPadding="4dp"
+        app:chipBackgroundColor="@color/white"/>
+
+    </com.google.android.material.chip.ChipGroup>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabMapGps"
