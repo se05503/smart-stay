@@ -2,6 +2,7 @@ package com.example.smartstay.network
 
 import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.NaverDirectionsResponse
+import com.example.smartstay.model.tmap.RoutesInfo
 import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
@@ -25,6 +26,7 @@ import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
 import com.example.smartstay.model.UserRequest
+import com.example.smartstay.model.tmap.TMapRoutesPredictionResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -80,6 +82,16 @@ interface NetworkService {
         @Query("zoom") zoom: Int // min 6 ~  max 19
     ): ResponseBody
 
+    /**
+     * 출발지와 목적지를 등록하고 미래의 특정 시간을 입력하면 경로의 다양한 길 안내 정보를 파악할 수 있다.
+     */
+    @POST("tmap/routes/prediction")
+    suspend fun getTMapRoutesPrediction(
+        @Header("appKey") appKey: String,
+        @Query("version") version: Int, // (예: 1) API 서비스의 지원 오퍼레이션 버전. 현재 버전 1을 지원하며, 버전에 따라 응답 결과로 표출되는 내용이 다를 수 있다.
+        @Query("totalValue") totalValue: Int, // 검색 결과를 반환하는 방법 지정. 1: 모든 정보 반환, 2: 다음 정보만 반환 → 총 거리, 총 소요 시간, 총 요금, 예상 택시 요금, 출발 시간, 도착 시간
+        @Body routesInfo: RoutesInfo
+    ): TMapRoutesPredictionResponse
     @POST("transit/routes")
     suspend fun findTMapMultiModalRoute(
         @Header("Accept") accept: String = "application/json",
