@@ -398,11 +398,12 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     snappedView?.let { view ->
                         val snappedViewPosition = layoutManager.getPosition(view)
                         val snappedAccommodationInfo = testAccommodationList[snappedViewPosition]
+                        etMapEndPoint.setText(snappedAccommodationInfo.address)
                         tmapView.setCenterPoint(snappedAccommodationInfo.latitude, snappedAccommodationInfo.longitude)
                         tmapView.zoomLevel = 14
-                        etMapEndPoint.setText(snappedAccommodationInfo.address)
                         endPoint = snappedAccommodationInfo
                     }
+                    tmapView.removeAllTMapPolyLine()
                 }
             }
         })
