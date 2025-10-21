@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#4D65FF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="실시간 추천" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailHourValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/tvCarRouteDetailOption"
+            app:layout_constraintTop_toBottomOf="@id/tvCarRouteDetailOption"
+            tools:text="2" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailHourUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시간"
+            android:textColor="@color/black"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvCarRouteDetailHourValue"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailHourValue" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailMinuteValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvCarRouteDetailHourUnit"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailHourUnit"
+            tools:text="13" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailMinuteUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="분"
+            android:textColor="@color/black"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvCarRouteDetailMinuteValue"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailMinuteValue" />
+
+        <View
+            android:id="@+id/viewCarRouteDetailTop"
+            android:layout_width="1dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="6dp"
+            android:background="#DEDEDE"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailMinuteUnit"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailMinuteUnit"
+            app:layout_constraintTop_toTopOf="@id/tvCarRouteDetailMinuteUnit" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailTotalDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/viewCarRouteDetailTop"
+            app:layout_constraintStart_toEndOf="@id/viewCarRouteDetailTop"
+            app:layout_constraintTop_toTopOf="@id/viewCarRouteDetailTop"
+            tools:text="20km" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailTaxiFareLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="택시비"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/tvCarRouteDetailHourValue"
+            app:layout_constraintTop_toBottomOf="@id/tvCarRouteDetailHourValue" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailTaxiFareValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailTaxiFareLabel"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailTaxiFareLabel"
+            app:layout_constraintTop_toTopOf="@id/tvCarRouteDetailTaxiFareLabel"
+            tools:text="21,900원" />
+
+        <View
+            android:id="@+id/viewCarRouteDetailBottom"
+            android:layout_width="1dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="6dp"
+            android:background="#DEDEDE"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailTaxiFareValue"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailTaxiFareValue"
+            app:layout_constraintTop_toTopOf="@id/tvCarRouteDetailTaxiFareValue" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailFuelCostLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="연료비"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailTaxiFareValue"
+            app:layout_constraintStart_toEndOf="@id/viewCarRouteDetailBottom" />
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailFuelCostValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailFuelCostLabel"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailFuelCostLabel"
+            tools:text="2,700원" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
