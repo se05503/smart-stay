@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.scale
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +33,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.model.TMapRouteRequest
+import com.example.smartstay.model.tmap.LocationInfo
+import com.example.smartstay.model.tmap.RoutesInfo
+import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
 import com.example.smartstay.network.RetrofitInstance
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -46,9 +50,13 @@ import com.skt.tmap.overlay.TMapOverlay
 import com.skt.tmap.overlay.TMapPolyLine
 import com.skt.tmap.poi.TMapPOIItem
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.ArrayList
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -592,10 +600,14 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         }
         chipRouteCar.setOnClickListener {
             if(etMapStartPoint.text.isNotBlank()) {
-                val startPoint = TMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
-                val endPoint = TMapPoint(endPoint.latitude, endPoint.longitude)
+                Toast.makeText(context, "자동차 경로를 검색합니다.", Toast.LENGTH_SHORT).show()
+
+                val departurePoint = TMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                val arrivalPoint = TMapPoint(endPoint.latitude, endPoint.longitude)
+
+                // 지도 간단한 UI 그리기
                 val mapData = TMapData()
-                mapData.findPathData(startPoint, endPoint, object: TMapData.OnFindPathDataListener {
+                mapData.findPathData(departurePoint, arrivalPoint, object: TMapData.OnFindPathDataListener {
                     override fun onFindPathData(tmapPolyLine: TMapPolyLine?) {
                         tmapPolyLine?.let {
                             it.lineWidth = 3f
@@ -614,7 +626,26 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         }
                     }
                 })
-                Toast.makeText(context, "자동차 경로를 검색합니다.", Toast.LENGTH_SHORT).show()
+
+                // 상세 정보 요청하기
+                mapViewModel.getTMapRoutesPrediction(context = requireContext(), tMapRoutesPredictionRequest = TMapRoutesPredictionRequest(
+                    routesInfo = RoutesInfo(
+                        departure = LocationInfo(
+                            name = etMapStartPoint.text.toString(),
+                            lon = userCurrentLocation.longitude,
+                            lat = userCurrentLocation.latitude
+                        ),
+                        destination = LocationInfo(
+                            name = endPoint.name,
+                            lon = endPoint.longitude,
+                            lat = endPoint.latitude
+                        ),
+                        predictionType = "arrival",
+                        predictionTime = getCurrentTimeFormatted(),
+                        searchOption = "00",
+                        trafficInfo = "N"
+                    )
+                ))
             } else {
                 Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -660,9 +691,41 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     }
 
     private fun initObservers() = with(binding) {
-//        mapViewModel.tMapMultiModalRouteInfo.observe(viewLifecycleOwner) { routeInfo ->
-//            Log.e(TAG, ""+ routeInfo)
-//        }
+
+        mapViewModel.tMapRoutesPredictionInfo.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { prediction ->
+                val detailInfo = prediction.features[0].properties
+                val hour = detailInfo.totalTime/3600
+                val minutes = (detailInfo.totalTime/60)%60
+                val formatter = SimpleDateFormat("a h:mm", Locale.getDefault())
+                val formattedTotalDistance = String.format("%.1f", detailInfo.totalDistance.toInt()/1000f)
+                cvRouteCarDetailInfo.root.isVisible = true
+                cvRouteCarDetailInfo.tvCarRouteDetailTotalDistance.text = "${formattedTotalDistance}km"
+
+                if(hour > 0) {
+                    cvRouteCarDetailInfo.tvCarRouteDetailHourValue.text = "$hour"
+                    cvRouteCarDetailInfo.tvCarRouteDetailMinuteValue.text = "$minutes"
+                } else {
+                    cvRouteCarDetailInfo.tvCarRouteDetailHourValue.isVisible = false
+                    cvRouteCarDetailInfo.tvCarRouteDetailHourUnit.isVisible = false
+                    cvRouteCarDetailInfo.tvCarRouteDetailMinuteValue.text = "$minutes"
+                }
+                cvRouteCarDetailInfo.tvCarRouteDetailTaxiFareValue.text = Utils.formatPrice(detailInfo.taxiFare)
+                cvRouteCarDetailInfo.tvCarRouteDetailFuelCostValue.text = Utils.formatPrice(detailInfo.totalFare.toInt())
+                cvRouteCarDetailInfo.tvCarRouteDetailArrivalPredictionTimeValue.text = formatter.format(detailInfo.arrivalTime)
+            }.onFailure { error ->
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        mapViewModel.tMapMultiModalRouteInfo.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { route ->
+                Log.e(TAG, "" + route)
+            }.onFailure { error ->
+                Toast.makeText(context, "" + error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
 //        mapViewModel.findTMapMultiModalRouteSummary(
 //            tMapRouteRequest = TMapRouteRequest(
 //                startX = "126.936928",
@@ -763,6 +826,12 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 //        mapViewModel.tMapTravelPopularCommercialDistrictNearbySegmentRateInfo.observe(viewLifecycleOwner) { travelPopularDistrictNearbySegmentRateInfo ->
 //            Log.e(TAG, ""+travelPopularDistrictNearbySegmentRateInfo)
 //        }
+    }
+
+    private fun getCurrentTimeFormatted(): String {
+        val now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+        return now.format(formatter)
     }
 
     companion object {

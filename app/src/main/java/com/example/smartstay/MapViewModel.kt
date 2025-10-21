@@ -27,6 +27,8 @@ import com.example.smartstay.model.TMapTravelPopularSpotsNearbySegmentRateRespon
 import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
+import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
+import com.example.smartstay.model.tmap.TMapRoutesPredictionResponse
 import com.example.smartstay.network.NetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -54,8 +56,24 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
         }
     }
 
-    private val _tMapMultiModalRouteInfo: MutableLiveData<TMapRouteResponse> = MutableLiveData()
-    val tMapMultiModalRouteInfo: LiveData<TMapRouteResponse> get() = _tMapMultiModalRouteInfo
+    private val _tMapRoutesPredictionInfo: MutableLiveData<Result<TMapRoutesPredictionResponse>> = MutableLiveData()
+    val tMapRoutesPredictionInfo: LiveData<Result<TMapRoutesPredictionResponse>> get() = _tMapRoutesPredictionInfo
+
+    fun getTMapRoutesPrediction(context: Context, version: Int = 1, totalValue: Int = 2, tMapRoutesPredictionRequest: TMapRoutesPredictionRequest) {
+        viewModelScope.launch {
+            try {
+                val response = networkService.getTMapRoutesPrediction(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    version = version,
+                    totalValue = totalValue,
+                    tMapRoutesPredictionRequest = tMapRoutesPredictionRequest
+                )
+                _tMapRoutesPredictionInfo.value = Result.success(response)
+            } catch (e: Exception) {
+                _tMapRoutesPredictionInfo.value = Result.failure(e)
+            }
+        }
+    }
 
     fun findTMapMultiModalRoute(tMapRouteRequest: TMapRouteRequest, context: Context) {
         viewModelScope.launch {

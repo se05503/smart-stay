@@ -102,6 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:textSize="12sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailTaxiFareLabel"
             app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailTaxiFareLabel"
             app:layout_constraintTop_toTopOf="@id/tvCarRouteDetailTaxiFareLabel"
@@ -133,10 +134,31 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:textSize="12sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailFuelCostLabel"
             app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailFuelCostLabel"
             tools:text="2,700원" />
 
+        <TextView
+            android:id="@+id/tvCarRouteDetailArrivalPredictionTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="도착 예상 시간"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/tvCarRouteDetailTaxiFareLabel"
+            app:layout_constraintStart_toStartOf="@id/tvCarRouteDetailTaxiFareLabel"/>
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailArrivalPredictionTimeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="오후 5시 44분"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailArrivalPredictionTimeLabel"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailArrivalPredictionTimeLabel"
+            app:layout_constraintTop_toTopOf="@id/tvCarRouteDetailArrivalPredictionTimeLabel"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
