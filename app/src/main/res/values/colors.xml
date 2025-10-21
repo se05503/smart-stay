@@ -17,4 +17,6 @@
     <color name="sub_orange">#FFB74D</color>
     <color name="sub_blue">#4DB6AC</color>
     <color name="divider">#F6F6F6</color>
+    <color name="navigate_outer">#348A37</color>
+    <color name="navigate_inner">#4CAF50</color>
 </resources>

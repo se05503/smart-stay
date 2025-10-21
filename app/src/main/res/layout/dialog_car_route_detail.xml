@@ -22,7 +22,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="실시간 추천" />
+            android:text="실시간 추천" />
 
         <TextView
             android:id="@+id/tvCarRouteDetailHourValue"
@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:text="시간"
             android:textColor="@color/black"
+            android:layout_marginStart="2dp"
             app:layout_constraintBaseline_toBaselineOf="@id/tvCarRouteDetailHourValue"
             app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailHourValue" />
 
@@ -62,6 +63,7 @@
             android:layout_height="wrap_content"
             android:text="분"
             android:textColor="@color/black"
+            android:layout_marginStart="2dp"
             app:layout_constraintBaseline_toBaselineOf="@id/tvCarRouteDetailMinuteValue"
             app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailMinuteValue" />
 
@@ -140,13 +142,34 @@
             tools:text="2,700원" />
 
         <TextView
+            android:id="@+id/tvCarRouteDetailDeparturePredictionTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="출발 기준 시간"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/tvCarRouteDetailTaxiFareLabel"
+            app:layout_constraintStart_toStartOf="@id/tvCarRouteDetailTaxiFareLabel"/>
+
+        <TextView
+            android:id="@+id/tvCarRouteDetailDeparturePredictionTimeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="오후 5시 44분"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/tvCarRouteDetailDeparturePredictionTimeLabel"
+            app:layout_constraintBottom_toBottomOf="@id/tvCarRouteDetailDeparturePredictionTimeLabel"
+            app:layout_constraintTop_toTopOf="@id/tvCarRouteDetailDeparturePredictionTimeLabel"/>
+
+        <TextView
             android:id="@+id/tvCarRouteDetailArrivalPredictionTimeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="도착 예상 시간"
             android:textSize="12sp"
-            app:layout_constraintTop_toBottomOf="@id/tvCarRouteDetailTaxiFareLabel"
-            app:layout_constraintStart_toStartOf="@id/tvCarRouteDetailTaxiFareLabel"/>
+            app:layout_constraintTop_toBottomOf="@id/tvCarRouteDetailDeparturePredictionTimeLabel"
+            app:layout_constraintStart_toStartOf="@id/tvCarRouteDetailDeparturePredictionTimeLabel"/>
 
         <TextView
             android:id="@+id/tvCarRouteDetailArrivalPredictionTimeValue"

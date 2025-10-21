@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -412,6 +413,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         endPoint = snappedAccommodationInfo
                     }
                     tmapView.removeAllTMapPolyLine()
+                    cvRouteCarDetailInfo.root.isVisible = false
                 }
             }
         })
@@ -610,12 +612,12 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 mapData.findPathData(departurePoint, arrivalPoint, object: TMapData.OnFindPathDataListener {
                     override fun onFindPathData(tmapPolyLine: TMapPolyLine?) {
                         tmapPolyLine?.let {
-                            it.lineWidth = 3f
-                            it.lineColor = Color.BLUE
+                            it.lineWidth = 5f
+                            it.lineColor = ContextCompat.getColor(requireContext(), R.color.navigate_inner)
                             it.lineAlpha = 255
 
-                            it.outLineWidth = 5f
-                            it.outLineColor = Color.RED
+                            it.outLineWidth = 8f
+                            it.outLineColor = ContextCompat.getColor(requireContext(), R.color.navigate_outer)
                             it.outLineAlpha = 255
 
                             tmapView.addTMapPolyLine(it)
@@ -712,6 +714,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 }
                 cvRouteCarDetailInfo.tvCarRouteDetailTaxiFareValue.text = Utils.formatPrice(detailInfo.taxiFare)
                 cvRouteCarDetailInfo.tvCarRouteDetailFuelCostValue.text = Utils.formatPrice(detailInfo.totalFare.toInt())
+                cvRouteCarDetailInfo.tvCarRouteDetailDeparturePredictionTimeValue.text = formatter.format(detailInfo.departureTime)
                 cvRouteCarDetailInfo.tvCarRouteDetailArrivalPredictionTimeValue.text = formatter.format(detailInfo.arrivalTime)
             }.onFailure { error ->
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
