@@ -38,35 +38,69 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.example.smartstay.model.accommodation.AccommodationInfo
+import com.example.smartstay.model.user.UserInput
 
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBinding
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+
     private lateinit var chatBotMessage: ChatModel.ChatBotMessage
+
     private val sideSheet by lazy {
         binding.navigationView.getHeaderView(0)
     }
     private val sideSheetChipList by lazy {
         listOf(
-            sideSheet.findViewById<Chip>(R.id.chip_pet),
-            sideSheet.findViewById<Chip>(R.id.chip_restaurant),
-            sideSheet.findViewById<Chip>(R.id.chip_bar),
-            sideSheet.findViewById<Chip>(R.id.chip_cafe),
-            sideSheet.findViewById<Chip>(R.id.chip_fitness),
-            sideSheet.findViewById<Chip>(R.id.chip_swimming_pool),
-            sideSheet.findViewById<Chip>(R.id.chip_spa),
-            sideSheet.findViewById<Chip>(R.id.chip_sauna),
-            sideSheet.findViewById<Chip>(R.id.chip_reception_hall),
-            sideSheet.findViewById<Chip>(R.id.chip_business_center),
-            sideSheet.findViewById<Chip>(R.id.chip_ocean_view)
+            sideSheet.findViewById<Chip>(R.id.pet),
+            sideSheet.findViewById<Chip>(R.id.restaurant),
+            sideSheet.findViewById<Chip>(R.id.bar),
+            sideSheet.findViewById<Chip>(R.id.cafe),
+            sideSheet.findViewById<Chip>(R.id.fitnessCenter),
+            sideSheet.findViewById<Chip>(R.id.swimmingPool),
+            sideSheet.findViewById<Chip>(R.id.spa),
+            sideSheet.findViewById<Chip>(R.id.sauna),
+            sideSheet.findViewById<Chip>(R.id.receptionHall),
+            sideSheet.findViewById<Chip>(R.id.businessCenter),
+            sideSheet.findViewById<Chip>(R.id.oceanView)
         )
     }
-    private val chatItemList = mutableListOf<ChatModel>()
-    private var isFilterInitialized: Boolean = false
 
+    private val userNickname: String? by lazy {
+        intent.getStringExtra("user_nickname")
+    }
+    private val userImage: String? by lazy {
+        intent.getStringExtra("user_image")
+    }
+    private val userId: String? by lazy {
+        intent.getStringExtra("user_id")
+    }
+    private val userInfo: UserInput by lazy {
+        intent.getSerializableExtra("user_info") as UserInput
+    }
+
+    val testUserNickname = "테스터"
+    val testUserImage = "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"
+    val testUserId = "4256657082"
+    val testUserInfo = UserInput(
+        sexCode = "M",
+        marriage = "기혼",
+        age = 38,
+        familyCount = "4",
+        job = "기술직",
+        children = "자녀 있음",
+        isCompanionExist = "Y",
+        income = 330.0f
+    )
+
+    private val chatItemList = mutableListOf<ChatModel>()
+
+    private var isFilterInitialized: Boolean = false
+    private var isChatInitialized: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,146 +112,17 @@ class ChatActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        initViews()
         initListeners()
+        initObservers()
+    }
 
-//        val userNickname = intent.getStringExtra("user_nickname")
-        val userNickname = "유저"
-        val userImage =
-            "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"
-//        val userImage = intent.getStringExtra("user_image")
-//        val userId = intent.getStringExtra("user_id")
-//        val userInfo = intent.getSerializableExtra("user_info") as UserInput
-
-        // 툴바 설정
-        binding.toolbarChat.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.toolbar_filtering -> {
-                    binding.lottiePointer.isVisible = false
-                    binding.drawerLayout.openDrawer(GravityCompat.END, true)
-                    true
-                }
-
-                else -> false
-            }
-        }
-
-        // side sheet
-        val sideSheet = binding.sideSheet.getHeaderView(0)
-        sideSheet.findViewById<LinearLayout>(R.id.ll_side_sheet_back).setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.END, true)
-        }
-
-        val chipList = listOf(
-            sideSheet.findViewById<Chip>(R.id.chip_pet),
-            sideSheet.findViewById<Chip>(R.id.chip_restaurant),
-            sideSheet.findViewById<Chip>(R.id.chip_bar),
-            sideSheet.findViewById<Chip>(R.id.chip_cafe),
-            sideSheet.findViewById<Chip>(R.id.chip_fitness),
-            sideSheet.findViewById<Chip>(R.id.chip_swimming_pool),
-            sideSheet.findViewById<Chip>(R.id.chip_spa),
-            sideSheet.findViewById<Chip>(R.id.chip_sauna),
-            sideSheet.findViewById<Chip>(R.id.chip_reception_hall),
-            sideSheet.findViewById<Chip>(R.id.chip_business_center),
-            sideSheet.findViewById<Chip>(R.id.chip_ocean_view)
-        )
-
-        chipList.forEach { chip ->
-            chip.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    val checkedChip = Chip(this).apply {
-                        text = chip.text
-                        chipIcon = chip.chipIcon
-                        chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
-                        chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
-                        chipCornerRadius = TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_DIP,
-                            16f,
-                            resources.displayMetrics
-                        )
-                        chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
-                        isCloseIconVisible = true
-                        setOnCloseIconClickListener {
-                            binding.chipgroupInput.removeView(this)
-                            chip.isChecked = false
-                        }
-                    }
-                    binding.chipgroupInput.addView(checkedChip)
-                } else {
-                    val uncheckedChip = binding.chipgroupInput.children.filterIsInstance<Chip>()
-                        .firstOrNull { it.text == chip.text }
-                    binding.chipgroupInput.removeView(uncheckedChip)
-                }
-            }
-        }
-
-        linearLayoutManager = LinearLayoutManager(applicationContext)
-
-        chatAdapter = ChatAdapter(this)
-        chatAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                linearLayoutManager.smoothScrollToPosition(
-                    binding.recyclerviewChat,
-                    null,
-                    chatAdapter.itemCount - 1
-                ) // 아이템이 들어올 때마다 가장 마지막 위치로 이동하기
-            }
-        })
-
-        binding.recyclerviewChat.apply {
+    private fun initViews() = with(binding) {
+        linearLayoutManager = LinearLayoutManager(this@ChatActivity)
+        chatAdapter = ChatAdapter(this@ChatActivity)
+        with(recyclerviewChat) {
             layoutManager = linearLayoutManager
             adapter = chatAdapter
-        }
-
-        binding.cvSend.setOnClickListener {
-            // 유저 먼저 보내기
-            val myText = binding.etMessage.text.toString()
-
-            if (myText.isBlank()) {
-                Toast.makeText(this, "내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            binding.lottieChatbot.isVisible = false // refactoring
-            binding.tvInduceChat.isVisible = false
-
-            chatItemList.add(
-                ChatModel.UserMessage(
-                    profile = userImage,
-                    nickname = userNickname,
-                    message = myText
-                )
-            )
-
-            chatItemList.add(
-                ChatModel.ChatBotLoading
-            )
-
-            chatAdapter.submitList(chatItemList.toList())
-
-            // 키보드 내리고 입력창 초기화
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            val view = this.currentFocus ?: return@setOnClickListener
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-            binding.etMessage.setText("")
-
-            // 필터 키워드 추출
-            val keywords = mutableListOf<Boolean>()
-            chipList.forEach { chip ->
-                if (chip.isChecked) keywords.add(true) else keywords.add(false)
-            }
-
-            // server 연결 시도 코드
-//            processWithServer(
-//                userId = userId,
-//                myText = myText,
-//                userInfo = userInfo,
-//                keywords = keywords
-//            )
-
-//             server 연결 실패 시 dummy data 로 임시 설정
-            processWithoutServer()
         }
     }
 
@@ -259,6 +164,55 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
         }
+        cvSend.setOnClickListener {
+
+            if(!isChatInitialized) {
+                lottieChatbot.isVisible = false
+                tvInduceChat.isVisible = false
+                isChatInitialized = true
+            }
+
+            val userMessage = etMessage.text.toString()
+            if (userMessage.isBlank()) {
+                Toast.makeText(this@ChatActivity, "내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val keywordList = mutableListOf<String>()
+            sideSheetChipList.forEach { chip ->
+                val keyword = resources.getResourceEntryName(chip.id)
+                if (chip.isChecked) keywordList.add(keyword)
+            }
+
+            // chat UI
+            chatItemList.add(
+                ChatModel.UserMessage(
+                    profile = testUserImage,
+                    nickname = testUserNickname,
+                    message = userMessage,
+                    keywords = keywordList
+                )
+            )
+
+            chatItemList.add(
+                ChatModel.ChatBotLoading
+            )
+
+            chatAdapter.submitList(chatItemList.toList())
+
+            clearInputAndHideKeyboard()
+
+            // server 연결 O
+            processWithServer(
+                userId = testUserId,
+                myText = userMessage,
+                userInfo = testUserInfo,
+                keywords = keywordList
+            )
+
+            // server 연결 X
+            // processWithoutServer()
+        }
 
         // side sheet (filter)
         sideSheetChipList.forEach { chip ->
@@ -294,6 +248,20 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun initObservers() = with(binding) {
+        // 아이템이 들어올 때 옵져빙하여 가장 마지막 위치로 이동하기
+        chatAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                linearLayoutManager.smoothScrollToPosition(
+                    recyclerviewChat,
+                    null,
+                    chatAdapter.itemCount - 1
+                )
+            }
+        })
+    }
+
     /**
      * 권한 요청했을 때 시스템 팝업이 뜸
      * 권한이 허용되지 않을 수도 있음
@@ -316,6 +284,14 @@ class ChatActivity : AppCompatActivity() {
                 showPermissionSettingDialog()
             }
         }
+    }
+
+    // // 키보드 내리고 입력창 초기화하는 메소드
+    private fun clearInputAndHideKeyboard() {
+        binding.etMessage.setText("")
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = this@ChatActivity.currentFocus
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     private fun processWithoutServer() {

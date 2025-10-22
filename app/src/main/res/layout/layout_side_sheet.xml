@@ -42,7 +42,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_pet"
+            android:id="@+id/pet"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_restaurant"
+            android:id="@+id/restaurant"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_bar"
+            android:id="@+id/bar"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
             app:iconStartPadding="8dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_cafe"
+            android:id="@+id/cafe"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_fitness"
+            android:id="@+id/fitnessCenter"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_swimming_pool"
+            android:id="@+id/swimmingPool"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_spa"
+            android:id="@+id/spa"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_sauna"
+            android:id="@+id/sauna"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_reception_hall"
+            android:id="@+id/receptionHall"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
             app:iconStartPadding="4dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_business_center"
+            android:id="@+id/businessCenter"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -212,7 +212,7 @@
             app:iconStartPadding="8dp" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_ocean_view"
+            android:id="@+id/oceanView"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
