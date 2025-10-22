@@ -9,7 +9,7 @@
     android:padding="16dp">
 
     <LinearLayout
-        android:id="@+id/ll_side_sheet_back"
+        android:id="@+id/ll_back_to_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="추천 숙소 필터링 💬️"
+        android:text="추천 숙소 필터링 키워드"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"/>

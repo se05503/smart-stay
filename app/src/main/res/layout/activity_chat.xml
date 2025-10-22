@@ -207,11 +207,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/side_sheet"
+        android:id="@+id/navigationView"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@color/white"
-        app:headerLayout="@layout/layout_side_sheet" />
+        app:headerLayout="@layout/layout_side_sheet"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

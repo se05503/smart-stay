@@ -46,7 +46,27 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var chatBotMessage: ChatModel.ChatBotMessage
+    private val sideSheet by lazy {
+        binding.navigationView.getHeaderView(0)
+    }
+    private val sideSheetChipList by lazy {
+        listOf(
+            sideSheet.findViewById<Chip>(R.id.chip_pet),
+            sideSheet.findViewById<Chip>(R.id.chip_restaurant),
+            sideSheet.findViewById<Chip>(R.id.chip_bar),
+            sideSheet.findViewById<Chip>(R.id.chip_cafe),
+            sideSheet.findViewById<Chip>(R.id.chip_fitness),
+            sideSheet.findViewById<Chip>(R.id.chip_swimming_pool),
+            sideSheet.findViewById<Chip>(R.id.chip_spa),
+            sideSheet.findViewById<Chip>(R.id.chip_sauna),
+            sideSheet.findViewById<Chip>(R.id.chip_reception_hall),
+            sideSheet.findViewById<Chip>(R.id.chip_business_center),
+            sideSheet.findViewById<Chip>(R.id.chip_ocean_view)
+        )
+    }
     private val chatItemList = mutableListOf<ChatModel>()
+    private var isFilterInitialized: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,6 +222,20 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun initListeners() = with(binding) {
+        // chat (main)
+        toolbarChat.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.toolbar_filtering -> {
+                    if(!isFilterInitialized) {
+                        isFilterInitialized = true
+                        lottiePointer.isVisible = false
+                    }
+                    drawerLayout.openDrawer(GravityCompat.END, true)
+                    true
+                }
+                else -> false
+            }
+        }
         cvRecord.setOnClickListener {
             when {
                 ContextCompat.checkSelfPermission(
@@ -224,6 +258,39 @@ class ChatActivity : AppCompatActivity() {
                         REQUEST_RECORD_AUDIO_CODE)
                 }
             }
+        }
+
+        // side sheet (filter)
+        sideSheetChipList.forEach { chip ->
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    val checkedChip = Chip(this@ChatActivity).apply {
+                        text = chip.text
+                        chipIcon = chip.chipIcon
+                        chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                        chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+                        chipCornerRadius = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            16f,
+                            resources.displayMetrics
+                        )
+                        chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                        isCloseIconVisible = true
+                        setOnCloseIconClickListener {
+                            chipgroupInput.removeView(this)
+                            chip.isChecked = false
+                        }
+                    }
+                    chipgroupInput.addView(checkedChip)
+                } else {
+                    val uncheckedChip = chipgroupInput.children.filterIsInstance<Chip>()
+                        .firstOrNull { it.text == chip.text }
+                    chipgroupInput.removeView(uncheckedChip)
+                }
+            }
+        }
+        sideSheet.findViewById<LinearLayout>(R.id.ll_back_to_chat).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.END, true)
         }
     }
 
