@@ -32,6 +32,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
+import androidx.core.app.ActivityCompat
 
 class ChatActivity : AppCompatActivity() {
 
@@ -51,6 +58,8 @@ class ChatActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        initListeners()
 
 //        val userNickname = intent.getStringExtra("user_nickname")
         val userNickname = "유저"
@@ -189,6 +198,56 @@ class ChatActivity : AppCompatActivity() {
 
 //             server 연결 실패 시 dummy data 로 임시 설정
             processWithoutServer()
+        }
+    }
+
+    private fun initListeners() = with(binding) {
+        cvRecord.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this@ChatActivity,
+                    Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // 녹음 권한이 부여된 경우
+                    // 실제 녹음 시작하기
+                }
+
+                // 기존에 사용자가 권한 요청을 거부한 경우 → 교육용 팝업 띄우기
+                ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity, Manifest.permission.RECORD_AUDIO) -> {
+                    showPermissionRationalDialog()
+                }
+
+                // 권한을 처음 요청 받는 경우 → 시스템 팝업 띄우기
+                else -> {
+                    ActivityCompat.requestPermissions(this@ChatActivity,
+                        arrayOf(Manifest.permission.RECORD_AUDIO),
+                        REQUEST_RECORD_AUDIO_CODE)
+                }
+            }
+        }
+    }
+
+    /**
+     * 권한 요청했을 때 시스템 팝업이 뜸
+     * 권한이 허용되지 않을 수도 있음
+     * 서로 다른 권한을 요청하더라도 똑같은 콜백이 호출되기 때문에, 요청 코드(REQUEST_CODE)로 권한을 구분해야한다.
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val isAudioRecordPermissionGranted: Boolean = (requestCode == REQUEST_RECORD_AUDIO_CODE) && (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
+        if(isAudioRecordPermissionGranted) {
+            Toast.makeText(this, "녹음 작업을 시작합니다.", Toast.LENGTH_SHORT).show()
+        } else {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity, Manifest.permission.RECORD_AUDIO)) {
+                showPermissionRationalDialog()
+            } else {
+                // 교육용 팝업을 이전에 봤는데도 불구하고 사용자가 허용을 하지 않은 경우
+                showPermissionSettingDialog()
+            }
         }
     }
 
@@ -452,5 +511,43 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    // 권한이 왜 필요한 지 안내하는 다이얼로그 (교육용 팝업)
+    private fun showPermissionRationalDialog() {
+        AlertDialog.Builder(this)
+            .setMessage("녹음 권한을 켜주셔야 해당 기능을 이용할 수 있습니다.")
+            .setPositiveButton("권한 허용하기") { dialog, position ->
+                ActivityCompat.requestPermissions(this@ChatActivity,
+                    arrayOf(Manifest.permission.RECORD_AUDIO),
+                    REQUEST_RECORD_AUDIO_CODE)
+            }
+            .setNegativeButton("취소") { dialog, position ->
+                dialog.cancel()
+            }
+            .show()
+    }
 
+    // 교육용 팝업 거절 이후 직접 설정 화면으로 유도하는 다이얼로그
+    private fun showPermissionSettingDialog() {
+        AlertDialog.Builder(this)
+            .setMessage("녹음 권한을 켜주셔야 해당 기능을 이용할 수 있습니다. 앱 설정 화면으로 진입하셔서 권한을 켜주세요.")
+            .setPositiveButton("설정 화면 가기") { dialog, position ->
+                navigateToSystemSetting()
+            }
+            .setNegativeButton("취소") { dialog, position ->
+                dialog.cancel()
+            }
+            .show()
+    }
+
+    // 시스템 설정 화면으로 이동하는 메소드
+    private fun navigateToSystemSetting() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null) // 우리 앱 패키지의 설정 디테일로 이동
+        }
+        startActivity(intent)
+    }
+
+    companion object {
+        private const val REQUEST_RECORD_AUDIO_CODE = 200
+    }
 }
