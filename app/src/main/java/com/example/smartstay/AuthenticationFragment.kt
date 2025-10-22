@@ -30,12 +30,11 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     private lateinit var binding: FragmentAuthenticationBinding
-    private lateinit var googleLoginResult: ActivityResultLauncher<Intent>
     private val userViewModel: UserViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels {
         LoginViewModelFactory(RetrofitInstance.networkService)
     }
-
+    private lateinit var googleLoginResult: ActivityResultLauncher<Intent>
     private var naverRefreshToken: String? = null
     private var naverAccessToken: String? = null
 
@@ -50,6 +49,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
          * 구글은 클라이언트에서 idToken 만 발급받을 수 있다.
          */
         googleLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
             val resultCode: Int = result.resultCode
             val intent: Intent? = result.data
 
@@ -58,7 +58,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
             Log.e(
                 GOOGLE_LOGIN,
-                "accountId: ${account.id}, idToken: ${account.idToken}, email: ${account.email}, photoUrl: ${account.photoUrl}, displayName: ${account.displayName}"
+                "accountId: ${account.id}, idToken: ${account.idToken}, serverAuthCode: ${account.serverAuthCode}, email: ${account.email}, photoUrl: ${account.photoUrl}, displayName: ${account.displayName}"
             )
 
             loginViewModel.postSocialLogin(
@@ -67,8 +67,8 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
                     user_id = account.id ?: "",
                     email = account.email ?: "",
                     nickname = account.displayName ?: "",
-                    refreshToken = "",
-                    accessToken = account.idToken ?: ""
+                    refreshToken = "${account.idToken}",
+                    accessToken = account.serverAuthCode ?: ""
                 )
             )
 
@@ -226,6 +226,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             val googleSignInOption =
                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.google_server_client_id))
+                    .requestServerAuthCode(getString(R.string.google_server_client_id))
                     .requestEmail()
                     .requestId()
                     .requestProfile()
