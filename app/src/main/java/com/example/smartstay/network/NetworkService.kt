@@ -49,6 +49,8 @@ interface NetworkService {
 
     @POST("/social-chat")
     fun postChat(@Body request: ChatRequest): Call<String>
+    @POST("receive")
+    suspend fun postSocialChat(@Body chatRequest: ChatRequest): String
 
     /**
      * Naver Directions 5 API

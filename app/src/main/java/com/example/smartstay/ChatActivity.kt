@@ -39,6 +39,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.model.user.UserInput
@@ -48,6 +49,9 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private val chatViewModel: ChatViewModel by viewModels {
+        ChatViewModelFactory(RetrofitInstance.networkService)
+    }
 
     private lateinit var chatBotMessage: ChatModel.ChatBotMessage
 
@@ -79,22 +83,23 @@ class ChatActivity : AppCompatActivity() {
     private val userId: String? by lazy {
         intent.getStringExtra("user_id")
     }
-    private val userInfo: UserInput by lazy {
-        intent.getSerializableExtra("user_info") as UserInput
+    private val userInfo: UserInfo by lazy {
+        intent.getSerializableExtra("user_info") as UserInfo
     }
 
     val testUserNickname = "테스터"
     val testUserImage = "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"
     val testUserId = "4256657082"
-    val testUserInfo = UserInput(
-        sexCode = "M",
-        marriage = "기혼",
+    val testUserInfo = UserInfo(
+        genderCode = "M",
         age = 38,
-        familyCount = "4",
-        job = "기술직",
-        children = "자녀 있음",
+        jobType = "기술직",
+        marriageType = "기혼",
+        childrenType = "자녀 있음",
+        familyType = "4",
+        incomePerMember = 330.0f,
         isCompanionExist = "Y",
-        income = 330.0f
+        companionType = "배우자"
     )
 
     private val chatItemList = mutableListOf<ChatModel>()
@@ -180,8 +185,10 @@ class ChatActivity : AppCompatActivity() {
 
             val keywordList = mutableListOf<String>()
             sideSheetChipList.forEach { chip ->
-                val keyword = resources.getResourceEntryName(chip.id)
-                if (chip.isChecked) keywordList.add(keyword)
+                if (chip.isChecked) {
+                    val keyword = resources.getResourceEntryName(chip.id)
+                    keywordList.add(keyword)
+                }
             }
 
             // chat UI
@@ -205,7 +212,7 @@ class ChatActivity : AppCompatActivity() {
             // server 연결 O
             processWithServer(
                 userId = testUserId,
-                myText = userMessage,
+                userMessage = userMessage,
                 userInfo = testUserInfo,
                 keywords = keywordList
             )
@@ -466,10 +473,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun processWithServer(
-        userId: String?,
-        myText: String,
-        keywords: List<Boolean>,
-        userInfo: UserInput
+        userId: String,
+        userMessage: String,
+        userInfo: UserInfo,
+        keywords: List<String>
     ) {
         val root = JSONObject().apply {
             put("user_id", userId)
