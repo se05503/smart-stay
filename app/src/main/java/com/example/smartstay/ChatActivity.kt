@@ -17,21 +17,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.ActivityChatBinding
-import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.model.ChatModel
-import com.example.smartstay.model.UserInput
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.gson.Gson
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
@@ -288,7 +276,10 @@ class ChatActivity : AppCompatActivity() {
                             val chipKeyword = resources.getResourceEntryName(chip.id)
                             if(chipKeyword == filterKeyword) {
                                 chip.isChecked = true
-                                val filterChip = chip.apply {
+                                val filterChip = Chip(this@ChatActivity).apply {
+                                    text = chip.text
+                                    id = chip.id
+                                    chipIcon = chip.chipIcon
                                     chipIconTint =
                                         ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
                                     chipBackgroundColor = ContextCompat.getColorStateList(
@@ -297,6 +288,11 @@ class ChatActivity : AppCompatActivity() {
                                     )
                                     chipStrokeColor =
                                         ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                                    chipCornerRadius = TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_DIP,
+                                        16f,
+                                        resources.displayMetrics
+                                    )
                                     isCloseIconVisible = true
                                     setOnCloseIconClickListener {
                                         chipgroupInput.removeView(this@apply)
@@ -514,15 +510,21 @@ class ChatActivity : AppCompatActivity() {
                     val chipFilter = resources.getResourceEntryName(chip.id)
                     if (chipFilter == keyword) {
                         chip.isChecked = true
-                        val filteredChip = chip.apply {
-                            chipIconTint =
-                                ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                        val filteredChip = Chip(this@ChatActivity).apply {
+                            text = chip.text
+                            id = chip.id
+                            chipIcon = chip.chipIcon
+                            chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
                             chipBackgroundColor = ContextCompat.getColorStateList(
                                 this@ChatActivity,
                                 R.color.background_chip
                             )
-                            chipStrokeColor =
-                                ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                            chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                            chipCornerRadius = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                16f,
+                                resources.displayMetrics
+                            )
                             isCloseIconVisible = true
                             setOnCloseIconClickListener {
                                 chipgroupInput.removeView(this@apply)
