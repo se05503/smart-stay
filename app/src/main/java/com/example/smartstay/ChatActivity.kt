@@ -55,8 +55,6 @@ class ChatActivity : AppCompatActivity() {
         ChatViewModelFactory(RetrofitInstance.networkService)
     }
 
-    private lateinit var chatBotMessage: ChatModel.ChatBotMessage
-
     private val sideSheet by lazy {
         binding.navigationView.getHeaderView(0)
     }
@@ -353,17 +351,16 @@ class ChatActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
-    private fun processWithoutServer() {
+    private fun processWithoutServer() = with(binding) {
+        val chatBotTestMessage: ChatModel.ChatBotMessage
 
-        val chatbotRandomMessage = "안녕하세요! 서버를 연결하지 않은 테스트용 응답입니다."
-
-        val lastUserMessage = chatItemList.last()
+        val lastUserMessage = chatItemList[chatItemList.lastIndex-1]
 
         if ((lastUserMessage as ChatModel.UserMessage).message.contains("추천")) {
-            chatBotMessage = ChatModel.ChatBotMessage(
+            chatBotTestMessage = ChatModel.ChatBotMessage(
                 type = 1,
-                message = "숙소를 추천해드렸어요!",
-                keywords = listOf("반려동물", "레스토랑", "바"),
+                message = "테스트용 숙소를 추천해드렸어요!",
+                keywords = listOf("pet", "bar", "oceanView"),
                 accommodationInfo = listOf(
                     AccommodationInfo(
                         name = "서울 센트럴 호텔",
@@ -394,8 +391,8 @@ class ChatActivity : AppCompatActivity() {
                         type = "레지던스",
                         image = R.drawable.img_stay_2,
                         address = "서울특별시 강남구 테헤란로 212",
-                        latitude = 37.5013f,
-                        longitude = 127.0396f,
+                        latitude = 37.5013,
+                        longitude = 127.0396,
                         minimumPrice = 110000,
                         averagePrice = 130000,
                         maximumPrice = 160000,
@@ -418,8 +415,8 @@ class ChatActivity : AppCompatActivity() {
                         type = "게스트하우스",
                         image = R.drawable.img_stay_3,
                         address = "서울특별시 마포구 와우산로 29",
-                        latitude = 37.5561f,
-                        longitude = 126.9229f,
+                        latitude = 37.5561,
+                        longitude = 126.9229,
                         minimumPrice = 35000,
                         averagePrice = 50000,
                         maximumPrice = 60000,
@@ -442,8 +439,8 @@ class ChatActivity : AppCompatActivity() {
                         type = "호텔",
                         image = R.drawable.img_stay_4,
                         address = "서울특별시 용산구 이태원로 188",
-                        latitude = 37.5349f,
-                        longitude = 126.9948f,
+                        latitude = 37.5349,
+                        longitude = 126.9948,
                         minimumPrice = 90000,
                         averagePrice = 110000,
                         maximumPrice = 140000,
@@ -466,8 +463,8 @@ class ChatActivity : AppCompatActivity() {
                         type = "호텔",
                         image = R.drawable.img_stay_5,
                         address = "서울특별시 영등포구 여의대로 24",
-                        latitude = 37.5219f,
-                        longitude = 126.9246f,
+                        latitude = 37.5219,
+                        longitude = 126.9246,
                         minimumPrice = 130000,
                         averagePrice = 150000,
                         maximumPrice = 180000,
@@ -488,40 +485,55 @@ class ChatActivity : AppCompatActivity() {
                 )
             )
         } else {
-            chatBotMessage = ChatModel.ChatBotMessage(
+            chatBotTestMessage  = ChatModel.ChatBotMessage(
                 type = 0,
-                message = chatbotRandomMessage,
+                message = "안녕하세요! 응답 테스트 중입니다. '추천'이 들어간 채팅을 임의로 넣으시면 테스트용 숙소가 추천됩니다.",
+                keywords = null,
                 accommodationInfo = null
             )
         }
 
-        // 필터링 자동 켜기
-        if (chatBotMessage.keywords != null) {
+        if (chatItemList.last() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.lastIndex)
+        chatItemList.add(chatBotTestMessage)
+        chatAdapter.submitList(chatItemList.toList())
 
-            val sideSheet = binding.sideSheet.getHeaderView(0)
-            val chipGroupFilter = sideSheet.findViewById<ChipGroup>(R.id.chipgroup_filter)
+        if (chatBotTestMessage.keywords != null) {
 
             // 기존 필터 초기화
-            binding.chipgroupInput.removeAllViews()
-            for(i in 0 until chipGroupFilter.childCount) {
+            chipgroupInput.removeAllViews()
+            val chipGroupFilter = sideSheet.findViewById<ChipGroup>(R.id.chipgroup_filter)
+            for (i in 0 until chipGroupFilter.childCount) {
                 val chip = chipGroupFilter.getChildAt(i) as Chip
                 chip.isChecked = false
             }
 
-            chatBotMessage.keywords?.let { keywords ->
-                keywords.forEach { keyword ->
-                    for (i in 0 until chipGroupFilter.childCount) {
-                        val chip = chipGroupFilter.getChildAt(i) as Chip
-                        if (chip.text == keyword) {
-                            chip.isChecked = true
+            // 챗봇 응답 필터링 자동 켜기
+            chatBotTestMessage.keywords.forEach { keyword ->
+                for (i in 0 until chipGroupFilter.childCount) {
+                    val chip = chipGroupFilter.getChildAt(i) as Chip
+                    val chipFilter = resources.getResourceEntryName(chip.id)
+                    if (chipFilter == keyword) {
+                        chip.isChecked = true
+                        val filteredChip = chip.apply {
+                            chipIconTint =
+                                ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                            chipBackgroundColor = ContextCompat.getColorStateList(
+                                this@ChatActivity,
+                                R.color.background_chip
+                            )
+                            chipStrokeColor =
+                                ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                            isCloseIconVisible = true
+                            setOnCloseIconClickListener {
+                                chipgroupInput.removeView(this@apply)
+                                chip.isChecked = false
+                            }
                         }
+                        chipgroupInput.addView(filteredChip)
                     }
                 }
             }
         }
-
-        chatItemList.add(chatBotMessage)
-        chatAdapter.submitList(chatItemList.toList())
     }
 
     private fun processWithServer(
