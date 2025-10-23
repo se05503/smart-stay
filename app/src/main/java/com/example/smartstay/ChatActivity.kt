@@ -276,6 +276,7 @@ class ChatActivity : AppCompatActivity() {
                             val chipKeyword = resources.getResourceEntryName(chip.id)
                             if(chipKeyword == filterKeyword) {
                                 chip.isChecked = true
+                                if(chipgroupInput.children.any { (it as Chip).text == chip.text }) continue // 예외 처리
                                 val filterChip = Chip(this@ChatActivity).apply {
                                     text = chip.text
                                     id = chip.id
@@ -510,6 +511,7 @@ class ChatActivity : AppCompatActivity() {
                     val chipFilter = resources.getResourceEntryName(chip.id)
                     if (chipFilter == keyword) {
                         chip.isChecked = true
+                        if(chipgroupInput.children.any { (it as Chip).text == chip.text }) continue // 예외 처리
                         val filteredChip = Chip(this@ChatActivity).apply {
                             text = chip.text
                             id = chip.id
