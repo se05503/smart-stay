@@ -1,5 +1,6 @@
 package com.example.smartstay.network
 
+import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.NaverDirectionsResponse
 import com.example.smartstay.model.tmap.RoutesInfo
@@ -50,7 +51,7 @@ interface NetworkService {
     @POST("/social-chat")
     fun postChat(@Body request: ChatRequest): Call<String>
     @POST("receive")
-    suspend fun postSocialChat(@Body chatRequest: ChatRequest): String
+    suspend fun postSocialChat(@Body chatRequest: ChatRequest): ChatModel.ChatBotMessage
 
     /**
      * Naver Directions 5 API

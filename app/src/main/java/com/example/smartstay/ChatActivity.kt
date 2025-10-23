@@ -41,8 +41,10 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
+import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.accommodation.AccommodationInfo
-import com.example.smartstay.model.user.UserInput
+import com.example.smartstay.model.user.UserInfo
+import com.example.smartstay.network.RetrofitInstance
 
 class ChatActivity : AppCompatActivity() {
 
@@ -267,6 +269,56 @@ class ChatActivity : AppCompatActivity() {
                 )
             }
         })
+        chatViewModel.chatbotResponse.observe(this@ChatActivity) { result ->
+            result.onSuccess { chatbotMessage ->
+                // 기존 필터링 초기화 및 챗봇 응답 필터링 자동으로 켜기
+                // TODO: null / emptyList() 둘 중 하나 선택하기
+                if (chatbotMessage.keywords != null) {
+
+                    // 기존 필터 초기화
+                    chipgroupInput.removeAllViews()
+
+                    val chipGroupFilter = sideSheet.findViewById<ChipGroup>(R.id.chipgroup_filter)
+                    for (i in 0 until chipGroupFilter.childCount) {
+                        val chip = chipGroupFilter.getChildAt(i) as Chip
+                        chip.isChecked = false
+                    }
+
+                    chatbotMessage.keywords.forEach { filterKeyword ->
+                        for (i in 0 until chipGroupFilter.childCount) {
+                            val chip = chipGroupFilter.getChildAt(i) as Chip
+                            val chipKeyword = resources.getResourceEntryName(chip.id)
+                            if(chipKeyword == filterKeyword) {
+                                chip.isChecked = true
+                                val filterChip = chip.apply {
+                                    chipIconTint =
+                                        ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                                    chipBackgroundColor = ContextCompat.getColorStateList(
+                                        this@ChatActivity,
+                                        R.color.background_chip
+                                    )
+                                    chipStrokeColor =
+                                        ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                                    isCloseIconVisible = true
+                                    setOnCloseIconClickListener {
+                                        chipgroupInput.removeView(this@apply)
+                                        chip.isChecked = false
+                                    }
+                                }
+                                chipgroupInput.addView(filterChip)
+                            }
+                        }
+                    }
+                }
+
+                // 로딩 상태 제거 및 챗봇 응답 UI 갱신
+                if (chatItemList.lastOrNull() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.lastIndex)
+                chatItemList.add(chatbotMessage)
+                chatAdapter.submitList(chatItemList.toList())
+            }.onFailure { error ->
+                Toast.makeText(this@ChatActivity, error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
@@ -475,90 +527,18 @@ class ChatActivity : AppCompatActivity() {
     private fun processWithServer(
         userId: String,
         userMessage: String,
-        userInfo: UserInfo,
-        keywords: List<String>
+        keywords: List<String>,
+        userInfo: UserInfo
     ) {
-        val root = JSONObject().apply {
-            put("user_id", userId)
-            put("message", myText)
-            put("keywords", keywords)
-        }
-
-        val userInput = JSONObject().apply {
-            put("성별코드", userInfo.sexCode)
-            put("나이", userInfo.age)
-            put("직업분류명", userInfo.job)
-            put("결혼여부코드", userInfo.marriage)
-            put("자녀여부", userInfo.children)
-            put("가족유형명", userInfo.familyCount) // string
-            put("구성원 1인당 수익", userInfo.income) // 단위: 만원
-            put("동행자여부", userInfo.isCompanionExist)
-        }
-
-        root.put("user_input", userInput)
-
-        val requestBody =
-            root.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
-        val okHttpClient = OkHttpClient()
-        val request =
-            Request.Builder().url("${RetrofitInstance.BASE_URL}receive").post(requestBody)
-                .build()
-
-        okHttpClient.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val rawJson = response.body?.string() ?: ""
-                    val decodedJson = decodeUnicode(rawJson)
-                    Log.d("ttest(chat)", "decoded: $decodedJson")
-                    val gson = Gson()
-                    val chatBotMessage = gson.fromJson(decodedJson, ChatModel.ChatBotMessage::class.java)
-
-                    // 필터링 자동 켜기
-                    if (chatBotMessage.keywords != null) {
-
-                        val sideSheet = binding.sideSheet.getHeaderView(0)
-                        val chipGroupFilter = sideSheet.findViewById<ChipGroup>(R.id.chipgroup_filter)
-
-                        // 기존 필터 초기화
-                        binding.chipgroupInput.removeAllViews()
-                        for(i in 0 until chipGroupFilter.childCount) {
-                            val chip = chipGroupFilter.getChildAt(i) as Chip
-                            chip.isChecked = false
-                        }
-
-                        chatBotMessage.keywords?.let { keywords ->
-                            keywords.forEach { keyword ->
-                                for (i in 0 until chipGroupFilter.childCount) {
-                                    val chip = chipGroupFilter.getChildAt(i) as Chip
-                                    if (chip.text == keyword) {
-                                        chip.isChecked = true
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if(chatItemList.lastOrNull() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.size - 1)
-                    chatItemList.add(chatBotMessage)
-
-                    chatAdapter.submitList(chatItemList.toList())
-                } else {
-                    Log.d("ttest(chat)", response.message)
-                }
-            }
-
-            override fun onFailure(call: Call, e: IOException) {
-                e.stackTraceToString()
-            }
-        })
-    }
-
-    fun decodeUnicode(input: String): String {
-        val regex = Regex("""\\u([0-9a-fA-F]{4})""")
-        return regex.replace(input) {
-            val intVal = it.groupValues[1].toInt(16)
-            intVal.toChar().toString()
-        }
+        chatViewModel.postSocialChat(
+            chatRequest =
+                ChatRequest(
+                    userId = userId,
+                    message = userMessage,
+                    keywords = keywords,
+                    userInfo = userInfo
+                )
+        )
     }
 
     // 권한이 왜 필요한 지 안내하는 다이얼로그 (교육용 팝업)
