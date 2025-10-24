@@ -24,7 +24,10 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
+import android.util.Log
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -33,6 +36,7 @@ import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
+import okio.IOException
 
 class ChatActivity : AppCompatActivity() {
 
@@ -95,6 +99,9 @@ class ChatActivity : AppCompatActivity() {
     private var isFilterInitialized: Boolean = false
     private var isChatInitialized: Boolean = false
 
+    private var recorder: MediaRecorder? = null
+    private var recordFileName: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -117,6 +124,7 @@ class ChatActivity : AppCompatActivity() {
             layoutManager = linearLayoutManager
             adapter = chatAdapter
         }
+        recordFileName = "${externalCacheDir?.absolutePath}/smartstay.m4a" // /storage/emulated/0/Android/data/com.example.smartstay/cache/smartstay.mp3
     }
 
     private fun initListeners() = with(binding) {
@@ -140,8 +148,7 @@ class ChatActivity : AppCompatActivity() {
                     this@ChatActivity,
                     Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    // 녹음 권한이 부여된 경우
-                    // 실제 녹음 시작하기
+                    onRecord()
                 }
 
                 // 기존에 사용자가 권한 요청을 거부한 경우 → 교육용 팝업 띄우기
@@ -327,9 +334,10 @@ class ChatActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val isAudioRecordPermissionGranted: Boolean = (requestCode == REQUEST_RECORD_AUDIO_CODE) && (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
-        if(isAudioRecordPermissionGranted) {
-            Toast.makeText(this, "녹음 작업을 시작합니다.", Toast.LENGTH_SHORT).show()
+        val isAudioRecordPermissionGranted: Boolean =
+            (requestCode == REQUEST_RECORD_AUDIO_CODE) && (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
+        if (isAudioRecordPermissionGranted) {
+            onRecord()
         } else {
             if(ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity, Manifest.permission.RECORD_AUDIO)) {
                 showPermissionRationalDialog()
@@ -340,7 +348,26 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    // // 키보드 내리고 입력창 초기화하는 메소드
+    // 권한 허용 이후 녹음을 시작하는 메소드
+    private fun onRecord() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            recorder = MediaRecorder(this).apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC) // 마이크를 사용한다
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setOutputFile(recordFileName)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                    // 파일 입출력 오류 (용량 부족, 파일 시스템 권한 X 등등..)
+                    Log.e("RECORD", "prepare() call failed $e")
+                }
+                start() // 녹음 시작
+            }
+        }
+    }
+
+    // 키보드 내리고 입력창 초기화하는 메소드
     private fun clearInputAndHideKeyboard() {
         binding.etMessage.setText("")
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
