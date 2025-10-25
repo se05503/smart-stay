@@ -36,7 +36,7 @@ import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.smartstay.presentation.chat.RecordBottomSheetFragment
 import okio.IOException
 
 class ChatActivity : AppCompatActivity() {
@@ -201,10 +201,8 @@ class ChatActivity : AppCompatActivity() {
                     this@ChatActivity,
                     Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    // TODO: bottom sheet dialog 보이기
-                    val recordBottomSheetDialog = BottomSheetDialog(this@ChatActivity)
-                    recordBottomSheetDialog.setContentView(R.layout.bottom_sheet_record)
-                    recordBottomSheetDialog.show()
+                    val recordBottomSheetDialog = RecordBottomSheetFragment()
+                    recordBottomSheetDialog.show(supportFragmentManager, RecordBottomSheetFragment.TAG)
                 }
 
                 // 기존에 사용자가 권한 요청을 거부한 경우 → 교육용 팝업 띄우기
@@ -347,10 +345,8 @@ class ChatActivity : AppCompatActivity() {
         val isAudioRecordPermissionGranted: Boolean =
             (requestCode == REQUEST_RECORD_AUDIO_CODE) && (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
         if (isAudioRecordPermissionGranted) {
-            // TODO: bottom sheet dialog 보이기
-            val recordBottomSheetDialog = BottomSheetDialog(this@ChatActivity)
-            recordBottomSheetDialog.setContentView(R.layout.bottom_sheet_record)
-            recordBottomSheetDialog.show()
+            val recordBottomSheetDialog = RecordBottomSheetFragment()
+            recordBottomSheetDialog.show(supportFragmentManager, RecordBottomSheetFragment.TAG)
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this@ChatActivity,
