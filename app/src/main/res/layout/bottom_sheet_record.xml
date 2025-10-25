@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="0dp"
-    app:behavior_fitToContents="false"
-    app:behavior_expandedOffset="500dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_bottom_sheet"

@@ -36,6 +36,7 @@ import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import okio.IOException
 
 class ChatActivity : AppCompatActivity() {
@@ -142,31 +143,10 @@ class ChatActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        cvRecord.setOnClickListener {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this@ChatActivity,
-                    Manifest.permission.RECORD_AUDIO
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    onRecord()
-                }
 
-                // 기존에 사용자가 권한 요청을 거부한 경우 → 교육용 팝업 띄우기
-                ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity, Manifest.permission.RECORD_AUDIO) -> {
-                    showPermissionRationalDialog()
-                }
+        sivChatSend.setOnClickListener {
 
-                // 권한을 처음 요청 받는 경우 → 시스템 팝업 띄우기
-                else -> {
-                    ActivityCompat.requestPermissions(this@ChatActivity,
-                        arrayOf(Manifest.permission.RECORD_AUDIO),
-                        REQUEST_RECORD_AUDIO_CODE)
-                }
-            }
-        }
-        cvSend.setOnClickListener {
-
-            if(!isChatInitialized) {
+            if (!isChatInitialized) {
                 lottieChatbot.isVisible = false
                 tvInduceChat.isVisible = false
                 isChatInitialized = true
@@ -214,6 +194,36 @@ class ChatActivity : AppCompatActivity() {
 
             // server 연결 X
             // processWithoutServer()
+        }
+        sivChatRecord.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this@ChatActivity,
+                    Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // TODO: bottom sheet dialog 보이기
+                    val recordBottomSheetDialog = BottomSheetDialog(this@ChatActivity)
+                    recordBottomSheetDialog.setContentView(R.layout.bottom_sheet_record)
+                    recordBottomSheetDialog.show()
+                }
+
+                // 기존에 사용자가 권한 요청을 거부한 경우 → 교육용 팝업 띄우기
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@ChatActivity,
+                    Manifest.permission.RECORD_AUDIO
+                ) -> {
+                    showPermissionRationalDialog()
+                }
+
+                // 권한을 처음 요청 받는 경우 → 시스템 팝업 띄우기
+                else -> {
+                    ActivityCompat.requestPermissions(
+                        this@ChatActivity,
+                        arrayOf(Manifest.permission.RECORD_AUDIO),
+                        REQUEST_RECORD_AUDIO_CODE
+                    )
+                }
+            }
         }
 
         // side sheet (filter)
@@ -337,9 +347,16 @@ class ChatActivity : AppCompatActivity() {
         val isAudioRecordPermissionGranted: Boolean =
             (requestCode == REQUEST_RECORD_AUDIO_CODE) && (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
         if (isAudioRecordPermissionGranted) {
-            onRecord()
+            // TODO: bottom sheet dialog 보이기
+            val recordBottomSheetDialog = BottomSheetDialog(this@ChatActivity)
+            recordBottomSheetDialog.setContentView(R.layout.bottom_sheet_record)
+            recordBottomSheetDialog.show()
         } else {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity, Manifest.permission.RECORD_AUDIO)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@ChatActivity,
+                    Manifest.permission.RECORD_AUDIO
+                )
+            ) {
                 showPermissionRationalDialog()
             } else {
                 // 교육용 팝업을 이전에 봤는데도 불구하고 사용자가 허용을 하지 않은 경우
