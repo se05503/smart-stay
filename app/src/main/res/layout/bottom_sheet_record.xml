@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_bottom_sheet"
@@ -40,6 +41,13 @@
         app:layout_constraintTop_toBottomOf="@id/tvVoiceMessage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+            android:id="@+id/ivPlayRecord"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_play"
+            tools:visibility="visible"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/tvRecordDuration"
             android:layout_width="wrap_content"
@@ -64,10 +72,10 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cvRecordWaveform"
-        app:layout_constraintEnd_toStartOf="@id/sivStartRecordVoice"/>
+        app:layout_constraintEnd_toStartOf="@id/sivRecordVoiceState"/>
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/sivStartRecordVoice"
+        android:id="@+id/sivRecordVoiceState"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:src="@drawable/ic_record"
@@ -88,8 +96,8 @@
         app:contentPadding="6dp"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/sivStartRecordVoice"
-        app:layout_constraintBottom_toBottomOf="@id/sivStartRecordVoice"
-        app:layout_constraintStart_toEndOf="@id/sivStartRecordVoice"/>
+        app:layout_constraintTop_toTopOf="@id/sivRecordVoiceState"
+        app:layout_constraintBottom_toBottomOf="@id/sivRecordVoiceState"
+        app:layout_constraintStart_toEndOf="@id/sivRecordVoiceState"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
