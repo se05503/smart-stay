@@ -18,12 +18,12 @@ class VoiceWaveformView @JvmOverloads constructor(
     defaultStyleAttribute: Int = 0
 ): View(context, attributeSet, defaultStyleAttribute) {
 
-    // 절대 좌표 (20, 30), (50, 30), (20, 90), (50,90)
-    // 사각형 width: 30, height: 60
-    val rectF = RectF(20f, 30f, 20f + 30f, 30f + 60f) // 초기값
-    val redPaint = Paint().apply {
+    private val redPaint = Paint().apply {
         color = Color.RED
     }
+
+    private val ampList = mutableListOf<Float>()
+    private val rectList = mutableListOf<RectF>()
 
     /**
      * 그림 그림
@@ -31,17 +31,33 @@ class VoiceWaveformView @JvmOverloads constructor(
      */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawRect(rectF, redPaint)
+        for(recF in rectList) {
+            canvas.drawRect(recF, redPaint)
+        }
     }
 
     /**
      * 위를 기준으로 아래로 늘어나고 줄어들음
      */
     fun addAmplitude(maxAmplitude: Float) {
-        rectF.top = 0f // 제일 위에 붙이기
-        rectF.bottom = maxAmplitude
-        rectF.left = 0f
-        rectF.right = rectF.left + 20f // width: 20f
+
+        rectList.clear() // 사각형 리스트는 계속 쌓지 않고 최신 데이터만 저장하게 갱신함
+        ampList.add(maxAmplitude) // 진폭 값 누적해서 저장
+
+        val rectWidth = 10f // 한개의 사각형 너비 todo UI에 따라 값 바꾸기
+        val maxRect = (this.width/rectWidth).toInt() // this.width = 전체 뷰, 최대 몇개의 사각형이 들어갈 수 있는가?
+
+        val amps = ampList.takeLast(maxRect)  // 시간이 갈수록 계속 추가되는 리스트, 뷰에 보이는 것만 가져옴 (가장 최근 데이터)
+
+        for((i, amp) in amps.withIndex()) {
+            val rectF = RectF()
+            rectF.top = 0f
+            rectF.bottom = amp
+            rectF.left = i * rectWidth // 이전 사각형의 right
+            rectF.right = rectF.left + rectWidth
+            rectList.add(rectF)
+        }
+
         invalidate() // UI 초기화 → onDraw 함수 호출
     }
 }
