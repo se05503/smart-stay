@@ -82,6 +82,7 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
             try {
                 recorder?.prepare()
                 recorder?.start()
+                viewVoiceWaveForm.clearData() // timer.start() 전에 호출되어야 함
                 timer.start()
                 recordState = RecordState.RECORDING
                 sivRecordVoiceState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_stop_record))
@@ -121,8 +122,9 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
         try {
             mediaPlayer?.prepare()
             mediaPlayer?.start()
-            timer.start()
             playState = PlayState.PLAYING
+            viewVoiceWaveForm.clearWaveform() // timer.start() 전에 호출해야함
+            timer.start()
             ivPlayState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_pause))
         } catch (e: IOException) {
             Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
@@ -144,11 +146,17 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
     }
 
     override fun onTick(duration: Long) = with(binding) {
-        val millisecond = (duration % 1000) / 10 // 41.2ms → 41ms
+        val millisecond = (duration % 1000) / 10
         val second = (duration / 1000) % 60
         val minute = (duration / 1000) / 60
+
         tvRecordDuration.text = String.format("%02d:%02d.%02d", minute, second, millisecond)
-        viewVoiceWaveForm.addAmplitude(recorder?.maxAmplitude?.toFloat() ?: 0f)
+
+        if(recordState == RecordState.RECORDING) {
+            viewVoiceWaveForm.addAmplitude(recorder?.maxAmplitude?.toFloat() ?: 0f)
+        } else if(playState == PlayState.PLAYING) {
+            viewVoiceWaveForm.replayAmplitude()
+        }
     }
 
     companion object {

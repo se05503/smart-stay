@@ -68,8 +68,7 @@
                 android:id="@+id/tvRecordDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:text="00:00"
+                tools:text="00:00.00"
                 android:textColor="@color/background_gray_700"
                 android:textSize="16sp"
                 android:textStyle="bold" />

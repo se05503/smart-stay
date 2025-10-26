@@ -25,6 +25,9 @@ class VoiceWaveformView @JvmOverloads constructor(
     private val ampList = mutableListOf<Float>()
     private val rectList = mutableListOf<RectF>()
 
+    private val rectWidth = 10f
+    private var tick = 0
+
     /**
      * 그림 그림
      * (0, 0) -> 왼쪽 상단
@@ -44,7 +47,6 @@ class VoiceWaveformView @JvmOverloads constructor(
         rectList.clear() // 사각형 리스트는 계속 쌓지 않고 최신 데이터만 저장하게 갱신함
         ampList.add(maxAmplitude) // 진폭 값 누적해서 저장
 
-        val rectWidth = 10f // 한개의 사각형 너비 todo UI에 따라 값 바꾸기
         val maxRect = (this.width/rectWidth).toInt() // this.width = 전체 뷰, 최대 몇개의 사각형이 들어갈 수 있는가?
 
         val amps = ampList.takeLast(maxRect)  // 시간이 갈수록 계속 추가되는 리스트, 뷰에 보이는 것만 가져옴 (가장 최근 데이터)
@@ -59,5 +61,37 @@ class VoiceWaveformView @JvmOverloads constructor(
         }
 
         invalidate() // UI 초기화 → onDraw 함수 호출
+    }
+
+    // 어느 시점을 재생하는지 알아야함
+    // ampList: 0부터 재생이 멈춘 데까지 표현
+    fun replayAmplitude() {
+        rectList.clear()
+
+        val maxRect = (this.width / rectWidth).toInt()
+        val amps = ampList.take(tick).takeLast(maxRect)
+
+        for((i, amp) in amps.withIndex()) {
+            val recF = RectF()
+            recF.top = 0f
+            recF.bottom = amp
+            recF.left = i * rectWidth
+            recF.right = recF.left + rectWidth
+            rectList.add(recF)
+        }
+
+        tick++
+
+        invalidate()
+    }
+
+    fun clearData() {
+        ampList.clear()
+    }
+
+    fun clearWaveform() {
+        rectList.clear()
+        tick = 0
+        invalidate()
     }
 }
