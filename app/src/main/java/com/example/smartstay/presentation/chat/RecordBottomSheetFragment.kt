@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -29,7 +30,6 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
         binding = BottomSheetRecordBinding.bind(view)
         initViews()
         initListeners()
-        initObservers()
     }
 
     private fun initViews() = with(binding) {
@@ -39,9 +39,6 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
     }
 
     private fun initListeners() = with(binding) {
-        tvBackToChat.setOnClickListener {
-            dismiss()
-        }
         sivRecordVoiceState.setOnClickListener {
             when(recordState) {
                 RecordState.RELEASE -> {
@@ -65,21 +62,21 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
                 }
             }
         }
-    }
-
-    private fun initObservers() = with(binding) {
-        // 파일 재생이 끝났을 때 호출됨
-        mediaPlayer?.setOnCompletionListener {
-            mediaPlayer?.release()
-            mediaPlayer = null
-            playState = PlayState.RELEASE
-            ivPlayState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_play))
+        tvBackToChat.setOnClickListener {
+            dismiss()
         }
     }
 
     private fun startPlaying() = with(binding) {
         mediaPlayer = MediaPlayer().apply {
             setDataSource(recordFileName)
+            setOnCompletionListener {
+                mediaPlayer?.release()
+                mediaPlayer = null
+                playState = PlayState.RELEASE
+                ivPlayState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_play))
+                Log.e("DEBUG", "invoke!")
+            }
         }
         try {
             mediaPlayer?.prepare()
