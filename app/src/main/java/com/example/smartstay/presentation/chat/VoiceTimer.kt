@@ -13,14 +13,14 @@ class VoiceTimer(listener: OnTimerTickListener) {
     private val handler = Handler(Looper.getMainLooper())
     private val runnable: Runnable = object : Runnable { // 인터페이스(설계도) → object를 통해 구현해야함
         override fun run() {
-            duration += 100L
-            handler.postDelayed(this, 100L) // 100ms 단위로 무한루프 발생
+            duration += 40L
+            handler.postDelayed(this, 40L) // 100ms 단위로 무한루프 발생
             listener.onTick(duration)
         }
     }
 
     fun start() {
-        handler.postDelayed(runnable, 100L)
+        handler.postDelayed(runnable, 40L)
     }
 
     fun stop() {

@@ -144,7 +144,10 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
     }
 
     override fun onTick(duration: Long) = with(binding) {
-        tvRecordDuration.text = "$duration" // TODO: 시간 갱신하기
+        val millisecond = (duration % 1000) / 10 // 41.2ms → 41ms
+        val second = (duration / 1000) % 60
+        val minute = (duration / 1000) / 60
+        tvRecordDuration.text = String.format("%02d:%02d.%02d", minute, second, millisecond)
         viewVoiceWaveForm.addAmplitude(recorder?.maxAmplitude?.toFloat() ?: 0f)
     }
 
