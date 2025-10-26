@@ -25,7 +25,7 @@ class VoiceWaveformView @JvmOverloads constructor(
     private val ampList = mutableListOf<Float>()
     private val rectList = mutableListOf<RectF>()
 
-    private val rectWidth = 10f
+    private val rectWidth = 15f
     private var tick = 0
 
     /**
@@ -44,8 +44,10 @@ class VoiceWaveformView @JvmOverloads constructor(
      */
     fun addAmplitude(maxAmplitude: Float) {
 
+        val amplitude = (maxAmplitude / Short.MAX_VALUE) * (this.height) * 0.8f // 값 보정. maxAmplitude / Short.MAX_VALUE: 0 ~ 1
+
         rectList.clear() // 사각형 리스트는 계속 쌓지 않고 최신 데이터만 저장하게 갱신함
-        ampList.add(maxAmplitude) // 진폭 값 누적해서 저장
+        ampList.add(amplitude) // 진폭 값 누적해서 저장
 
         val maxRect = (this.width/rectWidth).toInt() // this.width = 전체 뷰, 최대 몇개의 사각형이 들어갈 수 있는가?
 
@@ -53,10 +55,10 @@ class VoiceWaveformView @JvmOverloads constructor(
 
         for((i, amp) in amps.withIndex()) {
             val rectF = RectF()
-            rectF.top = 0f
-            rectF.bottom = amp
-            rectF.left = i * rectWidth // 이전 사각형의 right
-            rectF.right = rectF.left + rectWidth
+            rectF.top = (this.height / 2) - amp/2 // + ↓ / - ↑
+            rectF.bottom = rectF.top + amp
+            rectF.left = i * rectWidth
+            rectF.right = rectF.left + rectWidth - 5f
             rectList.add(rectF)
         }
 
@@ -73,10 +75,10 @@ class VoiceWaveformView @JvmOverloads constructor(
 
         for((i, amp) in amps.withIndex()) {
             val recF = RectF()
-            recF.top = 0f
-            recF.bottom = amp
+            recF.top = (this.height)/2 - amp/2
+            recF.bottom = recF.top + amp
             recF.left = i * rectWidth
-            recF.right = recF.left + rectWidth
+            recF.right = recF.left + rectWidth - 5f // 5f: 여백을 위함
             rectList.add(recF)
         }
 
