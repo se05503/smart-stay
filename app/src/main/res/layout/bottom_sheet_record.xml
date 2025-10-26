@@ -57,7 +57,7 @@
                 android:visibility="invisible"
                 tools:visibility="visible" />
 
-            <View
+            <com.example.smartstay.presentation.chat.VoiceWaveformView
                 android:id="@+id/viewVoiceWaveForm"
                 android:layout_width="0dp"
                 android:layout_weight="1"
