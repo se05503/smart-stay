@@ -22,7 +22,7 @@ class VoiceWaveformView @JvmOverloads constructor(
         color = Color.RED
     }
 
-    private val ampList = mutableListOf<Float>()
+    private val totalAmpList = mutableListOf<Float>()
     private val rectList = mutableListOf<RectF>()
 
     private val rectWidth = 15f
@@ -59,9 +59,9 @@ class VoiceWaveformView @JvmOverloads constructor(
         val scaledAmplitude = (maxAmplitude / Short.MAX_VALUE) * (this.height) * 0.8f // (1)
 
         rectList.clear() // (5)
-        ampList.add(scaledAmplitude)
+        totalAmpList.add(scaledAmplitude)
 
-        val visualAmpList = ampList.takeLast(maxRect)
+        val visualAmpList = totalAmpList.takeLast(maxRect)
 
         for((i, visualAmp) in visualAmpList.withIndex()) {
             val rectF = RectF()
@@ -75,15 +75,17 @@ class VoiceWaveformView @JvmOverloads constructor(
         invalidate() // (4)
     }
 
-    // 어느 시점을 재생하는지 알아야함
-    // ampList: 0부터 재생이 멈춘 데까지 표현
+    /**
+     * tick: 현재 어디까지 재생되었는가? (단위 시점: Handler의 delayMillis = 현재 100ms)
+     * pause → resume 단계에서 반드시 필요 (checkpoint 역할)
+     * 녹음할 때 필요 X, 재생할 때 필요 O
+     */
     fun replayAmplitude() {
         rectList.clear()
 
-        val maxRect = (this.width / rectWidth).toInt()
-        val amps = ampList.take(tick).takeLast(maxRect)
+        val visualAmpList = totalAmpList.take(tick).takeLast(maxRect)
 
-        for((i, amp) in amps.withIndex()) {
+        for((i, amp) in visualAmpList.withIndex()) {
             val recF = RectF()
             recF.top = (this.height)/2 - amp/2
             recF.bottom = recF.top + amp
@@ -92,19 +94,27 @@ class VoiceWaveformView @JvmOverloads constructor(
             rectList.add(recF)
         }
 
-        tick++
+        tick++ // 미리 다음꺼 더해놓음
 
         invalidate()
     }
 
-    fun clearData() {
-        ampList.clear() // 기존에 녹음된 파형 데이터 제거
-        rectList.clear() // invalidte 호출 이전에 시스템에 의해 onDraw 메소드 호출됨 → 기존 파형 제거
+    // 녹음 끝났을 때 호출됨
+    fun clearRecordingWaveform() {
+        rectList.clear() // invalidate 호출 이전에 시스템에 의해 onDraw 메소드 호출됨 → 기존 파형 제거
+        invalidate()
     }
 
-    fun clearWaveform() {
-        rectList.clear()
-        tick = 0
+    // 재생 끝났을 때 호출됨
+    fun clearPlayingWaveform() {
+        rectList.clear() // invalidate 호출 이전에 시스템에 의해 onDraw 메소드 호출됨 → 기존 파형 제거
         invalidate()
+        tick = 0 // 재생 끝난 후 다시 기존 파일 재생할 때 초기화 필요
+    }
+
+    // 녹음 종료 후 새로운 녹음 시작할 때 호출됨
+    fun clearWaveformAndData() {
+        rectList.clear() // invalidate 호출 이전에 시스템에 의해 onDraw 메소드 호출됨 → 기존 파형 제거
+        totalAmpList.clear() // 기존에 녹음된 파형 데이터 제거
     }
 }

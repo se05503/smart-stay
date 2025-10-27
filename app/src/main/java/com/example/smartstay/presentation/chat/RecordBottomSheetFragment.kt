@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -82,10 +81,9 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
             try {
                 recorder?.prepare()
                 recorder?.start()
-                viewVoiceWaveForm.clearData() // timer.start() 전에 호출되어야 함
+                viewVoiceWaveForm.clearWaveformAndData() // 기존에 저장된 녹음 삭제
                 timer.start()
                 recordState = RecordState.RECORDING
-                viewVoiceWaveForm.isVisible = true
                 sivRecordVoiceState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_stop_record))
                 sivSendVoiceMessage.isEnabled = false
                 sivSendVoiceMessage.alpha = 0.3f
@@ -104,11 +102,11 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
         timer.stop()
         recordState = RecordState.RELEASE
         tvRecordDuration.isVisible = false
-        viewVoiceWaveForm.isVisible = false // TODO: viewVoiceWaveForm.clearWaveform() 사용 가능한지, 어떤게 더 나은지 체크해보기
+        viewVoiceWaveForm.clearRecordingWaveform()
         sivRecordVoiceState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_record))
         sivSendVoiceMessage.isEnabled = true
         sivSendVoiceMessage.alpha = 1f
-        ivPlayState.isVisible = true
+        ivPlayState.isVisible = true // TODO: 재생 UI visibility 상태에 따라 위치 옮기기
     }
 
     private fun startPlaying() = with(binding) {
@@ -119,15 +117,16 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
                 mediaPlayer = null
                 timer.stop()
                 playState = PlayState.RELEASE
+                viewVoiceWaveForm.clearPlayingWaveform()
+                tvRecordDuration.isVisible = false
                 ivPlayState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_play))
             }
         }
         try {
             mediaPlayer?.prepare()
             mediaPlayer?.start()
-            playState = PlayState.PLAYING
-            viewVoiceWaveForm.clearWaveform() // timer.start() 전에 호출해야함
             timer.start()
+            playState = PlayState.PLAYING
             ivPlayState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_pause))
         } catch (e: IOException) {
             Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
@@ -136,7 +135,7 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
 
     private fun pausePlaying() = with(binding) {
         mediaPlayer?.pause()
-        timer.stop()
+        timer.pause()
         playState = PlayState.PAUSED
         ivPlayState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_play))
     }
@@ -153,7 +152,6 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
         val minute = (duration / 1000) / 60
         val second = (duration / 1000) % 60
 
-        tvRecordDuration.text = String.format("%02d:%02d.%02d", minute, second, millisecond)
         tvRecordDuration.text = String.format("%02d:%02d", minute, second)
 
         if(!tvRecordDuration.isVisible) {

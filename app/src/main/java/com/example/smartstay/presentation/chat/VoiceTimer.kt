@@ -23,6 +23,10 @@ class VoiceTimer(listener: OnTimerTickListener) {
         handler.postDelayed(runnable, 100L)
     }
 
+    fun pause() {
+        handler.removeCallbacks(runnable)
+    }
+
     fun stop() {
         handler.removeCallbacks(runnable)
         duration = 0L
