@@ -102,6 +102,8 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
         recorder = null
         timer.stop()
         recordState = RecordState.RELEASE
+        tvRecordDuration.isVisible = false
+        viewVoiceWaveForm.isVisible = false // TODO: viewVoiceWaveForm.clearWaveform() 사용 가능한지, 어떤게 더 나은지 체크해보기
         sivRecordVoiceState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_record))
         sivSendVoiceMessage.isEnabled = true
         sivSendVoiceMessage.alpha = 1f
@@ -146,11 +148,12 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
     }
 
     override fun onTick(duration: Long) = with(binding) {
-        val millisecond = (duration % 1000) / 10
-        val second = (duration / 1000) % 60
+
         val minute = (duration / 1000) / 60
+        val second = (duration / 1000) % 60
 
         tvRecordDuration.text = String.format("%02d:%02d.%02d", minute, second, millisecond)
+        tvRecordDuration.text = String.format("%02d:%02d", minute, second)
 
         if(recordState == RecordState.RECORDING) {
             viewVoiceWaveForm.addAmplitude(recorder?.maxAmplitude?.toFloat() ?: 0f)

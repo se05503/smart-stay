@@ -11,21 +11,21 @@ import android.os.Looper
 class VoiceTimer(listener: OnTimerTickListener) {
     private var duration: Long = 0L
     private val handler = Handler(Looper.getMainLooper())
-    private val runnable: Runnable = object : Runnable { // 인터페이스(설계도) → object를 통해 구현해야함
+    private val runnable: Runnable = object : Runnable {
         override fun run() {
-            duration += 40L
-            handler.postDelayed(this, 40L) // 100ms 단위로 무한루프 발생
+            duration += 100L
+            handler.postDelayed(this, 100L)
             listener.onTick(duration)
         }
     }
 
     fun start() {
-        handler.postDelayed(runnable, 40L)
+        handler.postDelayed(runnable, 100L)
     }
 
     fun stop() {
         handler.removeCallbacks(runnable)
-        duration = 0
+        duration = 0L
     }
 }
 
