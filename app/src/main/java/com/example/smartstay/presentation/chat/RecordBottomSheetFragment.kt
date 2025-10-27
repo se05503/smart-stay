@@ -85,6 +85,7 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
                 viewVoiceWaveForm.clearData() // timer.start() 전에 호출되어야 함
                 timer.start()
                 recordState = RecordState.RECORDING
+                viewVoiceWaveForm.isVisible = true
                 sivRecordVoiceState.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_stop_record))
                 sivSendVoiceMessage.isEnabled = false
                 sivSendVoiceMessage.alpha = 0.3f
@@ -154,6 +155,10 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
 
         tvRecordDuration.text = String.format("%02d:%02d.%02d", minute, second, millisecond)
         tvRecordDuration.text = String.format("%02d:%02d", minute, second)
+
+        if(!tvRecordDuration.isVisible) {
+            tvRecordDuration.isVisible = true
+        }
 
         if(recordState == RecordState.RECORDING) {
             viewVoiceWaveForm.addAmplitude(recorder?.maxAmplitude?.toFloat() ?: 0f)

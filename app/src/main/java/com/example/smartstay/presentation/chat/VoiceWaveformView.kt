@@ -59,7 +59,6 @@ class VoiceWaveformView @JvmOverloads constructor(
         val scaledAmplitude = (maxAmplitude / Short.MAX_VALUE) * (this.height) * 0.8f // (1)
 
         rectList.clear() // (5)
-        rectList.removeAt(0)
         ampList.add(scaledAmplitude)
 
         val visualAmpList = ampList.takeLast(maxRect)
@@ -99,7 +98,8 @@ class VoiceWaveformView @JvmOverloads constructor(
     }
 
     fun clearData() {
-        ampList.clear()
+        ampList.clear() // 기존에 녹음된 파형 데이터 제거
+        rectList.clear() // invalidte 호출 이전에 시스템에 의해 onDraw 메소드 호출됨 → 기존 파형 제거
     }
 
     fun clearWaveform() {
