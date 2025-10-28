@@ -44,7 +44,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val chatViewModel: ChatViewModel by viewModels {
-        ChatViewModelFactory(RetrofitInstance.networkService)
+        ChatViewModelFactory(RetrofitInstance.backendNetworkService)
     }
 
     private val sideSheet by lazy {
@@ -98,6 +98,10 @@ class ChatActivity : AppCompatActivity() {
 
     private var isFilterInitialized: Boolean = false
     private var isChatInitialized: Boolean = false
+
+    private val recordBottomSheetDialog: RecordBottomSheetFragment by lazy {
+        RecordBottomSheetFragment()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -321,6 +325,14 @@ class ChatActivity : AppCompatActivity() {
                 if (chatItemList.lastOrNull() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.lastIndex)
                 chatItemList.add(chatbotMessage)
                 chatAdapter.submitList(chatItemList.toList())
+            }.onFailure { error ->
+                Toast.makeText(this@ChatActivity, error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        chatViewModel.convertedVoiceRecord.observe(this@ChatActivity) { result ->
+            result.onSuccess { convertedVoiceRecord ->
+                recordBottomSheetDialog.dismiss()
+                etMessage.setText(convertedVoiceRecord)
             }.onFailure { error ->
                 Toast.makeText(this@ChatActivity, error.message, Toast.LENGTH_SHORT).show()
             }

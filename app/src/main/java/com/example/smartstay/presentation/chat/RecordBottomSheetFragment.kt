@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import com.example.smartstay.ChatViewModel
 import com.example.smartstay.R
 import com.example.smartstay.databinding.BottomSheetRecordBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -25,6 +27,8 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
     private var playState: PlayState = PlayState.RELEASE
 
     private lateinit var timer: VoiceTimer
+
+    private val chatViewModel: ChatViewModel by activityViewModels() // 액티비티의 viewmodel을 공유하는 것이기에 ViewModelFactory가 필요 X
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,6 +67,9 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
                     resumePlaying()
                 }
             }
+        }
+        sivSendVoiceMessage.setOnClickListener {
+            chatViewModel.postVoiceRecord(fileName = recordFileName)
         }
         tvBackToChat.setOnClickListener {
             dismiss()
