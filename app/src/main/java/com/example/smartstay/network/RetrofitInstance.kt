@@ -13,12 +13,30 @@ object RetrofitInstance {
 
     val gson = GsonBuilder().setLenient().create()
 
-    val networkService: NetworkService by lazy {
+    val backendNetworkService: BackendNetworkService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BACKEND_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+            .create(BackendNetworkService::class.java)
+    }
+
+    val naverMapNetworkService: NaverMapNetworkService by lazy {
+        Retrofit.Builder()
+            .baseUrl(NAVER_MAP_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+            .create(NaverMapNetworkService::class.java)
+    }
+
+    val skTMapNetworkService: SkTMapNetworkService by lazy {
         Retrofit.Builder()
             .baseUrl(SK_TMAP_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
-            .create(NetworkService::class.java)
+            .create(SkTMapNetworkService::class.java)
     }
 }

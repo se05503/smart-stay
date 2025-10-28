@@ -2,54 +2,22 @@ package com.example.smartstay.network
 
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
-import com.example.smartstay.model.NaverDirectionsResponse
-import com.example.smartstay.model.tmap.RoutesInfo
-import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.SocialLoginRequest
 import com.example.smartstay.model.SocialLoginResponse
-import com.example.smartstay.model.TMapRouteResponse
-import com.example.smartstay.model.TMapTravelSpecificAccommodationRankingResponse
-import com.example.smartstay.model.TMapTravelAccommodationResponse
-import com.example.smartstay.model.TMapTravelDailyVisitorResponse
-import com.example.smartstay.model.TMapTravelDistrictAccommodationRankingResponse
-import com.example.smartstay.model.TMapTravelDistrictAccommodationThemeRankingResponse
-import com.example.smartstay.model.TMapTravelDistrictDurationResponse
-import com.example.smartstay.model.TMapTravelDistrictResponse
-import com.example.smartstay.model.TMapTravelDistrictsAccommodationVisitorSegmentsResponse
-import com.example.smartstay.model.TMapTravelMonthlyVisitorResponse
-import com.example.smartstay.model.TMapTravelPopularCommercialDistrictNearbyResponse
-import com.example.smartstay.model.TMapTravelPopularCommercialDistrictNearbySegmentRateResponse
-import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbyResponse
-import com.example.smartstay.model.TMapTravelPopularRestaurantsNearbySegmentRateResponse
-import com.example.smartstay.model.TMapTravelPopularSpotsNearbyResponse
-import com.example.smartstay.model.TMapTravelPopularSpotsNearbySegmentRateResponse
-import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
-import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
-import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
-import com.example.smartstay.model.UserRequest
-import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
-import com.example.smartstay.model.tmap.TMapRoutesPredictionResponse
-import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface NetworkService {
+interface BackendNetworkService {
 
-    @POST("/receive")
-    fun postUserInfo(
-        @Body userRequest: UserRequest
-    ): Call<Any>
-
-    @POST("/social-login")
+    @POST("social-login")
     suspend fun postSocialLogin(@Body request: SocialLoginRequest): SocialLoginResponse
 
-    @POST("/social-chat")
-    fun postChat(@Body request: ChatRequest): Call<String>
+//    @POST("receive")
+//    fun postUserInfo(
+//        @Body userRequest: UserRequest
+//    ): Call<Any>
+
     @POST("receive")
     suspend fun postSocialChat(@Body chatRequest: ChatRequest): ChatModel.ChatBotMessage
 
