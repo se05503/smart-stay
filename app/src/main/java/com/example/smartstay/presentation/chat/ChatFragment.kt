@@ -1,51 +1,53 @@
-package com.example.smartstay
+package com.example.smartstay.presentation.chat
 
-import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
-import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.children
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.smartstay.databinding.ActivityChatBinding
-import com.example.smartstay.model.ChatModel
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.util.Log
+import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.core.app.ActivityCompat
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.core.view.children
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.smartstay.ChatAdapter
+import com.example.smartstay.ChatViewModel
+import com.example.smartstay.ChatViewModelFactory
+import com.example.smartstay.ItemClickListener
+import com.example.smartstay.R
+import com.example.smartstay.databinding.FragmentChatBinding
+import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
-import com.example.smartstay.presentation.chat.RecordBottomSheetFragment
-import okio.IOException
+import com.example.smartstay.presentation.AccommodationViewModel
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
-class ChatActivity : AppCompatActivity() {
+class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
 
-    private lateinit var binding: ActivityChatBinding
+    private lateinit var binding: FragmentChatBinding
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private val chatViewModel: ChatViewModel by viewModels {
+
+    private val chatViewModel: ChatViewModel by activityViewModels {
         ChatViewModelFactory(RetrofitInstance.backendNetworkService)
     }
+    private val accommodationViewModel: AccommodationViewModel by activityViewModels()
 
     private val sideSheet by lazy {
         binding.navigationView.getHeaderView(0)
@@ -66,21 +68,22 @@ class ChatActivity : AppCompatActivity() {
         )
     }
 
-    private val userNickname: String? by lazy {
-        intent.getStringExtra("user_nickname")
-    }
-    private val userImage: String? by lazy {
-        intent.getStringExtra("user_image")
-    }
-    private val userId: String? by lazy {
-        intent.getStringExtra("user_id")
-    }
-    private val userInfo: UserInfo by lazy {
-        intent.getSerializableExtra("user_info") as UserInfo
-    }
+//    private val userNickname: String? by lazy {
+//        intent.getStringExtra("user_nickname")
+//    }
+//    private val userImage: String? by lazy {
+//        intent.getStringExtra("user_image")
+//    }
+//    private val userId: String? by lazy {
+//        intent.getStringExtra("user_id")
+//    }
+//    private val userInfo: UserInfo by lazy {
+//        intent.getSerializableExtra("user_info") as UserInfo
+//    }
 
     val testUserNickname = "테스터"
-    val testUserImage = "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"
+    val testUserImage =
+        "https://img1.kakaocdn.net/thumb/R640x640.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"
     val testUserId = "4256657082"
     val testUserInfo = UserInfo(
         genderCode = "M",
@@ -103,29 +106,35 @@ class ChatActivity : AppCompatActivity() {
         RecordBottomSheetFragment()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityChatBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+    private val requestRecordPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                recordBottomSheetDialog.show(childFragmentManager, RecordBottomSheetFragment.TAG)
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    showPermissionRationalDialog()
+                } else {
+                    // 교육용 팝업을 이전에 봤는데도 불구하고 사용자가 허용을 하지 않은 경우
+                    showPermissionSettingDialog()
+                }
+            }
         }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentChatBinding.bind(view)
         initViews()
         initListeners()
         initObservers()
     }
 
     private fun initViews() = with(binding) {
-        linearLayoutManager = LinearLayoutManager(this@ChatActivity)
-        chatAdapter = ChatAdapter(this@ChatActivity)
+        linearLayoutManager = LinearLayoutManager(context)
+        chatAdapter = ChatAdapter(this@ChatFragment)
         with(recyclerviewChat) {
             layoutManager = linearLayoutManager
             adapter = chatAdapter
         }
-        recordFileName = "${externalCacheDir?.absolutePath}/smartstay.m4a" // /storage/emulated/0/Android/data/com.example.smartstay/cache/smartstay.mp3
     }
 
     private fun initListeners() = with(binding) {
@@ -133,13 +142,14 @@ class ChatActivity : AppCompatActivity() {
         toolbarChat.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.toolbar_filtering -> {
-                    if(!isFilterInitialized) {
+                    if (!isFilterInitialized) {
                         isFilterInitialized = true
                         lottiePointer.isVisible = false
                     }
                     drawerLayout.openDrawer(GravityCompat.END, true)
                     true
                 }
+
                 else -> false
             }
         }
@@ -154,7 +164,7 @@ class ChatActivity : AppCompatActivity() {
 
             val userMessage = etMessage.text.toString()
             if (userMessage.isBlank()) {
-                Toast.makeText(this@ChatActivity, "내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -185,29 +195,30 @@ class ChatActivity : AppCompatActivity() {
             clearInputAndHideKeyboard()
 
             // server 연결 O
-            processWithServer(
-                userId = testUserId,
-                userMessage = userMessage,
-                userInfo = testUserInfo,
-                keywords = keywordList
-            )
+//            processWithServer(
+//                userId = testUserId,
+//                userMessage = userMessage,
+//                userInfo = testUserInfo,
+//                keywords = keywordList
+//            )
 
             // server 연결 X
-            // processWithoutServer()
+            processWithoutServer()
         }
         sivChatRecord.setOnClickListener {
             when {
                 ContextCompat.checkSelfPermission(
-                    this@ChatActivity,
+                    requireContext(),
                     Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    val recordBottomSheetDialog = RecordBottomSheetFragment()
-                    recordBottomSheetDialog.show(supportFragmentManager, RecordBottomSheetFragment.TAG)
+                    recordBottomSheetDialog.show(
+                        childFragmentManager,
+                        RecordBottomSheetFragment.TAG
+                    )
                 }
 
                 // 기존에 사용자가 권한 요청을 거부한 경우 → 교육용 팝업 띄우기
-                ActivityCompat.shouldShowRequestPermissionRationale(
-                    this@ChatActivity,
+                shouldShowRequestPermissionRationale(
                     Manifest.permission.RECORD_AUDIO
                 ) -> {
                     showPermissionRationalDialog()
@@ -215,11 +226,7 @@ class ChatActivity : AppCompatActivity() {
 
                 // 권한을 처음 요청 받는 경우 → 시스템 팝업 띄우기
                 else -> {
-                    ActivityCompat.requestPermissions(
-                        this@ChatActivity,
-                        arrayOf(Manifest.permission.RECORD_AUDIO),
-                        REQUEST_RECORD_AUDIO_CODE
-                    )
+                    requestRecordPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                 }
             }
         }
@@ -228,17 +235,22 @@ class ChatActivity : AppCompatActivity() {
         sideSheetChipList.forEach { chip ->
             chip.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    val checkedChip = Chip(this@ChatActivity).apply {
+                    val checkedChip = Chip(context).apply {
                         text = chip.text
                         chipIcon = chip.chipIcon
-                        chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
-                        chipBackgroundColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.background_chip)
+                        chipIconTint =
+                            ContextCompat.getColorStateList(context, R.color.primary)
+                        chipBackgroundColor = ContextCompat.getColorStateList(
+                            context,
+                            R.color.background_gray_200
+                        )
                         chipCornerRadius = TypedValue.applyDimension(
                             TypedValue.COMPLEX_UNIT_DIP,
                             16f,
                             resources.displayMetrics
                         )
-                        chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                        chipStrokeColor =
+                            ContextCompat.getColorStateList(context, R.color.primary)
                         isCloseIconVisible = true
                         setOnCloseIconClickListener {
                             chipgroupInput.removeView(this)
@@ -259,7 +271,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun initObservers() = with(binding) {
-        // 아이템이 들어올 때 옵져빙하여 가장 마지막 위치로 이동하기
         chatAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
@@ -270,9 +281,22 @@ class ChatActivity : AppCompatActivity() {
                 )
             }
         })
-        chatViewModel.chatbotResponse.observe(this@ChatActivity) { result ->
+        chatViewModel.chatbotResponse.observe(viewLifecycleOwner) { result ->
             result.onSuccess { chatbotMessage ->
-                // 기존 필터링 초기화 및 챗봇 응답 필터링 자동으로 켜기
+
+                // 로딩 상태 제거 및 챗봇 응답 UI 갱신
+                if (chatItemList.lastOrNull() is ChatModel.ChatBotLoading) {
+                    chatItemList.removeAt(chatItemList.lastIndex)
+                }
+                chatItemList.add(chatbotMessage)
+                chatAdapter.submitList(chatItemList.toList())
+
+                // viewmodel 값 초기화
+                if(chatbotMessage.accommodationInfo != null) {
+                    accommodationViewModel.recommendAccommodationList = chatbotMessage.accommodationInfo
+                }
+
+                // 필터링 UI
                 // TODO: null / emptyList() 둘 중 하나 선택하기
                 if (chatbotMessage.keywords != null) {
 
@@ -289,21 +313,21 @@ class ChatActivity : AppCompatActivity() {
                         for (i in 0 until chipGroupFilter.childCount) {
                             val chip = chipGroupFilter.getChildAt(i) as Chip
                             val chipKeyword = resources.getResourceEntryName(chip.id)
-                            if(chipKeyword == filterKeyword) {
+                            if (chipKeyword == filterKeyword) {
                                 chip.isChecked = true
-                                if(chipgroupInput.children.any { (it as Chip).text == chip.text }) continue // 예외 처리
-                                val filterChip = Chip(this@ChatActivity).apply {
+                                if (chipgroupInput.children.any { (it as Chip).text == chip.text }) continue // 예외 처리
+                                val filterChip = Chip(context).apply {
                                     text = chip.text
                                     id = chip.id
                                     chipIcon = chip.chipIcon
                                     chipIconTint =
-                                        ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                                        ContextCompat.getColorStateList(context, R.color.primary)
                                     chipBackgroundColor = ContextCompat.getColorStateList(
-                                        this@ChatActivity,
-                                        R.color.background_chip
+                                        context,
+                                        R.color.background_gray_200
                                     )
                                     chipStrokeColor =
-                                        ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                                        ContextCompat.getColorStateList(context, R.color.primary)
                                     chipCornerRadius = TypedValue.applyDimension(
                                         TypedValue.COMPLEX_UNIT_DIP,
                                         16f,
@@ -320,51 +344,16 @@ class ChatActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-                // 로딩 상태 제거 및 챗봇 응답 UI 갱신
-                if (chatItemList.lastOrNull() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.lastIndex)
-                chatItemList.add(chatbotMessage)
-                chatAdapter.submitList(chatItemList.toList())
             }.onFailure { error ->
-                Toast.makeText(this@ChatActivity, error.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
         }
-        chatViewModel.convertedVoiceRecord.observe(this@ChatActivity) { result ->
+        chatViewModel.convertedVoiceRecord.observe(viewLifecycleOwner) { result ->
             result.onSuccess { convertedVoiceRecord ->
                 recordBottomSheetDialog.dismiss()
                 etMessage.setText(convertedVoiceRecord)
             }.onFailure { error ->
-                Toast.makeText(this@ChatActivity, error.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    /**
-     * 권한 요청했을 때 시스템 팝업이 뜸
-     * 권한이 허용되지 않을 수도 있음
-     * 서로 다른 권한을 요청하더라도 똑같은 콜백이 호출되기 때문에, 요청 코드(REQUEST_CODE)로 권한을 구분해야한다.
-     */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val isAudioRecordPermissionGranted: Boolean =
-            (requestCode == REQUEST_RECORD_AUDIO_CODE) && (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
-        if (isAudioRecordPermissionGranted) {
-            val recordBottomSheetDialog = RecordBottomSheetFragment()
-            recordBottomSheetDialog.show(supportFragmentManager, RecordBottomSheetFragment.TAG)
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this@ChatActivity,
-                    Manifest.permission.RECORD_AUDIO
-                )
-            ) {
-                showPermissionRationalDialog()
-            } else {
-                // 교육용 팝업을 이전에 봤는데도 불구하고 사용자가 허용을 하지 않은 경우
-                showPermissionSettingDialog()
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -372,15 +361,16 @@ class ChatActivity : AppCompatActivity() {
     // 키보드 내리고 입력창 초기화하는 메소드
     private fun clearInputAndHideKeyboard() {
         binding.etMessage.setText("")
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        val view = this@ChatActivity.currentFocus
+        val imm = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = requireActivity().currentFocus
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     private fun processWithoutServer() = with(binding) {
         val chatBotTestMessage: ChatModel.ChatBotMessage
 
-        val lastUserMessage = chatItemList[chatItemList.lastIndex-1]
+        val lastUserMessage =
+            chatItemList[chatItemList.lastIndex - 1] // chatItemList[chatItemList.lastIndex] = ChatModel.ChatBotLoading
 
         if ((lastUserMessage as ChatModel.UserMessage).message.contains("추천")) {
             chatBotTestMessage = ChatModel.ChatBotMessage(
@@ -393,8 +383,8 @@ class ChatActivity : AppCompatActivity() {
                         type = "호텔",
                         image = R.drawable.img_stay_1,
                         address = "서울특별시 중구 세종대로 110",
-                        latitude = 37.5665f,
-                        longitude = 126.9780f,
+                        latitude = 37.5665,
+                        longitude = 126.9780,
                         minimumPrice = 85000,
                         averagePrice = 100000,
                         maximumPrice = 120000,
@@ -511,7 +501,7 @@ class ChatActivity : AppCompatActivity() {
                 )
             )
         } else {
-            chatBotTestMessage  = ChatModel.ChatBotMessage(
+            chatBotTestMessage = ChatModel.ChatBotMessage(
                 type = 0,
                 message = "안녕하세요! 응답 테스트 중입니다. '추천'이 들어간 채팅을 임의로 넣으시면 테스트용 숙소가 추천됩니다.",
                 keywords = null,
@@ -522,6 +512,11 @@ class ChatActivity : AppCompatActivity() {
         if (chatItemList.last() is ChatModel.ChatBotLoading) chatItemList.removeAt(chatItemList.lastIndex)
         chatItemList.add(chatBotTestMessage)
         chatAdapter.submitList(chatItemList.toList())
+
+        // viewmodel 값 설정
+        if(chatBotTestMessage.accommodationInfo != null) {
+            accommodationViewModel.recommendAccommodationList = chatBotTestMessage.accommodationInfo
+        }
 
         if (chatBotTestMessage.keywords != null) {
 
@@ -540,17 +535,18 @@ class ChatActivity : AppCompatActivity() {
                     val chipFilter = resources.getResourceEntryName(chip.id)
                     if (chipFilter == keyword) {
                         chip.isChecked = true
-                        if(chipgroupInput.children.any { (it as Chip).text == chip.text }) continue // 예외 처리
-                        val filteredChip = Chip(this@ChatActivity).apply {
+                        if (chipgroupInput.children.any { (it as Chip).text == chip.text }) continue // 예외 처리
+                        val filteredChip = Chip(context).apply {
                             text = chip.text
                             id = chip.id
                             chipIcon = chip.chipIcon
-                            chipIconTint = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                            chipIconTint = ContextCompat.getColorStateList(context, R.color.primary)
                             chipBackgroundColor = ContextCompat.getColorStateList(
-                                this@ChatActivity,
-                                R.color.background_chip
+                                context,
+                                R.color.background_gray_200
                             )
-                            chipStrokeColor = ContextCompat.getColorStateList(this@ChatActivity, R.color.primary)
+                            chipStrokeColor =
+                                ContextCompat.getColorStateList(context, R.color.primary)
                             chipCornerRadius = TypedValue.applyDimension(
                                 TypedValue.COMPLEX_UNIT_DIP,
                                 16f,
@@ -588,12 +584,10 @@ class ChatActivity : AppCompatActivity() {
 
     // 권한이 왜 필요한 지 안내하는 다이얼로그 (교육용 팝업)
     private fun showPermissionRationalDialog() {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(context)
             .setMessage("녹음 권한을 켜주셔야 해당 기능을 이용할 수 있습니다.")
             .setPositiveButton("권한 허용하기") { dialog, position ->
-                ActivityCompat.requestPermissions(this@ChatActivity,
-                    arrayOf(Manifest.permission.RECORD_AUDIO),
-                    REQUEST_RECORD_AUDIO_CODE)
+                requestRecordPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
             }
             .setNegativeButton("취소") { dialog, position ->
                 dialog.cancel()
@@ -603,7 +597,7 @@ class ChatActivity : AppCompatActivity() {
 
     // 교육용 팝업 거절 이후 직접 설정 화면으로 유도하는 다이얼로그
     private fun showPermissionSettingDialog() {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(context)
             .setMessage("녹음 권한을 켜주셔야 해당 기능을 이용할 수 있습니다. 앱 설정 화면으로 진입하셔서 권한을 켜주세요.")
             .setPositiveButton("설정 화면 가기") { dialog, position ->
                 navigateToSystemSetting()
@@ -617,12 +611,14 @@ class ChatActivity : AppCompatActivity() {
     // 시스템 설정 화면으로 이동하는 메소드
     private fun navigateToSystemSetting() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", packageName, null) // 우리 앱 패키지의 설정 디테일로 이동
+            data = Uri.fromParts("package", context?.packageName, null) // 우리 앱 패키지의 설정 디테일로 이동
         }
         startActivity(intent)
     }
 
-    companion object {
-        private const val REQUEST_RECORD_AUDIO_CODE = 200
+    override fun onNavigateToDetail(item: AccommodationInfo) {
+        val action = ChatFragmentDirections.actionChatFragmentToStayDetailFragment(item)
+        findNavController().navigate(action)
     }
+
 }

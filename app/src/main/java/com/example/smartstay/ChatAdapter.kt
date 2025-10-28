@@ -20,11 +20,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class ChatAdapter(
-    private val context: Context
+    private val clickListener: ItemClickListener
 ): ListAdapter<ChatModel, RecyclerView.ViewHolder>(differ) {
 
     inner class UserViewHolder(private val binding: ItemChatUserBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: ChatModel.UserMessage) {
+        fun bind(item: ChatModel.UserMessage)  {
             binding.tvMessage.text = item.message
             binding.tvNickname.text = item.nickname
             Glide.with(binding.ivProfile).load(item.profile).into(binding.ivProfile)
@@ -91,13 +91,7 @@ class ChatAdapter(
                 }
             }
 
-            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList(), context)
-            binding.btnNaverMap.setOnClickListener {
-                // 네이버 지도 이동
-                val intent = Intent(context, NaverMapActivity::class.java)
-                intent.putExtra("accommodation_list", ArrayList(item.accommodationInfo))
-                context.startActivity(intent)
-            }
+            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList(), clickListener) // TODO: [refactor] 5개만 표시할건데 recyclerview는 조금 적절하지 않을 수도 있겠다
         }
     }
 

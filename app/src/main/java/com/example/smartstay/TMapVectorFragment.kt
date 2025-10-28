@@ -28,16 +28,18 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
-import com.example.smartstay.model.AccommodationInfo
 import com.example.smartstay.model.TMapRouteRequest
+import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.model.tmap.LocationInfo
 import com.example.smartstay.model.tmap.RoutesInfo
 import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
 import com.example.smartstay.network.RetrofitInstance
+import com.example.smartstay.presentation.AccommodationViewModel
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -65,131 +67,17 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
     private lateinit var binding: FragmentTMapVectorBinding
     private val mapViewModel: MapViewModel by activityViewModels {
-        MapViewModelFactory(RetrofitInstance.networkService)
+        MapViewModelFactory(RetrofitInstance.skTMapNetworkService)
     }
+    private val accommodationViewModel: AccommodationViewModel by activityViewModels()
     private lateinit var tmapView: TMapView
-    private val testAccommodationList: List<AccommodationInfo> = listOf(
-        AccommodationInfo(
-            name = "서울 센트럴 호텔",
-            type = "호텔",
-            image = R.drawable.img_stay_1,
-            address = "서울특별시 중구 세종대로 110",
-            latitude = 37.5665,
-            longitude = 126.9780,
-            minimumPrice = 85000,
-            averagePrice = 100000,
-            maximumPrice = 120000,
-            starRating = "3성",
-            finalRating = 4,
-            isPetAvailable = "N",
-            isRestaurantExist = "Y",
-            isBarExist = "Y",
-            isCafeExist = "Y",
-            isFitnessCenterExist = "N",
-            isSwimmingPoolExist = "N",
-            isSpaExist = "N",
-            isSaunaExist = "N",
-            isReceptionCenterExist = "Y",
-            isBusinessCenterExist = "Y",
-            isOceanViewExist = "N"
-        ),
-        AccommodationInfo(
-            name = "강남 프리미엄 레지던스",
-            type = "레지던스",
-            image = R.drawable.img_stay_2,
-            address = "서울특별시 강남구 테헤란로 212",
-            latitude = 37.5013,
-            longitude = 127.0396,
-            minimumPrice = 110000,
-            averagePrice = 130000,
-            maximumPrice = 160000,
-            starRating = "4성",
-            finalRating = 5,
-            isPetAvailable = "Y",
-            isRestaurantExist = "Y",
-            isBarExist = "N",
-            isCafeExist = "Y",
-            isFitnessCenterExist = "Y",
-            isSwimmingPoolExist = "N",
-            isSpaExist = "N",
-            isSaunaExist = "N",
-            isReceptionCenterExist = "N",
-            isBusinessCenterExist = "Y",
-            isOceanViewExist = "N"
-        ),
-        AccommodationInfo(
-            name = "홍대 스타일 게스트하우스",
-            type = "게스트하우스",
-            image = R.drawable.img_stay_3,
-            address = "서울특별시 마포구 와우산로 29",
-            latitude = 37.5561,
-            longitude = 126.9229,
-            minimumPrice = 35000,
-            averagePrice = 50000,
-            maximumPrice = 60000,
-            starRating = "2성",
-            finalRating = 3,
-            isPetAvailable = "N",
-            isRestaurantExist = "N",
-            isBarExist = "Y",
-            isCafeExist = "Y",
-            isFitnessCenterExist = "N",
-            isSwimmingPoolExist = "N",
-            isSpaExist = "N",
-            isSaunaExist = "N",
-            isReceptionCenterExist = "N",
-            isBusinessCenterExist = "N",
-            isOceanViewExist = "N"
-        ),
-        AccommodationInfo(
-            name = "이태원 뷰 호텔",
-            type = "호텔",
-            image = R.drawable.img_stay_4,
-            address = "서울특별시 용산구 이태원로 188",
-            latitude = 37.5349,
-            longitude = 126.9948,
-            minimumPrice = 90000,
-            averagePrice = 110000,
-            maximumPrice = 140000,
-            starRating = "3성",
-            finalRating = 4,
-            isPetAvailable = "Y",
-            isRestaurantExist = "Y",
-            isBarExist = "Y",
-            isCafeExist = "Y",
-            isFitnessCenterExist = "Y",
-            isSwimmingPoolExist = "N",
-            isSpaExist = "N",
-            isSaunaExist = "N",
-            isReceptionCenterExist = "Y",
-            isBusinessCenterExist = "N",
-            isOceanViewExist = "N"
-        ),
-        AccommodationInfo(
-            name = "한강 리버뷰 호텔",
-            type = "호텔",
-            image = R.drawable.img_stay_5,
-            address = "서울특별시 영등포구 여의대로 24",
-            latitude = 37.5219,
-            longitude = 126.9246,
-            minimumPrice = 130000,
-            averagePrice = 150000,
-            maximumPrice = 180000,
-            starRating = "5성",
-            finalRating = 5,
-            isPetAvailable = "N",
-            isRestaurantExist = "Y",
-            isBarExist = "Y",
-            isCafeExist = "Y",
-            isFitnessCenterExist = "Y",
-            isSwimmingPoolExist = "Y",
-            isSpaExist = "Y",
-            isSaunaExist = "Y",
-            isReceptionCenterExist = "Y",
-            isBusinessCenterExist = "Y",
-            isOceanViewExist = "Y"
-        )
-    )
+    private val initialAccommodation: AccommodationInfo by lazy {
+        val args: TMapVectorFragmentArgs by navArgs()
+        args.accommodationInfo
+    }
+    private val accommodationList: List<AccommodationInfo> by lazy {
+        accommodationViewModel.recommendAccommodationList
+    }
     private lateinit var endPoint: AccommodationInfo
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
     private lateinit var userCurrentLocation: Location
@@ -226,6 +114,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         }
     }
 
+    // TODO: initialAccommodation 변수 가지고 focus 조정하기
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTMapVectorBinding.bind(view)
@@ -239,8 +128,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         /**
          * 초기 도착지 첫번째 숙소로 설정하기
          */
-        etMapEndPoint.setText(testAccommodationList[0].address)
-        endPoint = testAccommodationList[0]
+        etMapEndPoint.setText(accommodationList[0].address)
+        endPoint = accommodationList[0]
 
         /**
          * 지도 생성하기
@@ -257,7 +146,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     BitmapFactory.decodeResource(context?.resources, R.drawable.ic_tmap_marker_blue)
                 val resizedBitmap = originalBitmap.scale(70, 70, false)
 
-                for (accommodationInfo in testAccommodationList) {
+                for (accommodationInfo in accommodationList) {
                     val marker = TMapMarkerItem().apply {
                         id = accommodationInfo.name
                         icon = resizedBitmap
@@ -391,7 +280,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         recyclerViewTMap.adapter = tMapAdapter
         recyclerViewTMap.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        tMapAdapter.submitList(testAccommodationList)
+        tMapAdapter.submitList(accommodationList)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerViewTMap)
 
@@ -406,7 +295,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     val snappedView = snapHelper.findSnapView(layoutManager)
                     snappedView?.let { view ->
                         val snappedViewPosition = layoutManager.getPosition(view)
-                        val snappedAccommodationInfo = testAccommodationList[snappedViewPosition]
+                        val snappedAccommodationInfo = accommodationList[snappedViewPosition]
                         etMapEndPoint.setText(snappedAccommodationInfo.address)
                         tmapView.setCenterPoint(snappedAccommodationInfo.latitude, snappedAccommodationInfo.longitude)
                         tmapView.zoomLevel = 14

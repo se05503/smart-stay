@@ -2,44 +2,32 @@ package com.example.smartstay
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.example.smartstay.databinding.ActivityStayDetailBinding
-import com.example.smartstay.model.AccommodationInfo
+import com.example.smartstay.databinding.FragmentStayDetailBinding
+import com.example.smartstay.model.accommodation.AccommodationInfo
 import com.example.smartstay.network.RetrofitInstance
-import com.naver.maps.map.MapView
-import java.text.DecimalFormat
 
-class StayDetailActivity : AppCompatActivity() {
+class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
 
-    private lateinit var binding: ActivityStayDetailBinding
-    private val mapViewModel: MapViewModel by viewModels {
-        MapViewModelFactory(RetrofitInstance.networkService)
+    private lateinit var binding: FragmentStayDetailBinding
+    private val mapViewModel: MapViewModel by activityViewModels {
+        MapViewModelFactory(RetrofitInstance.skTMapNetworkService)
     }
     private lateinit var accommodationInfo: AccommodationInfo
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityStayDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        accommodationInfo = intent.getSerializableExtra(BUNDLE_KEY) as AccommodationInfo
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentStayDetailBinding.bind(view)
+        val args: StayDetailFragmentArgs by navArgs()
+        accommodationInfo = args.accommodationInfo
         initViews()
         initListeners()
         initObservers()
-
     }
 
     private fun initViews() = with(binding) {
@@ -67,23 +55,20 @@ class StayDetailActivity : AppCompatActivity() {
     }
 
     private fun initListeners() = with(binding) {
-        ivDetailBack.setOnClickListener { finish() }
+        ivDetailBack.setOnClickListener { findNavController().popBackStack() }
         cvDetailMapThumbnail.setOnClickListener {
-            finish()
-            // TODO: 유저 플로우가 상세 페이지 → 지도인 경우 고려하기
+            val action = StayDetailFragmentDirections.actionStayDetailFragmentToTMapVectorFragment(accommodationInfo)
+            findNavController().navigate(action)
         }
     }
 
     private fun initObservers() = with(binding) {
-        mapViewModel.tMapThumbnailImage.observe(this@StayDetailActivity) { response ->
+        mapViewModel.tMapThumbnailImage.observe(viewLifecycleOwner) { response ->
             val inputStream = response.byteStream() // ResponseBody → InputStream
             val bitmap = BitmapFactory.decodeStream(inputStream) // InputStream → Bitmap
             ivDetailMapThumbnail.setImageBitmap(bitmap)
         }
-        mapViewModel.getTMapThumbnailImage(longitude = accommodationInfo.longitude, latitude = accommodationInfo.latitude, markers = "${accommodationInfo.longitude}%2C${accommodationInfo.latitude}", zoom = 14, context = this@StayDetailActivity)
+        mapViewModel.getTMapThumbnailImage(longitude = accommodationInfo.longitude, latitude = accommodationInfo.latitude, markers = "${accommodationInfo.longitude}%2C${accommodationInfo.latitude}", zoom = 14, context = requireContext())
     }
 
-    companion object {
-        const val BUNDLE_KEY = "ACCOMMODATION_DETAIL_KEY"
-    }
 }

@@ -1,24 +1,24 @@
 package com.example.smartstay
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smartstay.databinding.LayoutSimpleRecommendStayBinding
-import com.example.smartstay.model.AccommodationInfo
+import com.example.smartstay.model.accommodation.AccommodationInfo
 import java.text.DecimalFormat
 
-class ChatRecommendStayAdapter(private val recommendItems: List<AccommodationInfo>, private val context: Context): RecyclerView.Adapter<ChatRecommendStayAdapter.ViewHolder>() {
+class ChatRecommendStayAdapter(
+    private val recommendItems: List<AccommodationInfo>,
+    private val clickListener: ItemClickListener,
+): RecyclerView.Adapter<ChatRecommendStayAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: LayoutSimpleRecommendStayBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AccommodationInfo) {
             binding.root.setOnClickListener {
-                val intent = Intent(context, StayDetailActivity::class.java)
-                intent.putExtra("accommodationInfo", item)
-                context.startActivity(intent)
+                clickListener.onNavigateToDetail(item)
             }
-            binding.ivStayImage.setImageResource(item.image)
+            Glide.with(binding.ivStayImage).load(item.image).into(binding.ivStayImage)
             binding.tvStayName.text = item.name
             binding.tvStayAddress.text = item.address
             val formatter = DecimalFormat("#,###")

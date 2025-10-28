@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatActivity">
+    tools:context=".presentation.chat.ChatFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -99,7 +99,7 @@
                     android:textColorHint="@color/background_gray_700" />
             </com.google.android.material.card.MaterialCardView>
 
-            
+
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/sivChatSend"
                 android:layout_width="0dp"
@@ -111,7 +111,6 @@
                 app:shapeAppearanceOverlay="@style/circleImageView"
                 app:contentPadding="12dp"
                 app:layout_constraintDimensionRatio="1:1"
-                app:shapeAppearanceOverlay="@style/circleImageView"
                 app:layout_constraintEnd_toStartOf="@id/sivChatRecord"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

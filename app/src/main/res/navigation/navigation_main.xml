@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/chatFragment">
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.smartstay.presentation.chat.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" >
+        <action
+            android:id="@+id/action_chatFragment_to_stayDetailFragment"
+            app:destination="@id/stayDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/stayDetailFragment"
+        android:name="com.example.smartstay.StayDetailFragment"
+        android:label="StayDetailFragment"
+        tools:layout="@layout/fragment_stay_detail">
+        <argument
+            android:name="accommodationInfo"
+            app:argType="com.example.smartstay.model.accommodation.AccommodationInfo"/>
+        <action
+            android:id="@+id/action_stayDetailFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_stayDetailFragment_to_TMapVectorFragment"
+            app:destination="@id/TMapVectorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/TMapVectorFragment"
+        android:name="com.example.smartstay.TMapVectorFragment"
+        android:label="fragment_t_map_vector"
+        tools:layout="@layout/fragment_t_map_vector">
+        <argument
+            android:name="accommodationInfo"
+            app:argType="com.example.smartstay.model.accommodation.AccommodationInfo"/>
+    </fragment>
+</navigation>

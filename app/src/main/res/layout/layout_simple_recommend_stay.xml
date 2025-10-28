@@ -26,8 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                app:strokeColor="#E9E9E9"
-                app:strokeWidth="2dp"
+                app:strokeWidth="0dp"
                 app:contentPadding="16dp">
 
                 <LinearLayout
