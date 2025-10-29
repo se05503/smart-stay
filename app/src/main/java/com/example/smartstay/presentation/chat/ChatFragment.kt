@@ -31,7 +31,9 @@ import com.example.smartstay.R
 import com.example.smartstay.databinding.FragmentChatBinding
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
-import com.example.smartstay.model.accommodation.AccommodationInfo
+import com.example.smartstay.model.accommodation.Accommodation
+import com.example.smartstay.model.accommodation.Attraction
+import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
 import com.example.smartstay.presentation.AccommodationViewModel
@@ -292,8 +294,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
                 chatAdapter.submitList(chatItemList.toList())
 
                 // viewmodel 값 초기화
-                if(chatbotMessage.accommodationInfo != null) {
-                    accommodationViewModel.recommendAccommodationList = chatbotMessage.accommodationInfo
+                if(chatbotMessage.destinations != null) {
+                    accommodationViewModel.recommendDestinationList = chatbotMessage.destinations
                 }
 
                 // 필터링 UI
@@ -679,8 +681,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
         chatAdapter.submitList(chatItemList.toList())
 
         // viewmodel 값 설정
-        if(chatBotTestMessage.accommodationInfo != null) {
-            accommodationViewModel.recommendAccommodationList = chatBotTestMessage.accommodationInfo
+        if(chatBotTestMessage.destinations != null) {
+            accommodationViewModel.recommendDestinationList = chatBotTestMessage.destinations
         }
 
         if (chatBotTestMessage.keywords != null) {
@@ -781,7 +783,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
         startActivity(intent)
     }
 
-    override fun onNavigateToDetail(item: AccommodationInfo) {
+    override fun onNavigateToDetail(item: Destination) {
         val action = ChatFragmentDirections.actionChatFragmentToStayDetailFragment(item)
         findNavController().navigate(action)
     }

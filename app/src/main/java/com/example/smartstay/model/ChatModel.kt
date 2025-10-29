@@ -1,6 +1,7 @@
 package com.example.smartstay.model
 
-import com.example.smartstay.model.accommodation.Destinations
+import com.example.smartstay.model.accommodation.Destination
+
 
 sealed class ChatModel {
 
@@ -15,7 +16,7 @@ sealed class ChatModel {
         val type: Int,
         val message: String,
         val keywords: List<String>? = null,
-        val destinations: List<Destinations>? = null
+        val destinations: List<Destination>? = null
     ) : ChatModel()
 
     object ChatBotLoading: ChatModel()

@@ -3,10 +3,6 @@ package com.example.smartstay.model.accommodation
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-data class Destinations(
-    val destinations: List<Destination>
-)
-
 data class Destination(
     val accommodation: Accommodation,
     val attractions: List<Attraction>

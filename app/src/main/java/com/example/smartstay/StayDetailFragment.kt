@@ -9,7 +9,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.smartstay.databinding.FragmentStayDetailBinding
-import com.example.smartstay.model.accommodation.AccommodationInfo
+import com.example.smartstay.model.accommodation.Accommodation
+import com.example.smartstay.model.accommodation.Attraction
+import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.network.RetrofitInstance
 
 class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
@@ -18,13 +20,21 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
     private val mapViewModel: MapViewModel by activityViewModels {
         MapViewModelFactory(RetrofitInstance.skTMapNetworkService)
     }
-    private lateinit var accommodationInfo: AccommodationInfo
+
+    private val destination: Destination by lazy {
+        val args: StayDetailFragmentArgs by navArgs()
+        args.destinationInfo
+    }
+    private val accommodation: Accommodation by lazy {
+        destination.accommodation
+    }
+    private val attractions: List<Attraction> by lazy {
+        destination.attractions
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStayDetailBinding.bind(view)
-        val args: StayDetailFragmentArgs by navArgs()
-        accommodationInfo = args.accommodationInfo
         initViews()
         initListeners()
         initObservers()
@@ -51,12 +61,13 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
         if(accommodation.isBusinessCenterExist == "N") ivAmenityBusiness.alpha = 0.3f
         if(accommodation.isOceanViewExist == "N") ivAmenityOceanView.alpha = 0.3f
         tvDetailMapLocation.text = accommodation.address
+        // TODO: 근처 관광지 관련 정보 UI 추가로 만들어서 표시하기
     }
 
     private fun initListeners() = with(binding) {
         ivDetailBack.setOnClickListener { findNavController().popBackStack() }
         cvDetailMapThumbnail.setOnClickListener {
-            val action = StayDetailFragmentDirections.actionStayDetailFragmentToTMapVectorFragment(accommodationInfo)
+            val action = StayDetailFragmentDirections.actionStayDetailFragmentToTMapVectorFragment(destination)
             findNavController().navigate(action)
         }
     }
@@ -67,7 +78,7 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
             val bitmap = BitmapFactory.decodeStream(inputStream) // InputStream → Bitmap
             ivDetailMapThumbnail.setImageBitmap(bitmap)
         }
-        mapViewModel.getTMapThumbnailImage(longitude = accommodationInfo.longitude, latitude = accommodationInfo.latitude, markers = "${accommodationInfo.longitude}%2C${accommodationInfo.latitude}", zoom = 14, context = requireContext())
+        mapViewModel.getTMapThumbnailImage(longitude = accommodation.longitude, latitude = accommodation.latitude, markers = "${accommodation.longitude}%2C${accommodation.latitude}", zoom = 14, context = requireContext())
     }
 
 }

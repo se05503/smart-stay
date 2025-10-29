@@ -19,8 +19,8 @@
         android:label="StayDetailFragment"
         tools:layout="@layout/fragment_stay_detail">
         <argument
-            android:name="accommodationInfo"
-            app:argType="com.example.smartstay.model.accommodation.AccommodationInfo"/>
+            android:name="destinationInfo"
+            app:argType="com.example.smartstay.model.accommodation.Destination"/>
         <action
             android:id="@+id/action_stayDetailFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
@@ -34,7 +34,7 @@
         android:label="fragment_t_map_vector"
         tools:layout="@layout/fragment_t_map_vector">
         <argument
-            android:name="accommodationInfo"
-            app:argType="com.example.smartstay.model.accommodation.AccommodationInfo"/>
+            android:name="destinationInfo"
+            app:argType="com.example.smartstay.model.accommodation.Destination"/>
     </fragment>
 </navigation>

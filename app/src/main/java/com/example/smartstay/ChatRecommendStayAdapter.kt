@@ -5,24 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.smartstay.databinding.LayoutSimpleRecommendStayBinding
-import com.example.smartstay.model.accommodation.AccommodationInfo
+import com.example.smartstay.model.accommodation.Destination
 import java.text.DecimalFormat
 
 class ChatRecommendStayAdapter(
-    private val recommendItems: List<AccommodationInfo>,
+    private val recommendItems: List<Destination>,
     private val clickListener: ItemClickListener,
 ): RecyclerView.Adapter<ChatRecommendStayAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: LayoutSimpleRecommendStayBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: AccommodationInfo) {
+        fun bind(item: Destination) {
+            val accommodation = item.accommodation
             binding.root.setOnClickListener {
                 clickListener.onNavigateToDetail(item)
             }
-            Glide.with(binding.ivStayImage).load(item.image).into(binding.ivStayImage)
-            binding.tvStayName.text = item.name
-            binding.tvStayAddress.text = item.address
+            Glide.with(binding.ivStayImage).load(accommodation.image).into(binding.ivStayImage)
+            binding.tvStayName.text = accommodation.name
+            binding.tvStayAddress.text = accommodation.address
             val formatter = DecimalFormat("#,###")
-            binding.tvPriceMinimum.text = "${formatter.format(item.minimumPrice)}원~"
+            binding.tvPriceMinimum.text = "${formatter.format(accommodation.minimumPrice)}원~"
         }
     }
 
