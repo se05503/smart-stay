@@ -31,27 +31,26 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
     }
 
     private fun initViews() = with(binding) {
-        Glide.with(ivDetailStayImage).load(accommodationInfo.image).into(ivDetailStayImage)
-        tvDetailStayName.text = accommodationInfo.name
-        tvDetailStayType.text = accommodationInfo.type
-        tvDetailStayLocation.text = accommodationInfo.address
-        tvDetailRatingFinal.text = "${accommodationInfo.finalRating}.0"
-        tvDetailRatingStar.text = accommodationInfo.starRating
-        tvPriceAverage.text = Utils.formatPrice(accommodationInfo.averagePrice)
-        tvPriceMinimum.text = Utils.formatPrice(accommodationInfo.minimumPrice)
-        tvPriceMaximum.text = Utils.formatPrice(accommodationInfo.maximumPrice)
-        if(accommodationInfo.isPetAvailable == "N") ivAmenityPet.alpha = 0.3f
-        if(accommodationInfo.isRestaurantExist == "N") ivAmenityRestaurant.alpha = 0.3f
-        if(accommodationInfo.isBarExist == "N") ivAmenityBar.alpha = 0.3f
-        if(accommodationInfo.isCafeExist == "N") ivAmenityCafe.alpha = 0.3f
-        if(accommodationInfo.isFitnessCenterExist == "N") ivAmenityFitness.alpha = 0.3f
-        if(accommodationInfo.isSwimmingPoolExist == "N") ivAmenitySwimmingPool.alpha = 0.3f
-        if(accommodationInfo.isSpaExist == "N") ivAmenitySpa.alpha = 0.3f
-        if(accommodationInfo.isSaunaExist == "N") ivAmenitySauna.alpha = 0.3f
-        if(accommodationInfo.isReceptionCenterExist == "N") ivAmenityReceptionHall.alpha = 0.3f
-        if(accommodationInfo.isBusinessCenterExist == "N") ivAmenityBusiness.alpha = 0.3f
-        if(accommodationInfo.isOceanViewExist == "N") ivAmenityOceanView.alpha = 0.3f
-        tvDetailMapLocation.text = accommodationInfo.address
+        Glide.with(ivDetailStayImage).load(accommodation.image).into(ivDetailStayImage)
+        tvDetailStayName.text = accommodation.name
+        tvDetailStayType.text = accommodation.type
+        tvDetailStayLocation.text = accommodation.address
+        tvDetailRatingStar.text = accommodation.starRating
+        tvPriceAverage.text = Utils.formatPrice(accommodation.averagePrice)
+        tvPriceMinimum.text = Utils.formatPrice(accommodation.minimumPrice)
+        tvPriceMaximum.text = Utils.formatPrice(accommodation.maximumPrice)
+        if(accommodation.isPetAvailable == "N") ivAmenityPet.alpha = 0.3f
+        if(accommodation.isRestaurantExist == "N") ivAmenityRestaurant.alpha = 0.3f
+        if(accommodation.isBarExist == "N") ivAmenityBar.alpha = 0.3f
+        if(accommodation.isCafeExist == "N") ivAmenityCafe.alpha = 0.3f
+        if(accommodation.isFitnessCenterExist == "N") ivAmenityFitness.alpha = 0.3f
+        if(accommodation.isSwimmingPoolExist == "N") ivAmenitySwimmingPool.alpha = 0.3f
+        if(accommodation.isSpaExist == "N") ivAmenitySpa.alpha = 0.3f
+        if(accommodation.isSaunaExist == "N") ivAmenitySauna.alpha = 0.3f
+        if(accommodation.isReceptionCenterExist == "N") ivAmenityReceptionHall.alpha = 0.3f
+        if(accommodation.isBusinessCenterExist == "N") ivAmenityBusiness.alpha = 0.3f
+        if(accommodation.isOceanViewExist == "N") ivAmenityOceanView.alpha = 0.3f
+        tvDetailMapLocation.text = accommodation.address
     }
 
     private fun initListeners() = with(binding) {

@@ -56,6 +56,29 @@
             app:layout_constraintStart_toEndOf="@id/tv_detail_stay_name"
             app:layout_constraintTop_toTopOf="@id/tv_detail_stay_name" />
 
+        <TextView
+            android:id="@+id/tv_detail_stay_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="·"
+            android:textColor="#8B8B8B"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@id/tv_detail_stay_type"
+            app:layout_constraintBottom_toBottomOf="@id/tv_detail_stay_type"
+            app:layout_constraintStart_toEndOf="@id/tv_detail_stay_type"/>
+
+        <TextView
+            android:id="@+id/tv_detail_rating_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3성급"
+            android:textColor="#8B8B8B"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="@id/tv_detail_stay_divider"
+            app:layout_constraintBottom_toBottomOf="@id/tv_detail_stay_divider"
+            app:layout_constraintStart_toEndOf="@id/tv_detail_stay_divider"/>
+
         <ImageView
             android:id="@+id/iv_detail_map"
             android:layout_width="20dp"
@@ -76,45 +99,6 @@
             app:layout_constraintStart_toEndOf="@id/iv_detail_map"
             app:layout_constraintTop_toTopOf="@id/iv_detail_map" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_detail_rating"
-            android:layout_width="52dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#FFC83B"
-            app:cardCornerRadius="16dp"
-            app:contentPadding="6dp"
-            app:layout_constraintStart_toStartOf="@id/iv_detail_map"
-            app:layout_constraintTop_toBottomOf="@id/iv_detail_map"
-            app:strokeColor="@android:color/transparent">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="center_vertical|start"
-                android:src="@drawable/ic_star" />
-
-            <TextView
-                android:id="@+id/tv_detail_rating_final"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:text="5.0"
-                android:textStyle="bold" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:id="@+id/tv_detail_rating_star"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="3성급"
-            android:textColor="#8B8B8B"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/cv_detail_rating"
-            app:layout_constraintStart_toEndOf="@id/cv_detail_rating"
-            app:layout_constraintTop_toTopOf="@id/cv_detail_rating" />
-
         <View
             android:id="@+id/view_first"
             android:layout_width="0dp"
@@ -124,7 +108,7 @@
             app:layout_constraintBottom_toTopOf="@id/tv_detail_price_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cv_detail_rating" />
+            app:layout_constraintTop_toBottomOf="@id/iv_detail_map" />
 
         <TextView
             android:id="@+id/tv_detail_price_title"

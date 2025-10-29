@@ -24,7 +24,6 @@ data class Accommodation(
     val averagePrice: Int, // 숙박업평균가격
     val maximumPrice: Int, // 숙박업최대가격
     val starRating: String, // 숙박업등급값(3성, 4성)
-    val finalRating: Int, // 최종평점 (빼기)
     val isPetAvailable: String, // 반려동물가능여부
     val isRestaurantExist: String, // 레스토랑
     val isBarExist: String, // 바
