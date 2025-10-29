@@ -3,8 +3,17 @@ package com.example.smartstay.model.accommodation
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+data class Destinations(
+    val destinations: List<Destination>
+)
+
+data class Destination(
+    val accommodation: Accommodation,
+    val attractions: List<Attraction>
+)
+
 @Parcelize
-data class AccommodationInfo(
+data class Accommodation(
     val name: String, // 숙박업명
     val type: String, // 숙박유형명
     val image: Int, // 숙박업 이미지(서버x)
@@ -28,3 +37,14 @@ data class AccommodationInfo(
     val isBusinessCenterExist: String, // 비즈니스
     val isOceanViewExist: String // 오션뷰
 ): Parcelable
+
+data class Attraction(
+    val poiId: String, // 장소 코드
+    val poiName: String, // 장소명
+    val category: String, // 장소 분류 → 쇼핑(shopping), 레저/스포츠(sports), 관광명소(tour)
+    val lat: Double,
+    val lng: Double,
+    val congestionYn: String, // 장소 혼잡도 유무 → Y, N
+    val count: Int, // 추정 방문 여행객수
+    val distance: Double // 숙소로부터의 거리
+)

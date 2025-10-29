@@ -1,0 +1,34 @@
+{
+  "type": 1,
+  "message": "적합한 숙소를 추천해드렸어요!",
+  "keywords": ["pet", "restaurant", "sauna"],
+  "destinations": [
+    {
+      "accommodation": {
+        "name": "string",
+        "type": "string",
+        "image": "string",
+        ... 이후 숙소 필드 생략
+      },
+      "attractions": [
+        {
+          "poiId": "string",
+          "poiName": "string",
+          "category": "string",
+          "lat": "double",
+          "lng": "double",
+          "congestionYn": "string",
+          "count": "int",
+          "distance": "double"
+        },
+        {
+          다른 관광지 생략
+        },
+      ]
+    },
+    {
+      // 다른 숙소2 정보
+    }
+  ]
+}
+
