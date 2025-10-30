@@ -1,29 +1,22 @@
 package com.example.smartstay
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.PointF
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.scale
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,14 +27,14 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.TMapRouteRequest
-import com.example.smartstay.model.accommodation.AccommodationInfo
+import com.example.smartstay.model.accommodation.Accommodation
+import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.tmap.LocationInfo
 import com.example.smartstay.model.tmap.RoutesInfo
 import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
 import com.example.smartstay.network.RetrofitInstance
 import com.example.smartstay.presentation.AccommodationViewModel
 import com.google.android.gms.location.CurrentLocationRequest
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.skt.tmap.TMapData
@@ -49,16 +42,13 @@ import com.skt.tmap.TMapInfo
 import com.skt.tmap.TMapPoint
 import com.skt.tmap.TMapView
 import com.skt.tmap.overlay.TMapMarkerItem
-import com.skt.tmap.overlay.TMapOverlay
 import com.skt.tmap.overlay.TMapPolyLine
-import com.skt.tmap.poi.TMapPOIItem
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.ArrayList
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -71,16 +61,35 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     }
     private val accommodationViewModel: AccommodationViewModel by activityViewModels()
     private lateinit var tmapView: TMapView
-    private val initialAccommodation: AccommodationInfo by lazy {
+    private val initialDestination: Destination by lazy {
         val args: TMapVectorFragmentArgs by navArgs()
-        args.accommodationInfo
+        args.destinationInfo
     }
-    private val accommodationList: List<AccommodationInfo> by lazy {
-        accommodationViewModel.recommendAccommodationList
+    private val destinationList: List<Destination> by lazy {
+        val originalList = accommodationViewModel.recommendDestinationList.toMutableList()
+        originalList.remove(initialDestination)
+        originalList.add(0, initialDestination)
+        originalList.toList()
     }
-    private lateinit var endPoint: AccommodationInfo
+    private lateinit var endPoint: Accommodation
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
     private lateinit var userCurrentLocation: Location
+
+    private val accommodationBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_accommodation)
+    }
+    private val attractionTourBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_attraction_tour)
+    }
+    private val attractionShoppingBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_attraction_shopping)
+    }
+    private val attractionLeisureBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_attraction_leisure)
+    }
+    private val attractionDefaultBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_attraction_default)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +123,6 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         }
     }
 
-    // TODO: initialAccommodation 변수 가지고 focus 조정하기
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTMapVectorBinding.bind(view)
@@ -126,82 +134,84 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     private fun initViews() = with(binding) {
 
         /**
-         * 초기 도착지 첫번째 숙소로 설정하기
-         */
-        etMapEndPoint.setText(accommodationList[0].address)
-        endPoint = accommodationList[0]
-
-        /**
          * 지도 생성하기
          */
         tmapView = TMapView(requireContext())
         tmapVectorView.addView(tmapView)
         tmapView.setSKTMapApiKey(getString(R.string.sk_telecom_open_api_app_key))
+        tmapView.zoomLevel = 11
+        tmapView.setCenterPoint(initialDestination.accommodation.latitude, initialDestination.accommodation.longitude)
         tmapView.setOnMapReadyListener(object : TMapView.OnMapReadyListener {
             override fun onMapReady() {
+
                 /**
                  * 마커 추가하기
                  */
-                val originalBitmap =
-                    BitmapFactory.decodeResource(context?.resources, R.drawable.ic_tmap_marker_blue)
-                val resizedBitmap = originalBitmap.scale(70, 70, false)
-
-                for (accommodationInfo in accommodationList) {
-                    val marker = TMapMarkerItem().apply {
-                        id = accommodationInfo.name
-                        icon = resizedBitmap
-                        setTMapPoint(accommodationInfo.latitude, accommodationInfo.longitude)
-                        canShowCallout = false
-                        name = accommodationInfo.minimumPrice.toString()
-                    }
-                    tmapView.addTMapMarkerItem(marker)
-                }
+                // TODO: TMapMarkerItem vs TMapMarkerItem2 비교해서 더 나은 것 사용하기
+                addMarkerOnMap(initialDestination)
 
                 /**
-                 * 마커 말풍선 커스터마이징
+                 * 마커 말풍선 오버레이 (구현 미완성)
                  */
-                tmapView.setOnMapGestureListener(object: TMapView.OnMapGestureListenerCallback() {
-                    override fun onSingleTapMapObject(
-                        markerList: ArrayList<TMapMarkerItem?>?, // 클릭된 마커 리스트
-                        poiList: ArrayList<TMapPOIItem?>?, // 클릭된 POI 리스트
-                        point: TMapPoint?, // 클릭된 지점의 좌표
-                        screenPoint: PointF? // 클릭된 지점의 화면 좌표
-                    ): Boolean {
-                        if(markerList != null) {
-                            val clickedMarker = markerList[0]
-                            if(clickedMarker != null) {
-                                Log.e(TAG, ""+clickedMarker)
-                                val customCallOutLayout = LayoutInflater.from(tmapView.context).inflate(R.layout.custom_tmap_callout, tmapView, false)
-                                customCallOutLayout.measure(
-                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                                )
-                                Log.e(TAG, "width: ${customCallOutLayout.measuredWidth}, height: ${customCallOutLayout.measuredHeight}")
-                                customCallOutLayout.findViewById<TextView>(R.id.tvCallOutAccommodationName).text = clickedMarker.id
-                                customCallOutLayout.findViewById<TextView>(R.id.tvCallOutAccommodationPrice).text = "${clickedMarker.name}원"
-                                val x = (customCallOutLayout.measuredWidth/2).toDouble()
-                                val y = (customCallOutLayout.measuredHeight/2).toDouble()
-                                val tMapOverlay = TMapOverlay().apply {
-                                    id = clickedMarker.id + "_CallOut"
-                                    setOverlayImage(customCallOutLayout)
-                                    leftTopPoint = TMapPoint(clickedMarker.tMapPoint.latitude - x, clickedMarker.tMapPoint.longitude - y)
-                                    rightBottomPoint = TMapPoint(clickedMarker.tMapPoint.latitude + x, clickedMarker.tMapPoint.longitude + y)
-                                }
-                                tmapView.addTMapOverlay(tMapOverlay)
-                                return true
-                            }
-                        }
-                        return false
-                    }
-                })
+//                tmapView.setOnMapGestureListener(object: TMapView.OnMapGestureListenerCallback() {
+//                    override fun onSingleTapMapObject(
+//                        markerList: ArrayList<TMapMarkerItem?>?, // 클릭된 마커 리스트
+//                        poiList: ArrayList<TMapPOIItem?>?, // 클릭된 POI 리스트
+//                        point: TMapPoint?, // 클릭된 지점의 좌표
+//                        screenPoint: PointF? // 클릭된 지점의 화면 좌표
+//                    ): Boolean {
+//                        if(markerList != null) {
+//                            val clickedMarker = markerList[0]
+//                            if(clickedMarker != null) {
+//
+//                                val customCallOutLayout = LayoutInflater.from(tmapView.context).inflate(R.layout.custom_tmap_callout, null, false) // 인자 정리하기
+//
+//                                // 정리하기
+//                                customCallOutLayout.measure(
+//                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//                                )
+//
+//                                // 인자 정리하기
+//                                customCallOutLayout.layout(0, 0, customCallOutLayout.measuredWidth, customCallOutLayout.measuredHeight)
+//                                Log.e(TAG, "width: ${customCallOutLayout.measuredWidth}, height: ${customCallOutLayout.measuredHeight}")
+//
+//                                customCallOutLayout.findViewById<TextView>(R.id.tvCallOutAccommodationName).text = clickedMarker.id
+//                                customCallOutLayout.findViewById<TextView>(R.id.tvCallOutAccommodationPrice).text = "${clickedMarker.name}원"
+//
+//                                val tMapOverlay = TMapOverlay().apply {
+//                                    id = clickedMarker.id + "_CallOut"
+//                                    setOverlayImage(customCallOutLayout)
+//                                    leftTopPoint = TMapPoint(clickedMarker.tMapPoint.latitude + 0.0003, clickedMarker.tMapPoint.longitude - 0.0003) // 왜 이렇게?
+//                                    rightBottomPoint = TMapPoint(clickedMarker.tMapPoint.latitude, clickedMarker.tMapPoint.longitude + 0.0003) // 왜 이렇게?
+//                                }
+//                                tmapView.addTMapOverlay(tMapOverlay)
+//                                return true
+//                            }
+//                        }
+//                        return false
+//                    }
+//                })
+
+                /**
+                 * 선 그리기
+                 * 대중교통/차 네비게이션 표시할 때 사용할 수 있어보임
+                 * 단, 중심 좌표 설정은 따로 해야할 듯 → "자동차 경로안내" 에 잘 나와있음
+                 */
+//                val pointList = arrayListOf<TMapPoint>()
+//                pointList.add(TMapPoint(37.472678, 126.920928))
+//                pointList.add(TMapPoint(37.494473, 127.120742))
+//                pointList.add(TMapPoint(37.405619, 127.091903))
+//                val line = TMapPolyLine("line1", pointList)
+//                tmapView.addTMapPolyLine(line)
 
                 /**
                  * 자동차 경로안내
                  * 처음 작성할 때 onMapReady 바깥에 둠 → 지도에 안보임
                  * tmapView가 뷰에 attach된 직후 호출해야 한다.
-                 * 만약 아직 맵이 준비되기 전에 findPathData()를 호출하면 PolyLine이 화면에 안 뜰 수 있다.
+                 * 아직 맵이 준비되기 전에 findPathData()를 호출하면 PolyLine이 화면에 안 뜰 수 있다.
                  */
-//                val startPoint = TMapPoint(37.570841, 126.985302) // 출발지 = SKT타워
+//                val startPoint = TMapPoint(37.570841, 126.985302)
 //                val endPoint = TMapPoint(37.551135, 126.988205)
 //                val tmapData = TMapData()
 //                tmapData.findPathData(startPoint, endPoint, object: TMapData.OnFindPathDataListener {
@@ -269,18 +279,22 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         })
 
         /**
-         * 하단 숙소 목록 보여주기 (recyclerview)
+         * 초기 도착지 설정하기
+         */
+        etMapEndPoint.setText(initialDestination.accommodation.address)
+        endPoint = initialDestination.accommodation
+
+        /**
+         * 하단 숙소 목록 보여주기
          */
         val tMapAdapter = TMapAdapter(onClicked = { accommodationInfo ->
-            val intent = Intent(context, StayDetailActivity::class.java).apply {
-                putExtra(StayDetailActivity.BUNDLE_KEY, accommodationInfo)
-            }
-            startActivity(intent)
+
         })
         recyclerViewTMap.adapter = tMapAdapter
         recyclerViewTMap.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        tMapAdapter.submitList(accommodationList)
+
+        tMapAdapter.submitList(destinationList)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerViewTMap)
 
@@ -295,11 +309,12 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     val snappedView = snapHelper.findSnapView(layoutManager)
                     snappedView?.let { view ->
                         val snappedViewPosition = layoutManager.getPosition(view)
-                        val snappedAccommodationInfo = accommodationList[snappedViewPosition]
-                        etMapEndPoint.setText(snappedAccommodationInfo.address)
-                        tmapView.setCenterPoint(snappedAccommodationInfo.latitude, snappedAccommodationInfo.longitude)
-                        tmapView.zoomLevel = 14
-                        endPoint = snappedAccommodationInfo
+                        val snappedDestination = destinationList[snappedViewPosition]
+                        tmapView.removeAllTMapMarkerItem()
+                        addMarkerOnMap(snappedDestination)
+                        etMapEndPoint.setText(snappedDestination.accommodation.address)
+                        tmapView.setCenterPoint(snappedDestination.accommodation.latitude, snappedDestination.accommodation.longitude)
+                        endPoint = snappedDestination.accommodation
                     }
                     tmapView.removeAllTMapPolyLine()
                     cvRouteCarDetailInfo.root.isVisible = false
@@ -335,7 +350,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
          * 동적으로 사용할 듯.. 중심점은 사용자의 현재 위치, 줌 레벨은 상황에 따라 동적 변경
          */
 //        tmapView.setCenterPoint(37.468954, 126.4544153)
-        tmapView.zoomLevel = 10
+//        tmapView.zoomLevel = 10
 
         /**
          * 지도 타입 변경하기 (필요 X)
@@ -392,24 +407,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 //        }
 //        tmapView.addTMapMarkerItem(marker)
 
-        /**
-         * 선 그리기
-         * 대중교통/차 네비게이션 표시할 때 사용할 수 있어보임
-         * 단, 중심 좌표 설정은 따로 해야할 듯 → "자동차 경로안내" 에 잘 나와있음
-         */
-//        val pointList = arrayListOf<TMapPoint>()
-//        pointList.add(TMapPoint(37.472678, 126.920928))
-//        pointList.add(TMapPoint(37.494473, 127.120742))
-//        pointList.add(TMapPoint(37.405619, 127.091903))
-//        val line = TMapPolyLine("line1", pointList)
-//        tmapView.addTMapPolyLine(line)
-
     }
 
     private fun initListeners() = with(binding) {
-        ivMapNavigate.setOnClickListener {
-            Log.e(TAG, "name: ${endPoint.name}, lat: ${endPoint.latitude}, lng: ${endPoint.longitude}")
-        }
         fabMapGps.setOnClickListener {
 
             if (ActivityCompat.checkSelfPermission(
@@ -457,34 +457,13 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         }
         ivMapNavigate.setOnClickListener {
             if(etMapStartPoint.text.isNotBlank()) {
-                Log.e(TAG, "startX: ${userCurrentLocation.longitude}, startY: ${userCurrentLocation.latitude}, endX: ${endPoint.longitude}, endY: ${endPoint.latitude}")
-
-
-                // 자동차 경로안내
-                val startPoint = TMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
-                val endPoint = TMapPoint(endPoint.latitude, endPoint.longitude)
-
-                val mapData = TMapData()
-
-                mapData.findPathData(startPoint, endPoint, object: TMapData.OnFindPathDataListener {
-                    override fun onFindPathData(tmapPolyLine: TMapPolyLine?) {
-                        tmapPolyLine?.let {
-                            it.lineWidth = 3f
-                            it.lineColor = Color.BLUE
-                            it.lineAlpha = 255
-
-                            it.outLineWidth = 5f
-                            it.outLineColor = Color.RED
-                            it.outLineAlpha = 255
-
-                            tmapView.addTMapPolyLine(it)
-
-                            val info: TMapInfo = tmapView.getDisplayTMapInfo(it.linePointList)
-                            tmapView.zoomLevel = info.zoom
-                            tmapView.setCenterPoint(info.point.latitude, info.point.longitude)
-                        }
-                    }
-                })
+                mapViewModel.findTMapMultiModalRoute(context = requireContext(), tMapRouteRequest = TMapRouteRequest(
+                    startX = userCurrentLocation.longitude.toString(),
+                    startY = userCurrentLocation.latitude.toString(),
+                    endX = endPoint.longitude.toString(),
+                    endY = endPoint.latitude.toString(),
+                    count = 1
+                ))
             } else {
                 Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
             }
@@ -543,44 +522,6 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         }
     }
 
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    private suspend fun getUserCoarseLocation(): Location {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        return suspendCoroutine { continuation ->
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                val zonedDateTime = Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
-                Log.e(
-                    TAG,
-                    "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
-                )
-                continuation.resume(location)
-            }
-        }
-    }
-
-    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    private suspend fun getUserFineLocation(): Location {
-
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        val currentLocationRequest = CurrentLocationRequest.Builder()
-            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-            .setDurationMillis(5000) // DOCS 1
-            .build()
-
-        return suspendCoroutine { continuation ->
-            fusedLocationClient.getCurrentLocation(currentLocationRequest, null)
-                .addOnSuccessListener { location -> // DOCS 2
-                    val zonedDateTime =
-                        Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
-                    Log.e(
-                        TAG,
-                        "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
-                    )
-                    continuation.resume(location)
-                }
-        }
-    }
-
     private fun initObservers() = with(binding) {
 
         mapViewModel.tMapRoutesPredictionInfo.observe(viewLifecycleOwner) { result ->
@@ -592,15 +533,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 val formattedTotalDistance = String.format("%.1f", detailInfo.totalDistance.toInt()/1000f)
                 cvRouteCarDetailInfo.root.isVisible = true
                 cvRouteCarDetailInfo.tvCarRouteDetailTotalDistance.text = "${formattedTotalDistance}km"
-
-                if(hour > 0) {
-                    cvRouteCarDetailInfo.tvCarRouteDetailHourValue.text = "$hour"
-                    cvRouteCarDetailInfo.tvCarRouteDetailMinuteValue.text = "$minutes"
-                } else {
-                    cvRouteCarDetailInfo.tvCarRouteDetailHourValue.isVisible = false
-                    cvRouteCarDetailInfo.tvCarRouteDetailHourUnit.isVisible = false
-                    cvRouteCarDetailInfo.tvCarRouteDetailMinuteValue.text = "$minutes"
-                }
+                cvRouteCarDetailInfo.tvCarRouteDetailHourValue.text = "$hour"
+                cvRouteCarDetailInfo.tvCarRouteDetailMinuteValue.text = "$minutes"
                 cvRouteCarDetailInfo.tvCarRouteDetailTaxiFareValue.text = Utils.formatPrice(detailInfo.taxiFare)
                 cvRouteCarDetailInfo.tvCarRouteDetailFuelCostValue.text = Utils.formatPrice(detailInfo.totalFare.toInt())
                 cvRouteCarDetailInfo.tvCarRouteDetailDeparturePredictionTimeValue.text = formatter.format(detailInfo.departureTime)
@@ -635,8 +569,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
         // 테스트 시작점 (할당량 초과로 테스트 못함)
 //        mapViewModel.getTravelAccommodationInfo(context = requireContext(), districtCode = "5013000000")
-//        mapViewModel.tMapTravelAccommodationsInfo.observe(viewLifecycleOwner) { accommodationInfo ->
-//            Log.e(TAG, ""+ accommodationInfo)
+//        mapViewModel.tMapTravelAccommodationsInfo.observe(viewLifecycleOwner) { accommodation ->
+//            Log.e(TAG, ""+ accommodation)
 //        }
 
 //        mapViewModel.getTravelMonthlyVisitorsCount(context = requireContext(), districtCode = "5011000000")
@@ -718,6 +652,76 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 //        mapViewModel.tMapTravelPopularCommercialDistrictNearbySegmentRateInfo.observe(viewLifecycleOwner) { travelPopularDistrictNearbySegmentRateInfo ->
 //            Log.e(TAG, ""+travelPopularDistrictNearbySegmentRateInfo)
 //        }
+    }
+
+    private fun getAttractionIconBitmap(category: String): Bitmap {
+        return when(category) {
+            "쇼핑" -> attractionShoppingBitmap
+            "관광명소" -> attractionTourBitmap
+            "레저/스포츠" -> attractionLeisureBitmap
+            else -> attractionDefaultBitmap
+        }
+    }
+
+    private fun addMarkerOnMap(destination: Destination) {
+        val accommodationMarker = TMapMarkerItem().apply {
+            id = destination.accommodation.name
+            icon = accommodationBitmap
+            setTMapPoint(destination.accommodation.latitude, destination.accommodation.longitude)
+            canShowCallout = true
+            name = destination.accommodation.minimumPrice.toString()
+        }
+
+        tmapView.addTMapMarkerItem(accommodationMarker)
+
+        for(initialAttraction in destination.attractions) {
+            val attractionMarker = TMapMarkerItem().apply {
+                id = initialAttraction.poiId
+                icon = getAttractionIconBitmap(initialAttraction.category)
+                setTMapPoint(initialAttraction.lat, initialAttraction.lng)
+                canShowCallout = true
+                name = initialAttraction.poiName
+            }
+            tmapView.addTMapMarkerItem(attractionMarker)
+        }
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    private suspend fun getUserCoarseLocation(): Location {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        return suspendCoroutine { continuation ->
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                val zonedDateTime = Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
+                Log.e(
+                    TAG,
+                    "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
+                )
+                continuation.resume(location)
+            }
+        }
+    }
+
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    private suspend fun getUserFineLocation(): Location {
+
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        val currentLocationRequest = CurrentLocationRequest.Builder()
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .setDurationMillis(5000) // DOCS 1
+            .build()
+
+        return suspendCoroutine { continuation ->
+            fusedLocationClient.getCurrentLocation(currentLocationRequest, null)
+                .addOnSuccessListener { location -> // DOCS 2
+                    val zonedDateTime =
+                        Instant.ofEpochMilli(location.time).atZone(ZoneId.systemDefault())
+                    Log.e(
+                        TAG,
+                        "time: $zonedDateTime, lat: ${location.latitude}, lng: ${location.longitude}, accuracy: ${location.accuracy}"
+                    )
+                    continuation.resume(location)
+                }
+        }
     }
 
     private fun getCurrentTimeFormatted(): String {
