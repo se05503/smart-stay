@@ -117,12 +117,69 @@
         app:layout_constraintTop_toBottomOf="@id/cvMapRouteNavigation"
         app:layout_constraintStart_toStartOf="@id/cvMapRouteNavigation">
 
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAccommodation"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="숙소"
+            android:elevation="4dp"
+            app:chipIcon="@drawable/ic_chip_accommodation"
+            app:chipIconVisible="true"
+            app:chipIconTint="#BBAB94"
+            app:chipIconSize="20dp"
+            app:iconStartPadding="4dp"
+            app:chipBackgroundColor="@color/white"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAttractionShopping"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="쇼핑"
+            android:elevation="4dp"
+            app:chipIcon="@drawable/ic_chip_shopping"
+            app:chipIconVisible="true"
+            app:chipIconTint="#AC87CC"
+            app:chipIconSize="20dp"
+            app:iconStartPadding="4dp"
+            app:chipBackgroundColor="@color/white"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAttractionTour"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="관광명소"
+            android:elevation="4dp"
+            app:chipIcon="@drawable/ic_chip_tour"
+            app:chipIconVisible="true"
+            app:chipIconTint="#84CAE2"
+            app:chipIconSize="20dp"
+            app:iconStartPadding="4dp"
+            app:chipBackgroundColor="@color/white"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAttractionLeisure"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="레저"
+            android:elevation="4dp"
+            app:chipIcon="@drawable/ic_chip_leisure"
+            app:chipIconVisible="true"
+            app:chipIconTint="#7CD7BD"
+            app:chipIconSize="20dp"
+            app:iconStartPadding="4dp"
+            app:chipBackgroundColor="@color/white"/>
+
     <com.google.android.material.chip.Chip
         android:id="@+id/chipRouteCar"
         style="@style/Widget.MaterialComponents.Chip.Action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="자동차"
+        android:visibility="gone"
         app:chipIcon="@drawable/ic_car"
         app:chipIconVisible="true"
         app:chipIconTint="#009688"
