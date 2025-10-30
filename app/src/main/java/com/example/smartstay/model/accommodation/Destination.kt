@@ -13,7 +13,7 @@ data class Destination(
 data class Accommodation(
     val name: String, // 숙박업명
     val type: String, // 숙박유형명
-    val image: Int, // 숙박업 이미지(서버x)
+    val image: List<Int>, // 숙박업 이미지(서버x)
     val address: String, // 숙박업도로명주소
     val latitude: Double, // 위도 (y)
     val longitude: Double, // 경도 (x)

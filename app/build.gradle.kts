@@ -82,4 +82,6 @@ dependencies {
     // GPS Location
     implementation(libs.play.services.location)
 
+    // dots indicator
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
 }

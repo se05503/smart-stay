@@ -41,7 +41,8 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
     }
 
     private fun initViews() = with(binding) {
-        Glide.with(ivDetailStayImage).load(accommodation.image).into(ivDetailStayImage)
+        viewpagerDetailStayImage.adapter = ImageSliderAdapter(accommodation.image)
+        imageDotsIndicator.attachTo(viewpagerDetailStayImage)
         tvDetailStayName.text = accommodation.name
         tvDetailStayType.text = accommodation.type
         tvDetailStayLocation.text = accommodation.address
