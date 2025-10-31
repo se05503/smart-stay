@@ -1,13 +1,12 @@
 package com.example.smartstay
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.smartstay.databinding.ItemChatBotFilterChangeBinding
 import com.example.smartstay.databinding.ItemChatBotRecommendationBinding
 import com.example.smartstay.databinding.ItemChatBotTextBinding
 import com.example.smartstay.databinding.ItemChatUserBinding
@@ -91,7 +90,28 @@ class ChatAdapter(
                 }
             }
 
-            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.accommodationInfo ?: emptyList(), clickListener) // TODO: [refactor] 5개만 표시할건데 recyclerview는 조금 적절하지 않을 수도 있겠다
+            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.destinations ?: emptyList(), clickListener) // TODO: [refactor] 5개만 표시할건데 recyclerview는 조금 적절하지 않을 수도 있겠다
+        }
+    }
+
+    inner class ChatBotRecommendFilterChangeViewHolder(private val binding: ItemChatBotFilterChangeBinding): RecyclerView.ViewHolder(binding.root) {
+
+        private var typingJob: Job? = null
+
+        fun bind(item: ChatModel.ChatBotMessage) {
+
+            typingJob = null
+            binding.tvMessage.text = ""
+
+            typingJob = CoroutineScope(Dispatchers.Main).launch {
+                val message = item.message
+                for(i in message.indices) {
+                    binding.tvMessage.append(message[i].toString())
+                    delay((30..80).random().toLong())
+                }
+            }
+
+            binding.viewpager2RecommendStays.adapter = ChatRecommendStayAdapter(item.destinations ?: emptyList(), clickListener) // TODO: [refactor] 5개만 표시할건데 recyclerview는 조금 적절하지 않을 수도 있겠다
         }
     }
 
@@ -111,6 +131,7 @@ class ChatAdapter(
                 when(item.type) {
                     0 -> VIEW_TYPE_CHATBOT_TEXT
                     1 -> VIEW_TYPE_CHATBOT_RECOMMEND
+                    2 -> VIEW_TYPE_CHATBOT_FILTER_CHANGE
                     else -> VIEW_TYPE_NONE
                 }
             }
@@ -130,6 +151,10 @@ class ChatAdapter(
                 val binding = ItemChatBotTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 ChatBotTextViewHolder(binding)
             }
+            VIEW_TYPE_CHATBOT_FILTER_CHANGE -> {
+                val binding = ItemChatBotFilterChangeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ChatBotRecommendFilterChangeViewHolder(binding)
+            }
             else -> {
                 val binding = ItemChatBotRecommendationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 ChatBotRecommendViewHolder(binding)
@@ -145,6 +170,7 @@ class ChatAdapter(
             is UserViewHolder -> holder.bind(item as ChatModel.UserMessage)
             is ChatBotTextViewHolder -> holder.bind(item)
             is ChatBotRecommendViewHolder -> holder.bind(item as ChatModel.ChatBotMessage)
+            is ChatBotRecommendFilterChangeViewHolder -> holder.bind(item as ChatModel.ChatBotMessage)
         }
     }
 
@@ -171,5 +197,6 @@ class ChatAdapter(
         private const val VIEW_TYPE_CHATBOT_RECOMMEND = 2
         private const val VIEW_TYPE_CHATBOT_LOADING = 3
         private const val VIEW_TYPE_NONE = 4 // 예외 처리용
+        private const val VIEW_TYPE_CHATBOT_FILTER_CHANGE = 5
     }
 }
