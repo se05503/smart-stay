@@ -13,16 +13,6 @@ interface BackendNetworkService {
     @POST("social-login")
     suspend fun postSocialLogin(@Body request: SocialLoginRequest): SocialLoginResponse
 
-//    @POST("receive")
-//    fun postUserInfo(
-//        @Body userRequest: UserRequest
-//    ): Call<Any>
-
     @POST("receive")
     suspend fun postSocialChat(@Body chatRequest: ChatRequest): ChatModel.ChatBotMessage
-
-    @POST("voice")
-    suspend fun postVoiceRecord(
-        @Query("fileName") fileName: String
-    ): String
 }

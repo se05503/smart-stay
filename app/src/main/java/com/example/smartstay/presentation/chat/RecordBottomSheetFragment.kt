@@ -13,7 +13,14 @@ import com.example.smartstay.ChatViewModel
 import com.example.smartstay.R
 import com.example.smartstay.databinding.BottomSheetRecordBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
+import java.io.File
 
 class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet_record), OnTimerTickListener {
 
@@ -38,7 +45,7 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
     }
 
     private fun initViews() = with(binding) {
-        recordFileName = "${context?.externalCacheDir?.absolutePath}/smartstay.m4a" // /storage/emulated/0/Android/data/com.example.smartstay/cache/smartstay.mp3
+        recordFileName = "${context?.externalCacheDir?.absolutePath}/smartstay.m4a" // /storage/emulated/0/Android/data/com.example.smartstay/cache/smartstay.m4a
         timer = VoiceTimer(this@RecordBottomSheetFragment)
         sivSendVoiceMessage.isEnabled = false
         sivSendVoiceMessage.alpha = 0.3f
@@ -69,7 +76,11 @@ class RecordBottomSheetFragment: BottomSheetDialogFragment(R.layout.bottom_sheet
             }
         }
         sivSendVoiceMessage.setOnClickListener {
-            chatViewModel.postVoiceRecord(fileName = recordFileName)
+            val file: File = File(recordFileName)
+            val requestBodyFile: RequestBody = file.asRequestBody("audio/m4a".toMediaTypeOrNull())
+            val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(name = "file", filename = file.name, body = requestBodyFile)
+            val modelPart: RequestBody = "whisper-1".toRequestBody("text/plain".toMediaTypeOrNull())
+            chatViewModel.createTranscription(filePart = filePart, modelPart = modelPart)
         }
         tvBackToChat.setOnClickListener {
             dismiss()

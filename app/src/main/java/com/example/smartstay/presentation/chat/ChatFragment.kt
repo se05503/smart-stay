@@ -31,8 +31,6 @@ import com.example.smartstay.R
 import com.example.smartstay.databinding.FragmentChatBinding
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
-import com.example.smartstay.model.accommodation.Accommodation
-import com.example.smartstay.model.accommodation.Attraction
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
@@ -47,7 +45,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     private val chatViewModel: ChatViewModel by activityViewModels {
-        ChatViewModelFactory(RetrofitInstance.backendNetworkService)
+        ChatViewModelFactory(
+            backendNetworkService = RetrofitInstance.backendNetworkService,
+            openAINetworkService = RetrofitInstance.openAINetworkService
+        )
     }
     private val accommodationViewModel: AccommodationViewModel by activityViewModels()
 
@@ -352,6 +353,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
         }
         chatViewModel.convertedVoiceRecord.observe(viewLifecycleOwner) { result ->
             result.onSuccess { convertedVoiceRecord ->
+                Toast.makeText(context, "음성이 텍스트로 변환되었습니다.", Toast.LENGTH_SHORT).show()
                 recordBottomSheetDialog.dismiss()
                 etMessage.setText(convertedVoiceRecord)
             }.onFailure { error ->
