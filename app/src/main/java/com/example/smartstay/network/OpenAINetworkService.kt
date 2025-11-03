@@ -12,7 +12,7 @@ interface OpenAINetworkService {
     @Multipart
     @POST("v1/audio/transcriptions")
     suspend fun createTranscription(
-        @Part("file") file: MultipartBody.Part,
+        @Part file: MultipartBody.Part,
         @Part("model") model: RequestBody
     ): TranscriptionResponse
 }
