@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
+import com.example.smartstay.model.DataResource
 import com.example.smartstay.network.BackendNetworkService
 import com.example.smartstay.network.OpenAINetworkService
 import kotlinx.coroutines.launch
@@ -31,16 +32,17 @@ class ChatViewModel(
         }
     }
 
-    private val _convertedVoiceRecord: MutableLiveData<Result<String>> = MutableLiveData()
-    val convertedVoiceRecord: LiveData<Result<String>> get() = _convertedVoiceRecord
+    private val _convertedVoiceRecord: MutableLiveData<DataResource<String>> = MutableLiveData()
+    val convertedVoiceRecord: LiveData<DataResource<String>> get() = _convertedVoiceRecord
 
     fun createTranscription(filePart: MultipartBody.Part, modelPart: RequestBody) {
         viewModelScope.launch {
+            _convertedVoiceRecord.value = DataResource.Loading
             try {
                 val response = openAINetworkService.createTranscription(file = filePart, model = modelPart)
-                _convertedVoiceRecord.value = Result.success(response.text)
+                _convertedVoiceRecord.value = DataResource.Success(response.text)
             } catch (e: Exception) {
-                _convertedVoiceRecord.value = Result.failure(e)
+                _convertedVoiceRecord.value = DataResource.Error(e)
             }
         }
     }

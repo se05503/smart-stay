@@ -31,6 +31,7 @@ import com.example.smartstay.R
 import com.example.smartstay.databinding.FragmentChatBinding
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
+import com.example.smartstay.model.DataResource
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
@@ -352,12 +353,20 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
             }
         }
         chatViewModel.convertedVoiceRecord.observe(viewLifecycleOwner) { result ->
-            result.onSuccess { convertedVoiceRecord ->
-                Toast.makeText(context, "음성이 텍스트로 변환되었습니다.", Toast.LENGTH_SHORT).show()
-                recordBottomSheetDialog.dismiss()
-                etMessage.setText(convertedVoiceRecord)
-            }.onFailure { error ->
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+            when(result) {
+                is DataResource.Loading -> {
+                    lottieLoading.isVisible = true
+                }
+                is DataResource.Success -> {
+                    Toast.makeText(context, "음성이 텍스트로 변환되었습니다.", Toast.LENGTH_SHORT).show()
+                    lottieLoading.isVisible = false
+                    recordBottomSheetDialog.dismiss()
+                    etMessage.setText(result.data)
+                }
+                is DataResource.Error -> {
+                    lottieLoading.isVisible = false
+                    Toast.makeText(context, result.throwable.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
