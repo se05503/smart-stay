@@ -355,16 +355,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
         chatViewModel.convertedVoiceRecord.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is DataResource.Loading -> {
-                    lottieLoading.isVisible = true
+                    if(llInduceChat.isVisible) llInduceChat.isVisible = false
+                    llLoading.isVisible = true
                 }
                 is DataResource.Success -> {
                     Toast.makeText(context, "음성이 텍스트로 변환되었습니다.", Toast.LENGTH_SHORT).show()
-                    lottieLoading.isVisible = false
+                    llLoading.isVisible = false
                     recordBottomSheetDialog.dismiss()
                     etMessage.setText(result.data)
                 }
                 is DataResource.Error -> {
-                    lottieLoading.isVisible = false
+                    llLoading.isVisible = false
                     Toast.makeText(context, result.throwable.message, Toast.LENGTH_SHORT).show()
                 }
             }

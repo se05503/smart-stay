@@ -36,44 +36,67 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar_chat"
             tools:listitem="@layout/item_chat_bot_text" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieLoading"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/lottie_loading"/>
-
-        <TextView
-            android:id="@+id/tv_induce_chat"
+        <FrameLayout
+            android:id="@+id/llLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="제제랑 대화를 시작해볼까요?"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@id/lottie_chatbot"
-            app:layout_constraintStart_toStartOf="@id/lottie_chatbot"
-            app:layout_constraintTop_toBottomOf="@id/lottie_chatbot" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie_chatbot"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@id/llChat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_chat"
-            app:layout_constraintVertical_bias="0.4"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/lottie_chatbot" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar_chat">
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieLoading"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/lottie_loading"/>
+
+            <TextView
+                android:id="@+id/tvLoadingMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="잠시만 기다려주세요.."
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="bottom|center_horizontal"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/llInduceChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            app:layout_constraintBottom_toTopOf="@id/llChat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_chat">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_chatbot"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                app:layout_constraintVertical_bias="0.4"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/lottie_chatbot" />
+
+            <TextView
+                android:id="@+id/tv_induce_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="제제랑 대화를 시작해볼까요?"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/llChat"
@@ -90,14 +113,14 @@
                 android:id="@+id/cvChatContent"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:backgroundTint="@color/background_gray_200"
                 android:layout_marginEnd="12dp"
+                android:backgroundTint="@color/background_gray_200"
                 app:cardCornerRadius="30dp"
-                app:strokeWidth="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/sivChatSend"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/sivChatSend">
+                app:strokeWidth="0dp">
 
                 <EditText
                     android:id="@+id/etMessage"
@@ -105,10 +128,10 @@
                     android:layout_height="match_parent"
                     android:backgroundTint="@android:color/transparent"
                     android:hint="원하시는 숙소를 말씀해주세요."
-                    android:textSize="16sp"
                     android:inputType="text"
                     android:paddingStart="16dp"
-                    android:textColorHint="@color/background_gray_700" />
+                    android:textColorHint="@color/background_gray_700"
+                    android:textSize="16sp" />
             </com.google.android.material.card.MaterialCardView>
 
 
@@ -116,30 +139,30 @@
                 android:id="@+id/sivChatSend"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_send"
-                android:background="@color/background_gray_200"
-                android:layout_marginEnd="12dp"
                 android:layout_marginVertical="2dp"
-                app:shapeAppearanceOverlay="@style/circleImageView"
+                android:layout_marginEnd="12dp"
+                android:background="@color/background_gray_200"
+                android:src="@drawable/ic_send"
                 app:contentPadding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toStartOf="@id/sivChatRecord"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:shapeAppearanceOverlay="@style/circleImageView" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/sivChatRecord"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_record"
-                android:background="@color/background_gray_200"
                 android:layout_marginVertical="2dp"
+                android:background="@color/background_gray_200"
+                android:src="@drawable/ic_record"
                 app:contentPadding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:shapeAppearanceOverlay="@style/circleImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:shapeAppearanceOverlay="@style/circleImageView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
