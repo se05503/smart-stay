@@ -41,6 +41,5 @@
     <string name="companion_pet">반려동물</string>
     <string name="companion_alone">혼자서</string>
     <string name="companion_other">기타</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="chatbot_name">스마트스테이</string>
 </resources>

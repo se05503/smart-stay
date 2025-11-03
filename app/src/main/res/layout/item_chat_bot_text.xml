@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_profile"
         app:layout_constraintBottom_toBottomOf="@id/iv_profile"
         app:layout_constraintStart_toEndOf="@id/iv_profile"
-        android:text="챗봇 제제" />
+        android:text="@string/chatbot_name" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"

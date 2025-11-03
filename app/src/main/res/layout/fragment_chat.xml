@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="제제랑 대화를 시작해볼까요?"
+                android:text="스마트스테이랑 대화를 시작해볼까요?"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
