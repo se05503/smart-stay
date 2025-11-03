@@ -318,6 +318,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                     tmapView.removeAllTMapPolyLine()
                     cvRouteCarDetailInfoOpen.root.isVisible = false
                     cvRouteCarDetailInfoClose.root.isVisible = false
+                    chipGroupHomeAndFineRoute.isVisible = true
                 }
             }
         })
@@ -545,6 +546,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 cvRouteCarDetailInfoOpen.tvCarRouteDetailFuelCostValue.text = Utils.formatPrice(detailInfo.totalFare.toInt())
                 cvRouteCarDetailInfoOpen.tvCarRouteDetailDeparturePredictionTimeValue.text = formatter.format(detailInfo.departureTime)
                 cvRouteCarDetailInfoOpen.tvCarRouteDetailArrivalPredictionTimeValue.text = formatter.format(detailInfo.arrivalTime)
+                chipGroupHomeAndFineRoute.isVisible = false
             }.onFailure { error ->
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
