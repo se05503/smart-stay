@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
-import com.example.smartstay.model.TMapRouteRequest
 import com.example.smartstay.model.accommodation.Accommodation
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.tmap.LocationInfo
@@ -317,7 +316,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         endPoint = snappedDestination.accommodation
                     }
                     tmapView.removeAllTMapPolyLine()
-                    cvRouteCarDetailInfo.root.isVisible = false
+                    cvRouteCarDetailInfoOpen.root.isVisible = false
+                    cvRouteCarDetailInfoClose.root.isVisible = false
                 }
             }
         })
@@ -518,6 +518,14 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 //                Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
 //            }
         }
+        cvRouteCarDetailInfoOpen.root.setOnClickListener {
+            cvRouteCarDetailInfoOpen.root.isVisible = false
+            cvRouteCarDetailInfoClose.root.isVisible = true
+        }
+        cvRouteCarDetailInfoClose.root.setOnClickListener {
+            cvRouteCarDetailInfoClose.root.isVisible = false
+            cvRouteCarDetailInfoOpen.root.isVisible = true
+        }
     }
 
     private fun initObservers() = with(binding) {
@@ -529,14 +537,14 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 val minutes = (detailInfo.totalTime/60)%60
                 val formatter = SimpleDateFormat("a h:mm", Locale.getDefault())
                 val formattedTotalDistance = String.format("%.1f", detailInfo.totalDistance.toInt()/1000f)
-                cvRouteCarDetailInfo.root.isVisible = true
-                cvRouteCarDetailInfo.tvCarRouteDetailTotalDistance.text = "${formattedTotalDistance}km"
-                cvRouteCarDetailInfo.tvCarRouteDetailHourValue.text = "$hour"
-                cvRouteCarDetailInfo.tvCarRouteDetailMinuteValue.text = "$minutes"
-                cvRouteCarDetailInfo.tvCarRouteDetailTaxiFareValue.text = Utils.formatPrice(detailInfo.taxiFare)
-                cvRouteCarDetailInfo.tvCarRouteDetailFuelCostValue.text = Utils.formatPrice(detailInfo.totalFare.toInt())
-                cvRouteCarDetailInfo.tvCarRouteDetailDeparturePredictionTimeValue.text = formatter.format(detailInfo.departureTime)
-                cvRouteCarDetailInfo.tvCarRouteDetailArrivalPredictionTimeValue.text = formatter.format(detailInfo.arrivalTime)
+                cvRouteCarDetailInfoOpen.root.isVisible = true
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailTotalDistance.text = "${formattedTotalDistance}km"
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailHourValue.text = "$hour"
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailMinuteValue.text = "$minutes"
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailTaxiFareValue.text = Utils.formatPrice(detailInfo.taxiFare)
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailFuelCostValue.text = Utils.formatPrice(detailInfo.totalFare.toInt())
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailDeparturePredictionTimeValue.text = formatter.format(detailInfo.departureTime)
+                cvRouteCarDetailInfoOpen.tvCarRouteDetailArrivalPredictionTimeValue.text = formatter.format(detailInfo.arrivalTime)
             }.onFailure { error ->
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
