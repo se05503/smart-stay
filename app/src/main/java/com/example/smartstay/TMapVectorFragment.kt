@@ -410,7 +410,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     }
 
     private fun initListeners() = with(binding) {
-        fabMapGps.setOnClickListener {
+        chipHome.setOnClickListener {
 
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -455,20 +455,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 })
             }
         }
-        ivMapNavigate.setOnClickListener {
-            if(etMapStartPoint.text.isNotBlank()) {
-                mapViewModel.findTMapMultiModalRoute(context = requireContext(), tMapRouteRequest = TMapRouteRequest(
-                    startX = userCurrentLocation.longitude.toString(),
-                    startY = userCurrentLocation.latitude.toString(),
-                    endX = endPoint.longitude.toString(),
-                    endY = endPoint.latitude.toString(),
-                    count = 1
-                ))
-            } else {
-                Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
-            }
-        }
-        chipRouteCar.setOnClickListener {
+        chipNavigate.setOnClickListener {
             if(etMapStartPoint.text.isNotBlank()) {
                 Toast.makeText(context, "자동차 경로를 검색합니다.", Toast.LENGTH_SHORT).show()
 
@@ -519,6 +506,17 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             } else {
                 Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
             }
+//            if(etMapStartPoint.text.isNotBlank()) {
+//                mapViewModel.findTMapMultiModalRoute(context = requireContext(), tMapRouteRequest = TMapRouteRequest(
+//                    startX = userCurrentLocation.longitude.toString(),
+//                    startY = userCurrentLocation.latitude.toString(),
+//                    endX = endPoint.longitude.toString(),
+//                    endY = endPoint.latitude.toString(),
+//                    count = 1
+//                ))
+//            } else {
+//                Toast.makeText(context, "출발지를 설정해주세요.", Toast.LENGTH_SHORT).show()
+//            }
         }
     }
 
