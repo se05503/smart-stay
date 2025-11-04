@@ -89,6 +89,12 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     private val attractionDefaultBitmap: Bitmap by lazy {
         BitmapFactory.decodeResource(context?.resources, R.drawable.ic_attraction_default)
     }
+    private val departureBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_departure)
+    }
+    private val arrivalBitmap: Bitmap by lazy {
+        BitmapFactory.decodeResource(context?.resources, R.drawable.ic_arrival)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -479,11 +485,28 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                             tmapView.addTMapPolyLine(it)
 
                             val info: TMapInfo = tmapView.getDisplayTMapInfo(it.linePointList)
-                            tmapView.zoomLevel = info.zoom
+                            tmapView.zoomLevel = info.zoom - 2
                             tmapView.setCenterPoint(info.point.latitude, info.point.longitude)
                         }
                     }
                 })
+
+                // 불필요한 마커 제거 + 출발지 및 도착지 마커 추가하기
+                val departureMarker = TMapMarkerItem().apply {
+                    id = DEPARTURE_ID
+                    icon = departureBitmap
+                    setTMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                }
+
+                val arrivalMarker = TMapMarkerItem().apply {
+                    id = ARRIVAL_ID
+                    icon = arrivalBitmap
+                    setTMapPoint(endPoint.latitude, endPoint.longitude)
+                }
+
+                tmapView.removeTMapMarkerItem(endPoint.name) // 1차 기능
+                tmapView.addTMapMarkerItem(departureMarker)
+                tmapView.addTMapMarkerItem(arrivalMarker)
 
                 // 상세 정보 요청하기
                 mapViewModel.getTMapRoutesPrediction(context = requireContext(), tMapRoutesPredictionRequest = TMapRoutesPredictionRequest(
@@ -741,6 +764,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     companion object {
         const val TAG = "TMAP"
         const val KEY_GPS = "GPS"
+        const val DEPARTURE_ID = "DEPARTURE"
+        const val ARRIVAL_ID = "ARRIVAL"
     }
 
 }
