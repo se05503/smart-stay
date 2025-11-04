@@ -280,7 +280,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         /**
          * 초기 도착지 설정하기
          */
-        etMapEndPoint.setText(initialDestination.accommodation.address)
+        etMapEndPoint.setText(initialDestination.accommodation.name)
         endPoint = initialDestination.accommodation
 
         /**
@@ -311,7 +311,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         val snappedDestination = destinationList[snappedViewPosition]
                         tmapView.removeAllTMapMarkerItem()
                         addMarkerOnMap(snappedDestination)
-                        etMapEndPoint.setText(snappedDestination.accommodation.address)
+                        etMapEndPoint.setText(snappedDestination.accommodation.name)
                         tmapView.setCenterPoint(snappedDestination.accommodation.latitude, snappedDestination.accommodation.longitude)
                         endPoint = snappedDestination.accommodation
                     }
