@@ -488,25 +488,25 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                             tmapView.zoomLevel = info.zoom - 2
                             tmapView.setCenterPoint(info.point.latitude, info.point.longitude)
                         }
+
+                        // 불필요한 마커 제거 + 출발지 및 도착지 마커 추가하기
+                        val departureMarker = TMapMarkerItem().apply {
+                            id = DEPARTURE_ID
+                            icon = departureBitmap
+                            setTMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                        }
+
+                        val arrivalMarker = TMapMarkerItem().apply {
+                            id = ARRIVAL_ID
+                            icon = arrivalBitmap
+                            setTMapPoint(endPoint.latitude, endPoint.longitude)
+                        }
+
+                        tmapView.removeTMapMarkerItem(endPoint.name) // 1차 기능
+                        tmapView.addTMapMarkerItem(departureMarker)
+                        tmapView.addTMapMarkerItem(arrivalMarker)
                     }
                 })
-
-                // 불필요한 마커 제거 + 출발지 및 도착지 마커 추가하기
-                val departureMarker = TMapMarkerItem().apply {
-                    id = DEPARTURE_ID
-                    icon = departureBitmap
-                    setTMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
-                }
-
-                val arrivalMarker = TMapMarkerItem().apply {
-                    id = ARRIVAL_ID
-                    icon = arrivalBitmap
-                    setTMapPoint(endPoint.latitude, endPoint.longitude)
-                }
-
-                tmapView.removeTMapMarkerItem(endPoint.name) // 1차 기능
-                tmapView.addTMapMarkerItem(departureMarker)
-                tmapView.addTMapMarkerItem(arrivalMarker)
 
                 // 상세 정보 요청하기
                 mapViewModel.getTMapRoutesPrediction(context = requireContext(), tMapRoutesPredictionRequest = TMapRoutesPredictionRequest(
