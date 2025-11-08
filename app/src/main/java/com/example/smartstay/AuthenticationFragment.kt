@@ -26,13 +26,14 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
+import java.util.UUID
 
 class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     private lateinit var binding: FragmentAuthenticationBinding
     private val userViewModel: UserViewModel by activityViewModels()
     private val loginViewModel: LoginViewModel by activityViewModels {
-        LoginViewModelFactory(RetrofitInstance.networkService)
+        LoginViewModelFactory(RetrofitInstance.backendNetworkService)
     }
     private lateinit var googleLoginResult: ActivityResultLauncher<Intent>
     private var naverRefreshToken: String? = null
@@ -50,7 +51,6 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
          */
         googleLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
-            val resultCode: Int = result.resultCode
             val intent: Intent? = result.data
 
             val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
@@ -233,6 +233,15 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
                     .build()
             val googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOption)
             googleLoginResult.launch(googleSignInClient.signInIntent)
+        }
+        tvLoginGuest.setOnClickListener {
+            userViewModel.userInfo = UserModel(
+                id = UUID.randomUUID().toString(),
+                nickname = "",
+                imageUrl = "https://phinf.pstatic.net/contact/20251108_205/1762607329923MVmFn_JPEG/image.jpg"
+            )
+            Toast.makeText(context, "게스트로 로그인합니다.", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_navigation_authentication_to_navigation_initial_setting_start)
         }
     }
 
