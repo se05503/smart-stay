@@ -36,5 +36,13 @@
         <argument
             android:name="destinationInfo"
             app:argType="com.example.smartstay.model.accommodation.Destination"/>
+        <action
+            android:id="@+id/action_TMapVectorFragment_to_departureFocusFragment"
+            app:destination="@id/departureFocusFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/departureFocusFragment"
+        android:name="com.example.smartstay.presentation.map.DepartureFocusFragment"
+        android:label="fragment_departure_focus"
+        tools:layout="@layout/fragment_departure_focus" />
 </navigation>

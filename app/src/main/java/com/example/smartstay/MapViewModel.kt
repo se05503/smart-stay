@@ -27,13 +27,16 @@ import com.example.smartstay.model.TMapTravelPopularSpotsNearbySegmentRateRespon
 import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
+import com.example.smartstay.model.tmap.IntegratedPlaceResponse
 import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
 import com.example.smartstay.model.tmap.TMapRoutesPredictionResponse
-import com.example.smartstay.network.NetworkService
+import com.example.smartstay.model.tmap.TMapRoutesRequest
+import com.example.smartstay.model.tmap.TMapRoutesResponse
+import com.example.smartstay.network.SkTMapNetworkService
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 
-class MapViewModel(private val networkService: NetworkService): ViewModel() {
+class MapViewModel(private val networkService: SkTMapNetworkService) : ViewModel() {
 
     private val _tMapThumbnailImage: MutableLiveData<ResponseBody> = MutableLiveData()
     val tMapThumbnailImage: LiveData<ResponseBody> get() = _tMapThumbnailImage
@@ -97,6 +100,26 @@ class MapViewModel(private val networkService: NetworkService): ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e(TMapVectorFragment.TAG, "findTMapMultiModalRouteSummary: ${e.message}")
+            }
+        }
+    }
+
+    private val _tMapIntegratedPlaces: MutableLiveData<Result<IntegratedPlaceResponse>> = MutableLiveData()
+    val tMapIntegratedPlaces: LiveData<Result<IntegratedPlaceResponse>> get() = _tMapIntegratedPlaces
+
+    fun searchIntegratedPlaces(context: Context, version: Int = 1, searchKeyword: String, count: Int = 20, multiPoint: String = "Y") {
+        viewModelScope.launch {
+            try {
+                val response = networkService.searchIntegratedPlaces(
+                    appKey = context.getString(R.string.sk_telecom_open_api_app_key),
+                    version = version,
+                    searchKeyword = searchKeyword,
+                    count = count,
+                    multiPoint = multiPoint
+                )
+                _tMapIntegratedPlaces.value = Result.success(response)
+            } catch (e: Exception) {
+                _tMapIntegratedPlaces.value = Result.failure(e)
             }
         }
     }

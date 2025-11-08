@@ -21,16 +21,22 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartstay.databinding.FragmentTMapVectorBinding
 import com.example.smartstay.model.accommodation.Accommodation
+import com.example.smartstay.model.accommodation.Attraction
 import com.example.smartstay.model.accommodation.Destination
+import com.example.smartstay.model.tmap.HighwayPoint
+import com.example.smartstay.model.tmap.LineStringGeometry
 import com.example.smartstay.model.tmap.LocationInfo
+import com.example.smartstay.model.tmap.PointGeometry
 import com.example.smartstay.model.tmap.RoutesInfo
 import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
+import com.example.smartstay.model.tmap.TMapRoutesResponse
 import com.example.smartstay.network.RetrofitInstance
 import com.example.smartstay.presentation.AccommodationViewModel
 import com.google.android.gms.location.CurrentLocationRequest
@@ -553,6 +559,14 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     }
 
     private fun initObservers() = with(binding) {
+
+        etMapStartPoint.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                findNavController().navigate(R.id.action_TMapVectorFragment_to_departureFocusFragment)
+            } else {
+                Toast.makeText(context, "EditText is unfocused", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         mapViewModel.tMapRoutesPredictionInfo.observe(viewLifecycleOwner) { result ->
             result.onSuccess { prediction ->

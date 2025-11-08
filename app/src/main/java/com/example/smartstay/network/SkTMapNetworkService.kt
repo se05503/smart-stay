@@ -20,8 +20,11 @@ import com.example.smartstay.model.TMapTravelSimilarAccommodationResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationFeatureResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationRankingResponse
 import com.example.smartstay.model.TMapTravelSpecificAccommodationVisitorSegmentsResponse
+import com.example.smartstay.model.tmap.IntegratedPlaceResponse
 import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
 import com.example.smartstay.model.tmap.TMapRoutesPredictionResponse
+import com.example.smartstay.model.tmap.TMapRoutesRequest
+import com.example.smartstay.model.tmap.TMapRoutesResponse
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -278,4 +281,16 @@ interface SkTMapNetworkService {
         @Query("gender") gender: String,
         @Query("ageGrp") ageGrp: String
     ): TMapTravelPopularCommercialDistrictNearbySegmentRateResponse
+
+    /**
+     * 장소 통합 검색
+     */
+    @GET("tmap/pois")
+    suspend fun searchIntegratedPlaces(
+        @Header("appKey") appKey: String,
+        @Query("version") version: Int,
+        @Query("searchKeyword") searchKeyword: String, // 시설물명, 상호, 시설 유형, 주소, 전화번호를 검색어로 지정합니다. 명칭 검색 시 UTF-8 기반의 [URL 인코딩] 처리 필수
+        @Query("count") count: Int, // 페이지 당 검색 결과 수를 지정합니다. 최소: 1 ~ 최대: 150, 기본값: 20
+        @Query("multiPoint") multiPoint: String // 검색할 관심 장소(POI)가 정문, 후문 등 입구가 여러 개인 건물인 경우 기본 건물에 대한 결괏값만 반환할지, 모든 결괏값을 반환할지 지정합니다. Y: 기본 결괏값만 반환. N(기본값): 모든 결괏값을 반환
+    ): IntegratedPlaceResponse
 }
