@@ -28,7 +28,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +36,7 @@ import com.example.smartstay.model.accommodation.Accommodation
 import com.example.smartstay.model.accommodation.Attraction
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.tmap.HighwayPoint
+import com.example.smartstay.model.tmap.LatLng
 import com.example.smartstay.model.tmap.LineStringGeometry
 import com.example.smartstay.model.tmap.LocationInfo
 import com.example.smartstay.model.tmap.Poi
@@ -84,6 +84,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         originalList.add(0, initialDestination)
         originalList.toList()
     }
+
+    private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
+    private var startPoint: LatLng? = null
     private lateinit var endPoint: Accommodation
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
     private lateinit var userCurrentLocation: Location
@@ -124,6 +127,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                     lifecycleScope.launch {
                         userCurrentLocation = getUserFineLocation()
+                        val userCurrentLocation = getUserFineLocation()
+                        startPoint = LatLng(latitude = userCurrentLocation.latitude, longitude = userCurrentLocation.longitude)
                         Log.e(TAG, "" + userCurrentLocation)
                     }
 
@@ -132,6 +137,8 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                     lifecycleScope.launch {
                         userCurrentLocation = getUserCoarseLocation()
+                        val userCurrentLocation = getUserCoarseLocation()
+                        startPoint = LatLng(latitude = userCurrentLocation.latitude, longitude = userCurrentLocation.longitude)
                         Log.e(TAG, "" + userCurrentLocation)
                     }
                 }
@@ -170,9 +177,9 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                 addMarkerOnMap(initialDestination)
                 startPoint?.let {
                     val marker = TMapMarkerItem().apply {
-                        id = it.id
+                        id = DEPARTURE_ID
                         icon = departureBitmap
-                        setTMapPoint(it.noorLat, it.noorLon)
+                        setTMapPoint(it.latitude, it.longitude)
                     }
                     tmapView.addTMapMarkerItem(marker)
                     tmapView.zoomLevel = 15
@@ -340,8 +347,17 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                         val snappedDestination = destinationList[snappedViewPosition]
                         tmapView.removeAllTMapMarkerItem()
                         addMarkerOnMap(snappedDestination)
+                        val departureMarker = TMapMarkerItem().apply {
+                            id = DEPARTURE_ID
+                            icon = departureBitmap
+                            setTMapPoint(startPoint?.latitude ?: 0.0, startPoint?.longitude ?: 0.0)
+                        }
+                        tmapView.addTMapMarkerItem(departureMarker)
                         etMapEndPoint.setText(snappedDestination.accommodation.name)
-                        tmapView.setCenterPoint(snappedDestination.accommodation.latitude, snappedDestination.accommodation.longitude)
+                        tmapView.setCenterPoint(
+                            snappedDestination.accommodation.latitude,
+                            snappedDestination.accommodation.longitude
+                        )
                         endPoint = snappedDestination.accommodation
                     }
                     tmapView.removeAllTMapPolyLine()
@@ -461,12 +477,21 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             }
 
             lifecycleScope.launch {
-                userCurrentLocation = getUserFineLocation()
+                val userCurrentLocation = getUserFineLocation()
+                startPoint = LatLng(latitude = userCurrentLocation.latitude, longitude = userCurrentLocation.longitude)
 
                 val handler = Handler(Looper.getMainLooper()) { message ->
-                    if(message.what == 1) {
+                    if (message.what == 1) {
                         val address = message.data.getString(KEY_GPS)
                         etMapStartPoint.setText(address)
+                        val marker = TMapMarkerItem().apply {
+                            id = DEPARTURE_ID
+                            icon = departureBitmap
+                            setTMapPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                        }
+                        tmapView.addTMapMarkerItem(marker)
+                        tmapView.setCenterPoint(userCurrentLocation.latitude, userCurrentLocation.longitude)
+                        tmapView.zoomLevel = 15
                     }
                     true
                 }
@@ -589,7 +614,10 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             if(departure != null) {
                 etMapStartPoint.setText(departure.name)
                 tmapView.setCenterPoint(departure.noorLat, departure.noorLon)
-                startPoint = departure
+                startPoint = LatLng(
+                    latitude = departure.noorLat,
+                    longitude = departure.noorLon
+                )
             }
         }
         mapViewModel.tMapRoutesPredictionInfo.observe(viewLifecycleOwner) { result ->
@@ -804,6 +832,7 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         const val KEY_GPS = "GPS"
         const val DEPARTURE_ID = "DEPARTURE"
         const val ARRIVAL_ID = "ARRIVAL"
+        const val REQUEST_KEY = "REQUEST_KEY"
     }
 
 }
