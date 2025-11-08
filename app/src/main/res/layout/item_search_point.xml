@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/ivSearchPoint"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_map"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:tint="@color/background_gray_700"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvSearchPointName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="도농역[경의중앙선]"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/ivSearchPoint"
+        app:layout_constraintStart_toEndOf="@id/ivSearchPoint"/>
+
+    <TextView
+        android:id="@+id/tvSearchPointRoadNameAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="경기 남양주시 경춘로 433"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSearchPointName"
+        app:layout_constraintStart_toStartOf="@id/tvSearchPointName"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvSeachPointBusinessName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="지하철역"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/tvSearchPointName"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/background_gray_200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
