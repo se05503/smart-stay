@@ -74,18 +74,367 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
     }
     private val accommodationViewModel: AccommodationViewModel by activityViewModels()
     private lateinit var tmapView: TMapView
-    private val initialDestination: Destination by lazy {
-        val args: TMapVectorFragmentArgs by navArgs()
-        args.destinationInfo
-    }
-    private val destinationList: List<Destination> by lazy {
-        val originalList = accommodationViewModel.recommendDestinationList.toMutableList()
-        originalList.remove(initialDestination)
-        originalList.add(0, initialDestination)
-        originalList.toList()
-    }
 
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
+
+    //    private val initialDestination: Destination by lazy {
+//        val args: TMapVectorFragmentArgs by navArgs()
+//        args.destinationInfo
+//    }
+
+    private val initialDestination = Destination(
+        accommodation = Accommodation(
+            name = "르이데아호텔",
+            type = "호텔",
+            image = listOf(R.drawable.img_stay_1, R.drawable.img_stay_2, R.drawable.img_stay_3),
+            address = "부산광역시 남구 대연동 889-4",
+            latitude = 35.131891660643,
+            longitude = 129.092375826662,
+            minimumPrice = 85000,
+            averagePrice = 100000,
+            maximumPrice = 120000,
+            starRating = "1성",
+            isPetAvailable = "N",
+            isRestaurantExist = "Y",
+            isBarExist = "Y",
+            isCafeExist = "Y",
+            isFitnessCenterExist = "N",
+            isSwimmingPoolExist = "N",
+            isSpaExist = "N",
+            isSaunaExist = "N",
+            isReceptionCenterExist = "Y",
+            isBusinessCenterExist = "Y",
+            isOceanViewExist = "N"
+        ),
+        attractions = listOf(
+            Attraction(
+                poiId = "1505596",
+                poiName = "신세계백화점센텀시티점",
+                category = "쇼핑",
+                lat = 35.168915568667,
+                lng = 129.129511134364,
+                congestionYn = "Y",
+                count = 54713,
+                distance = 5.324005522000573
+            ),
+            Attraction(
+                poiId = "8544989",
+                poiName = "유앤유키즈수영장",
+                category = "레저/스포츠",
+                lat = 35.165138482923,
+                lng = 129.169618814994,
+                congestionYn = "N",
+                count = 85727,
+                distance = 7.936141430578517
+            ),
+            Attraction(
+                poiId = "152111",
+                poiName = "광안리해수욕장",
+                category = "관광명소",
+                lat = 35.153167247931,
+                lng = 129.118651120125,
+                congestionYn = "Y",
+                count = 57850,
+                distance = 3.3620731996474036
+            )
+        )
+    )
+
+//    private val destinationList: List<Destination> by lazy {
+//        val originalList = accommodationViewModel.recommendDestinationList.toMutableList()
+//        originalList.remove(initialDestination)
+//        originalList.add(0, initialDestination)
+//        originalList.toList()
+//    }
+
+    private val destinationList = listOf(
+        Destination(
+            accommodation = Accommodation(
+                name = "르이데아호텔",
+                type = "호텔",
+                image = listOf(R.drawable.img_stay_1, R.drawable.img_stay_2, R.drawable.img_stay_3),
+                address = "부산광역시 남구 대연동 889-4",
+                latitude = 35.131891660643,
+                longitude = 129.092375826662,
+                minimumPrice = 85000,
+                averagePrice = 100000,
+                maximumPrice = 120000,
+                starRating = "1성",
+                isPetAvailable = "N",
+                isRestaurantExist = "Y",
+                isBarExist = "Y",
+                isCafeExist = "Y",
+                isFitnessCenterExist = "N",
+                isSwimmingPoolExist = "N",
+                isSpaExist = "N",
+                isSaunaExist = "N",
+                isReceptionCenterExist = "Y",
+                isBusinessCenterExist = "Y",
+                isOceanViewExist = "N"
+            ),
+            attractions = listOf(
+                Attraction(
+                    poiId = "1505596",
+                    poiName = "신세계백화점센텀시티점",
+                    category = "쇼핑",
+                    lat = 35.168915568667,
+                    lng = 129.129511134364,
+                    congestionYn = "Y",
+                    count = 54713,
+                    distance = 5.324005522000573
+                ),
+                Attraction(
+                    poiId = "8544989",
+                    poiName = "유앤유키즈수영장",
+                    category = "레저/스포츠",
+                    lat = 35.165138482923,
+                    lng = 129.169618814994,
+                    congestionYn = "N",
+                    count = 85727,
+                    distance = 7.936141430578517
+                ),
+                Attraction(
+                    poiId = "152111",
+                    poiName = "광안리해수욕장",
+                    category = "관광명소",
+                    lat = 35.153167247931,
+                    lng = 129.118651120125,
+                    congestionYn = "Y",
+                    count = 57850,
+                    distance = 3.3620731996474036
+                )
+            )
+        ),
+        Destination(
+            accommodation = Accommodation(
+                name = "부산시티호텔",
+                type = "호텔",
+                image = listOf(R.drawable.img_stay_4, R.drawable.img_stay_5, R.drawable.img_stay_6),
+                address = "부산광역시 연제구 연산동 1372-25",
+                latitude = 35.182691453478,
+                longitude = 129.076210052287,
+                minimumPrice = 110000,
+                averagePrice = 130000,
+                maximumPrice = 160000,
+                starRating = "3성",
+                isPetAvailable = "Y",
+                isRestaurantExist = "Y",
+                isBarExist = "N",
+                isCafeExist = "Y",
+                isFitnessCenterExist = "Y",
+                isSwimmingPoolExist = "N",
+                isSpaExist = "N",
+                isSaunaExist = "N",
+                isReceptionCenterExist = "N",
+                isBusinessCenterExist = "Y",
+                isOceanViewExist = "N"
+            ),
+            attractions = listOf(
+                Attraction(
+                    poiId = "151890",
+                    poiName = "세이브존해운대점",
+                    category = "쇼핑",
+                    lat = 35.162360957673,
+                    lng = 129.161286230077,
+                    congestionYn = "Y",
+                    count = 36601,
+                    distance = 8.056118401198521
+                ),
+                Attraction(
+                    poiId = "10258740",
+                    poiName = "J&P어린이수영장센텀마린점",
+                    category = "레저/스포츠",
+                    lat = 35.167860144471,
+                    lng = 129.13156652273,
+                    congestionYn = "N",
+                    count = 59511,
+                    distance = 5.294481989990581
+                ),
+                Attraction(
+                    poiId = "11310286",
+                    poiName = "마리앤쥬",
+                    category = "관광명소",
+                    lat = 35.15491667689,
+                    lng = 129.062683721413,
+                    congestionYn = "N",
+                    count = 43133,
+                    distance = 3.3239923303752144
+                )
+            )
+        ),
+        Destination(
+            accommodation = Accommodation(
+                name = "파크하얏트부산호텔",
+                type = "호텔",
+                image = listOf(R.drawable.img_stay_7, R.drawable.img_stay_8, R.drawable.img_stay_9),
+                address = "부산광역시 해운대구 우동 1409-3",
+                latitude = 35.156555916577,
+                longitude = 129.141871300461,
+                minimumPrice = 35000,
+                averagePrice = 50000,
+                maximumPrice = 60000,
+                starRating = "5성",
+                isPetAvailable = "N",
+                isRestaurantExist = "N",
+                isBarExist = "Y",
+                isCafeExist = "Y",
+                isFitnessCenterExist = "N",
+                isSwimmingPoolExist = "N",
+                isSpaExist = "N",
+                isSaunaExist = "N",
+                isReceptionCenterExist = "N",
+                isBusinessCenterExist = "N",
+                isOceanViewExist = "N"
+            ),
+            attractions = listOf(
+                Attraction(
+                    poiId = "5871033",
+                    poiName = "롯데마트동부산점",
+                    category = "쇼핑",
+                    lat = 35.192441291102,
+                    lng = 129.212337067683,
+                    congestionYn = "Y",
+                    count = 52192,
+                    distance = 7.5456553456485915
+                ),
+                Attraction(
+                    poiId = "385086",
+                    poiName = "부산요트경기장",
+                    category = "레저/스포츠",
+                    lat = 35.160472142576,
+                    lng = 129.141149101421,
+                    congestionYn = "N",
+                    count = 76417,
+                    distance = 0.4403647400694603
+                ),
+                Attraction(
+                    poiId = "2788539",
+                    poiName = "부산시민공원",
+                    category = "관광명소",
+                    lat = 35.168165164466,
+                    lng = 129.057072964066,
+                    congestionYn = "N",
+                    count = 54838,
+                    distance = 7.815510402362057
+                )
+            )
+        ),
+        Destination(
+            accommodation = Accommodation(
+                name = "토요코인호텔부산서면점",
+                type = "호텔",
+                image = listOf(R.drawable.img_stay_10, R.drawable.img_stay_1, R.drawable.img_stay_2),
+                address = "부산광역시 부산진구 전포동 666-8",
+                latitude = 35.157999676181,
+                longitude = 129.064044684141,
+                minimumPrice = 90000,
+                averagePrice = 110000,
+                maximumPrice = 140000,
+                starRating = "2성",
+                isPetAvailable = "Y",
+                isRestaurantExist = "Y",
+                isBarExist = "Y",
+                isCafeExist = "Y",
+                isFitnessCenterExist = "Y",
+                isSwimmingPoolExist = "N",
+                isSpaExist = "N",
+                isSaunaExist = "N",
+                isReceptionCenterExist = "Y",
+                isBusinessCenterExist = "N",
+                isOceanViewExist = "N"
+            ),
+            attractions = listOf(
+                Attraction(
+                    poiId = "1089861",
+                    poiName = "쥬디스태화신관",
+                    category = "쇼핑",
+                    lat = 35.155111083684,
+                    lng = 129.060295037245,
+                    congestionYn = "N",
+                    count = 28204,
+                    distance = 0.46834618308152354
+                ),
+                Attraction(
+                    poiId = "11075630",
+                    poiName = "클럽디오아시스",
+                    category = "레저/스포츠",
+                    lat = 35.160166808992,
+                    lng = 129.16889670523,
+                    congestionYn = "N",
+                    count = 67018,
+                    distance = 9.534486161354401
+                ),
+                Attraction(
+                    poiId = "1161965",
+                    poiName = "APEC나루공원",
+                    category = "관광명소",
+                    lat = 35.171720776709,
+                    lng = 129.124289335682,
+                    congestionYn = "N",
+                    count = 51865,
+                    distance = 5.6846273488434065
+                )
+            )
+        ),
+        Destination(
+            accommodation = Accommodation(
+                name = "호텔스미스부산남구청점",
+                type = "호텔",
+                image = listOf(R.drawable.img_stay_3, R.drawable.img_stay_4, R.drawable.img_stay_5),
+                address = "부산광역시 남구 대연동 1767-4",
+                latitude = 35.135224573171,
+                longitude = 129.084931992772,
+                minimumPrice = 130000,
+                averagePrice = 150000,
+                maximumPrice = 180000,
+                starRating = "2성",
+                isPetAvailable = "N",
+                isRestaurantExist = "Y",
+                isBarExist = "Y",
+                isCafeExist = "Y",
+                isFitnessCenterExist = "Y",
+                isSwimmingPoolExist = "Y",
+                isSpaExist = "Y",
+                isSaunaExist = "Y",
+                isReceptionCenterExist = "Y",
+                isBusinessCenterExist = "Y",
+                isOceanViewExist = "Y"
+            ),
+            attractions = listOf(
+                Attraction(
+                    poiId = "1505593",
+                    poiName = "롯데백화점센텀시티점",
+                    category = "쇼핑",
+                    lat = 35.169693272659,
+                    lng = 129.1313998521,
+                    congestionYn = "Y",
+                    count = 37341,
+                    distance = 5.703898850340064
+                ),
+                Attraction(
+                    poiId = "5691424",
+                    poiName = "신세계센텀시티아이스링크",
+                    category = "레저/스포츠",
+                    lat = 35.168915569418,
+                    lng = 129.129622235866,
+                    congestionYn = "N",
+                    count = 80892,
+                    distance = 5.52630141650139
+                ),
+                Attraction(
+                    poiId = "2281094",
+                    poiName = "센텀시티스파랜드",
+                    category = "관광명소",
+                    lat = 35.168915569418,
+                    lng = 129.129622235866,
+                    congestionYn = "N",
+                    count = 80756,
+                    distance = 5.52630141650139
+                )
+            )
+        ),
+    )
+
     private var startPoint: LatLng? = null
     private lateinit var endPoint: Accommodation
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
@@ -126,7 +475,6 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                     lifecycleScope.launch {
-                        userCurrentLocation = getUserFineLocation()
                         val userCurrentLocation = getUserFineLocation()
                         startPoint = LatLng(latitude = userCurrentLocation.latitude, longitude = userCurrentLocation.longitude)
                         Log.e(TAG, "" + userCurrentLocation)
@@ -136,7 +484,6 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
 
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                     lifecycleScope.launch {
-                        userCurrentLocation = getUserCoarseLocation()
                         val userCurrentLocation = getUserCoarseLocation()
                         startPoint = LatLng(latitude = userCurrentLocation.latitude, longitude = userCurrentLocation.longitude)
                         Log.e(TAG, "" + userCurrentLocation)
