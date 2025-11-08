@@ -37,16 +37,31 @@ data class Poi(
 
     val zipCode: String, // 우편번호. 예) 16491
 ) {
-    val integratedBuildNo: String
-        get() = if (secondBuildNo == "0") {
+
+    val addressType: AddressType
+        get() = if (roadName.isNotBlank()) AddressType.ROAD else AddressType.LOT
+
+    val integratedRoadNo: String
+        get() = if (secondBuildNo == "0" || secondBuildNo == "") {
             firstBuildNo
         } else {
             "$firstBuildNo-$secondBuildNo"
         }
 
     val fullRoadNameAddress: String
-        get() = "$upperAddrName $middleAddrName $roadName $integratedBuildNo"
+        get() = "$upperAddrName $middleAddrName $roadName $integratedRoadNo"
 
     val fullLotNumberAddress: String
-        get() = "$upperAddrName $middleAddrName $lowerAddrName $firstNo-$secondNo"
+        get() = if(firstNo == "0") {
+            "$upperAddrName $middleAddrName $lowerAddrName"
+        } else if(secondNo == "0") {
+            "$upperAddrName $middleAddrName $lowerAddrName $firstNo"
+        } else {
+            "$upperAddrName $middleAddrName $lowerAddrName $firstNo-$secondNo"
+        }
+}
+
+enum class AddressType {
+    ROAD,
+    LOT
 }

@@ -48,6 +48,17 @@
         app:layout_constraintTop_toTopOf="@id/tvSearchPointName"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <TextView
+        android:id="@+id/tvSearchPointAddressType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="도로명"
+        android:textSize="12sp"
+        android:textColor="@color/background_gray_700"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
