@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.smartstay.MapViewModel
 import com.example.smartstay.MapViewModelFactory
 import com.example.smartstay.R
+import com.example.smartstay.TMapVectorFragment
 import com.example.smartstay.databinding.FragmentDepartureFocusBinding
 import com.example.smartstay.model.tmap.Poi
 import com.example.smartstay.network.RetrofitInstance
@@ -48,13 +51,20 @@ class DepartureFocusFragment : Fragment(R.layout.fragment_departure_focus) {
         mapViewModel.tMapIntegratedPlaces.observe(viewLifecycleOwner) { result ->
             result.onSuccess { integratedPlaces ->
                 val filterData: List<Poi> = integratedPlaces.searchPoiInfo.pois.poi
-                Log.e("TTEST", "" + filterData)
-                val searchPointAdapter = SearchPointAdapter()
+                val searchPointAdapter = SearchPointAdapter { item ->
+                    val bundle = bundleOf(BUNDLE_KEY to item)
+                    setFragmentResult(TMapVectorFragment.REQUEST_KEY, bundle)
+                    findNavController().navigateUp()
+                }
                 recyclerviewDepartureFocusContent.adapter = searchPointAdapter
                 searchPointAdapter.submitList(filterData)
             }.onFailure { error ->
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    companion object {
+        const val BUNDLE_KEY = "POI"
     }
 }

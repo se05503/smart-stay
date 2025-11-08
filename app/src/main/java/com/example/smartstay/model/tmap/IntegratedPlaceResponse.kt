@@ -1,5 +1,8 @@
 package com.example.smartstay.model.tmap
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class IntegratedPlaceResponse(
     val searchPoiInfo: SearchPoiInfo
 )
@@ -15,6 +18,7 @@ data class Pois(
     val poi: List<Poi> // 검색 결과의 관심 장소(POI) 정보
 )
 
+@Parcelize
 data class Poi(
     val id: String, // 관심 장소(POI) ID. 이 정보로 [장소 상세 정보 검색] API를 이용하여 장소를 상세 검색할 수 있습니다.
     val name: String, // 장소명(시설물 등) 및 업체명
@@ -36,7 +40,7 @@ data class Poi(
     val secondNo: String, // 지번 부번. '서울 종로구 세종로 77-6'의 경우 6
 
     val zipCode: String, // 우편번호. 예) 16491
-) {
+): Parcelable {
 
     val addressType: AddressType
         get() = if (roadName.isNotBlank()) AddressType.ROAD else AddressType.LOT

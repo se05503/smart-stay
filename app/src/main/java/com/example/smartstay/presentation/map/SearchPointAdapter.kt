@@ -9,7 +9,7 @@ import com.example.smartstay.databinding.ItemSearchPointBinding
 import com.example.smartstay.model.tmap.AddressType
 import com.example.smartstay.model.tmap.Poi
 
-class SearchPointAdapter : ListAdapter<Poi, SearchPointAdapter.SearchPointViewHolder>(differ) {
+class SearchPointAdapter(private val onClicked: (Poi) -> Unit) : ListAdapter<Poi, SearchPointAdapter.SearchPointViewHolder>(differ) {
 
     inner class SearchPointViewHolder(private val binding: ItemSearchPointBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Poi) = with(binding) {
@@ -17,6 +17,9 @@ class SearchPointAdapter : ListAdapter<Poi, SearchPointAdapter.SearchPointViewHo
             tvSearchPointRoadNameAddress.text = if(item.addressType == AddressType.ROAD) item.fullRoadNameAddress else item.fullLotNumberAddress
             tvSearchPointAddressType.text = if(item.addressType == AddressType.ROAD) "도로명" else "지번"
             tvSeachPointBusinessName.text = item.lowerBizName
+            root.setOnClickListener {
+                onClicked(item)
+            }
         }
     }
 

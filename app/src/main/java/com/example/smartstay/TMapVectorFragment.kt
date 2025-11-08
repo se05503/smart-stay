@@ -1,25 +1,31 @@
 package com.example.smartstay
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -33,12 +39,14 @@ import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.tmap.HighwayPoint
 import com.example.smartstay.model.tmap.LineStringGeometry
 import com.example.smartstay.model.tmap.LocationInfo
+import com.example.smartstay.model.tmap.Poi
 import com.example.smartstay.model.tmap.PointGeometry
 import com.example.smartstay.model.tmap.RoutesInfo
 import com.example.smartstay.model.tmap.TMapRoutesPredictionRequest
 import com.example.smartstay.model.tmap.TMapRoutesResponse
 import com.example.smartstay.network.RetrofitInstance
 import com.example.smartstay.presentation.AccommodationViewModel
+import com.example.smartstay.presentation.map.DepartureFocusFragment
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -160,6 +168,15 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
                  */
                 // TODO: TMapMarkerItem vs TMapMarkerItem2 비교해서 더 나은 것 사용하기
                 addMarkerOnMap(initialDestination)
+                startPoint?.let {
+                    val marker = TMapMarkerItem().apply {
+                        id = it.id
+                        icon = departureBitmap
+                        setTMapPoint(it.noorLat, it.noorLon)
+                    }
+                    tmapView.addTMapMarkerItem(marker)
+                    tmapView.zoomLevel = 15
+                }
 
                 /**
                  * 마커 말풍선 오버레이 (구현 미완성)
@@ -558,16 +575,23 @@ class TMapVectorFragment : Fragment(R.layout.fragment_t_map_vector) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun initObservers() = with(binding) {
 
         etMapStartPoint.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 findNavController().navigate(R.id.action_TMapVectorFragment_to_departureFocusFragment)
-            } else {
-                Toast.makeText(context, "EditText is unfocused", Toast.LENGTH_SHORT).show()
             }
         }
 
+        setFragmentResultListener(REQUEST_KEY) { requestKey, bundle ->
+            val departure = bundle.getParcelable(DepartureFocusFragment.BUNDLE_KEY, Poi::class.java)
+            if(departure != null) {
+                etMapStartPoint.setText(departure.name)
+                tmapView.setCenterPoint(departure.noorLat, departure.noorLon)
+                startPoint = departure
+            }
+        }
         mapViewModel.tMapRoutesPredictionInfo.observe(viewLifecycleOwner) { result ->
             result.onSuccess { prediction ->
                 val detailInfo = prediction.features[0].properties
