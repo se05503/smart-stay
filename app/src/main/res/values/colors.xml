@@ -15,9 +15,22 @@
     <color name="background_gray_200">#F0F4F5</color>
     <color name="background_gray_700">#A4A4A4</color>
     <color name="background">#FAFAFA</color>
+    <color name="accommodation_detail_main_text_color">#8B8B8B</color>
+    <color name="accommodation_detail_divider">#F6F6F6</color>
+    <color name="accommodation_detail_price_maximum">#A21B1B</color>
+    <color name="accommodation_detail_price_now">@color/black</color>
+    <color name="accommodation_detail_price_minimum">#699731</color>
     <color name="sub_orange">#FFB74D</color>
     <color name="sub_blue">#4DB6AC</color>
     <color name="divider">#F6F6F6</color>
     <color name="navigate_outer">#348A37</color>
     <color name="navigate_inner">#4CAF50</color>
+    <color name="accommodation_outline">#70614C</color>
+    <color name="accommodation_fill">#BAAA93</color>
+    <color name="shopping_outline">#8A5FAF</color>
+    <color name="shopping_fill">#AC87CC</color>
+    <color name="leisure_outline">#49A98E</color>
+    <color name="leisure_fill">#7CD7BD</color>
+    <color name="tour_outline">#5AA8C2</color>
+    <color name="tour_fill">#84CAE2</color>
 </resources>

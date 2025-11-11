@@ -2,7 +2,10 @@ package com.example.smartstay
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -13,6 +16,7 @@ import com.example.smartstay.model.accommodation.Accommodation
 import com.example.smartstay.model.accommodation.Attraction
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.network.RetrofitInstance
+import com.google.android.material.card.MaterialCardView
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -70,7 +74,28 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
         if(accommodation.isBusinessCenterExist == "N") ivAmenityBusiness.alpha = 0.3f
         if(accommodation.isOceanViewExist == "N") ivAmenityOceanView.alpha = 0.3f
         tvDetailMapLocation.text = accommodation.address
-        // TODO: 근처 관광지 관련 정보 UI 추가로 만들어서 표시하기
+
+        llStayDetailAttractionContainer.removeAllViews()
+        attractions.forEachIndexed { index, attraction ->
+            val attractionView = LayoutInflater.from(context).inflate(R.layout.layout_attraction_introduction, llStayDetailAttractionContainer, false)
+            attractionView.findViewById<TextView>(R.id.tvAttractionIntroductionNumber).text = "${index+1}"
+            attractionView.findViewById<TextView>(R.id.tvAttractionIntroductionName).text = attraction.poiName
+            if(attraction.category == SHOPPING) {
+                attractionView.findViewById<MaterialCardView>(R.id.cvAttractionIntroductionCategory).setCardBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.shopping_fill))
+                attractionView.findViewById<TextView>(R.id.tvAttractionIntroductionCategory).text = SHOPPING
+            } else if(attraction.category == TOUR) {
+                attractionView.findViewById<MaterialCardView>(R.id.cvAttractionIntroductionCategory).setCardBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.tour_fill))
+                attractionView.findViewById<TextView>(R.id.tvAttractionIntroductionCategory).text = TOUR
+            } else {
+                attractionView.findViewById<MaterialCardView>(R.id.cvAttractionIntroductionCategory).setCardBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.leisure_fill))
+                attractionView.findViewById<TextView>(R.id.tvAttractionIntroductionCategory).text = LEISURE
+            }
+            attractionView.findViewById<TextView>(R.id.tvAttractionIntroductionSub).text = getSubDescription()
+            llStayDetailAttractionContainer.addView(attractionView)
+        }
     }
 
     private fun initListeners() = with(binding) {
@@ -88,6 +113,19 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
             ivDetailMapThumbnail.setImageBitmap(bitmap)
         }
         mapViewModel.getTMapThumbnailImage(longitude = accommodation.longitude, latitude = accommodation.latitude, markers = "${accommodation.longitude}%2C${accommodation.latitude}", zoom = 14, context = requireContext())
+    }
+
+    private fun getSubDescription(): String {
+        val subDescriptionList = listOf(
+            "#여행객", "#힐링여행", "#이색체험", "#많이찾는", "#현지인", "#인생샷", "#추천"
+        )
+        return subDescriptionList.random()
+    }
+
+    companion object {
+        const val SHOPPING = "쇼핑"
+        const val LEISURE = "레저/스포츠"
+        const val TOUR = "관광명소"
     }
 
 }
