@@ -32,6 +32,8 @@ import com.example.smartstay.databinding.FragmentChatBinding
 import com.example.smartstay.model.ChatModel
 import com.example.smartstay.model.ChatRequest
 import com.example.smartstay.model.DataResource
+import com.example.smartstay.model.accommodation.Accommodation
+import com.example.smartstay.model.accommodation.Attraction
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.model.user.UserInfo
 import com.example.smartstay.network.RetrofitInstance
@@ -71,6 +73,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
             sideSheet.findViewById<Chip>(R.id.oceanView)
         )
     }
+
+    private var userKeywordList: MutableList<String> = mutableListOf()
 
 //    private val userNickname: String? by lazy {
 //        intent.getStringExtra("user_nickname")
@@ -160,6 +164,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
 
         sivChatSend.setOnClickListener {
 
+            userKeywordList = mutableListOf()
+
             if (!isChatInitialized) {
                 lottieChatbot.isVisible = false
                 tvInduceChat.isVisible = false
@@ -175,8 +181,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
             val keywordList = mutableListOf<String>()
             sideSheetChipList.forEach { chip ->
                 if (chip.isChecked) {
-                    val keyword = resources.getResourceEntryName(chip.id)
-                    keywordList.add(keyword)
+                    userKeywordList.add(chip.text.toString())
                 }
             }
 
@@ -186,7 +191,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
                     profile = testUserImage,
                     nickname = testUserNickname,
                     message = userMessage,
-                    keywords = keywordList
+                    keywords = userKeywordList
                 )
             )
 
@@ -203,7 +208,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
 //                userId = testUserId,
 //                userMessage = userMessage,
 //                userInfo = testUserInfo,
-//                keywords = keywordList
+//                keywords = userKeywordList
 //            )
 
             // server 연결 X
@@ -287,7 +292,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
         })
         chatViewModel.chatbotResponse.observe(viewLifecycleOwner) { result ->
             result.onSuccess { chatbotMessage ->
-
                 // 로딩 상태 제거 및 챗봇 응답 UI 갱신
                 if (chatItemList.lastOrNull() is ChatModel.ChatBotLoading) {
                     chatItemList.removeAt(chatItemList.lastIndex)
@@ -349,6 +353,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat), ItemClickListener {
                     }
                 }
             }.onFailure { error ->
+                if (chatItemList.lastOrNull() is ChatModel.ChatBotLoading) {
+                    chatItemList.removeAt(chatItemList.lastIndex)
+                }
+                val failureMessage = ChatModel.ChatBotMessage(
+                    type = 0,
+                    message = "죄송합니다. 서버 에러가 발생했습니다. 다시 한번 입력해주세요😓",
+                    keywords = userKeywordList,
+                    destinations = null
+                )
+                chatItemList.add(failureMessage)
+                chatAdapter.submitList(chatItemList.toList())
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
         }
