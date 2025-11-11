@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tvChatBotName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -25,6 +26,34 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_profile"
         app:layout_constraintStart_toEndOf="@id/iv_profile"
         app:layout_constraintTop_toTopOf="@id/iv_profile" />
+
+    <LinearLayout
+        android:id="@+id/llFilterChangedNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="@id/tvChatBotName"
+        app:layout_constraintStart_toEndOf="@id/tvChatBotName"
+        app:layout_constraintBottom_toBottomOf="@id/tvChatBotName">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="2dp"
+        app:lottie_rawRes="@raw/lottie_ring"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="필터가 변경되었어요!"
+        android:textColor="@color/background_gray_700"
+        android:textStyle="bold"
+        android:textSize="11sp"/>
+    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="360dp"
