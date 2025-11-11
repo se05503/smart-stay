@@ -13,6 +13,8 @@ import com.example.smartstay.model.accommodation.Accommodation
 import com.example.smartstay.model.accommodation.Attraction
 import com.example.smartstay.model.accommodation.Destination
 import com.example.smartstay.network.RetrofitInstance
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
 
@@ -46,10 +48,16 @@ class StayDetailFragment : Fragment(R.layout.fragment_stay_detail) {
         tvDetailStayName.text = accommodation.name
         tvDetailStayType.text = accommodation.type
         tvDetailStayLocation.text = accommodation.address
-        tvDetailRatingStar.text = accommodation.starRating
-        tvPriceAverage.text = Utils.formatPrice(accommodation.averagePrice)
-        tvPriceMinimum.text = Utils.formatPrice(accommodation.minimumPrice)
-        tvPriceMaximum.text = Utils.formatPrice(accommodation.maximumPrice)
+        tvDetailRatingStar.text = "${accommodation.starRating}급"
+        val today = LocalDate.now()
+        val tomorrow = today.plusDays(1)
+        val formatter = DateTimeFormatter.ofPattern("MM.dd")
+        val todayFormatted = today.format(formatter)
+        val tomorrowFormatted = tomorrow.format(formatter)
+        tvStayDetailSpecificDuration.text = "$todayFormatted - $tomorrowFormatted 숙박 시"
+        tvStayDetailMaximumPrice.text = "${Utils.formatPrice(accommodation.maximumPrice)} / 박"
+        tvStayDetailCurrentPrice.text = "${Utils.formatPrice(accommodation.averagePrice)} / 박"
+        tvStayDetailMinimumPrice.text = "${Utils.formatPrice(accommodation.minimumPrice)} / 박"
         if(accommodation.isPetAvailable == "N") ivAmenityPet.alpha = 0.3f
         if(accommodation.isRestaurantExist == "N") ivAmenityRestaurant.alpha = 0.3f
         if(accommodation.isBarExist == "N") ivAmenityBar.alpha = 0.3f
