@@ -12,6 +12,7 @@ import com.example.smartstay.network.OpenAINetworkService
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.net.SocketTimeoutException
 
 class ChatViewModel(
     private val backendNetworkService: BackendNetworkService,
@@ -26,7 +27,7 @@ class ChatViewModel(
             try {
                 val response = backendNetworkService.postSocialChat(chatRequest = chatRequest)
                 _chatbotResponse.value = Result.success(response)
-            } catch (e: Exception) {
+            } catch (e: SocketTimeoutException) {
                 _chatbotResponse.value = Result.failure(e)
             }
         }

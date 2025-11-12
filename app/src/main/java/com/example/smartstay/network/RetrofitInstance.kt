@@ -32,9 +32,16 @@ object RetrofitInstance {
         .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
+    val backendClient: OkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .build()
+
     val backendNetworkService: BackendNetworkService by lazy {
         Retrofit.Builder()
             .baseUrl(BACKEND_BASE_URL)
+            .client(backendClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
